@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+
+	             <link href="https://developers.google.com/fusiontables/docs/samples/style/default.css" rel="stylesheet" type="text/css">
+	
+	<link rel="stylesheet" type="text/css" href="./css/ex1.css">
+	<link rel="stylesheet" type="text/css" href="./css/searchbox.css">
+
+	<title>Google Map Ex1</title>
+</head>
+<body>
+	
+	<div id="gmap"></div>
+
+	<form action="">
+		<input type="hidden" name="lat" id="lat">
+		<input type="hidden" name="lng" id="lng">
+	</form>
+
+<table>
+<tr><td>
+	<div class="container">
+
+		<input id="pac-input" class="controls" type="text" placeholder="Search Box">
+
+		<script src="./js/initmap.js"></script>
+
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBr565zA4II2V6Lo5scvLwSYOdj2KmqFAk&libraries=places&callback=initMap" async defer></script>
+				
+	</div>
+</td></tr>
+<tr><td>
+		<div id='mapform' class="container mapform" style="display: none;">
+			<iframe src="https://docs.google.com/forms/d/e/1FAIpQLScjPwB5sU-r4CZ4yk7Q3eww6oaV2DI80UR0X26jxBL_xOmmJg/viewform?embedded=true" width="100%" height="100%" frameborder="0" marginheight="0" marginwidth="0">Loading ...</iframe>
+ 		</div>
+ </td></tr>
+</table>
+
+
+
+</body>
+</html>
