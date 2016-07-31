@@ -110,8 +110,7 @@
                     map: map,
                     icon: icon,
                     title: place.name,
-                    position: place.geometry.location,
-                    draggable: true
+                    position: place.geometry.location
                 });
 
 				marker.addListener('click', function(e) { 
