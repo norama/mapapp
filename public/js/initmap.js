@@ -114,6 +114,13 @@
                     draggable: true
                 });
 
+				marker.addListener('click', function(e) { 
+					if (itemMarker != null) {
+						itemMarker.setMap(null);
+						itemMarker = null;
+					}
+					setItemMarkerOnClick(e);
+				});
 
                 // Create a marker for each place.
                 markers.push(marker);
