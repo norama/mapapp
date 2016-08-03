@@ -11,8 +11,7 @@
     // parameter when you first load the API. For example:
     // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
 
-    // FusionTable ID
-    var FTID = '10c-6Dlo_vM54czB5e4kzTJoc6BoUciLTYbfHixH7';
+    var FTMARKER_ICON = 'placemark_circle_highlight';
 
     var itemMarker = null;
 
@@ -55,11 +54,14 @@
 
 
     function handleLocationError(browserHasGeolocation, error) {
-        var infoWindow = new google.maps.InfoWindow({map: map});
-        infoWindow.setPosition(map.getCenter());
-        infoWindow.setContent(browserHasGeolocation ?
+        var msg = browserHasGeolocation ?
                             'Error: The Geolocation service failed: ' + error.code +" : "+error.message :
-                            'Error: Your browser doesn\'t support geolocation.');
+                            'Error: Your browser doesn\'t support geolocation.';
+        // var infoWindow = new google.maps.InfoWindow({map: map});
+        // infoWindow.setPosition(map.getCenter());
+        // infoWindow.setContent(msg);
+
+        console.warn(msg);
     }
 
     function initAutocomplete() {
@@ -137,16 +139,12 @@
     }
 
     function hideMapform() {
-        var mapform = document.getElementById('mapform');
-        mapform.style.display = 'none';
+        $( '#mapform' ).hide();
     }
 
     function showhideMapform() {
-        var mapform = document.getElementById('mapform');
-        mapform.style.display = mapform.style.display == 'none' ? 'block' : 'none';
-        if (mapform.style.display == 'block') {
-            storePosition();
-        }
+        $( '#mapform' ).toggle();        
+        storePosition();
     }
 
     function initFusionTable() {
@@ -154,9 +152,33 @@
             query: {
               select: '\'Location\'',
               from: FTID
-            }
+            },
+            map: map,
+            options: {
+                suppressInfoWindows: true
+            },
+            styles: [{
+              markerOptions: {
+                iconName: FTMARKER_ICON
+              }
+            }]
         });
-        layer.setMap(map);
+
+        var infoWindow = new google.maps.InfoWindow();
+        
+        google.maps.event.addListener(layer, 'click', function(e) {
+            console.dir(e);
+          infoWindow.setContent(format(e.row));
+          infoWindow.setPosition(e.latLng);
+          infoWindow.open(map);
+        });
+    }
+
+    function format(row) {
+        return '<div class="googft-info-window">'+
+            '<b>'+row.Title.columnName+':</b> '+row.Title.value+'<br/>'+
+            '<b>'+row.Description.columnName+':</b> '+row.Description.value+
+            '</div>';
     }
 
     function setItemMarkerOnClick(e) {
@@ -193,12 +215,21 @@
         if (itemMarker == null) {
             return;
         }
+        if ($( '#mapform' ).css('display') == 'none') {
+            return;
+        }
+
         var lat = itemMarker.getPosition().lat();
         var lng = itemMarker.getPosition().lng();
+
+        $('#addItemForm').find('input[name="lat"]').val(lat);
+        $('#addItemForm').find('input[name="lng"]').val(lng);
+
+        
         console.log(lat + ", " + lng);
 
-        document.getElementById('lat').value = lat;
-        document.getElementById('lng').value = lng;
+        // document.getElementById('lat').value = lat;
+        // document.getElementById('lng').value = lng;
     }
 
     function addMapClickListener() {        

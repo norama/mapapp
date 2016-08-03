@@ -10,8 +10,8 @@
   margin-left: 5px;
   z-index:20;
   background: white;
-  border:5px solid #999999;
-  padding: 10px 10px 10px 10px;
-  width: 400px;
-  height: 400px;
+  border:2px solid #999999;
+  padding: 15px 15px 15px 15px;
+  width: 230px !important;
+  
 }
