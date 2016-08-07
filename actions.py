@@ -26,7 +26,8 @@ def insert(values):
 		allValues[key] = values[key]
 	now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
-	sqlInsert = "INSERT INTO {0} (Title,Description,Timestamp) values('{1}','{2}', '{3}')".format(FTID, allValues['title'], allValues['description'], now)
+	sqlInsert = "INSERT INTO {0} (Title,Description,Latitude,Longitude,Timestamp) values('{1}', '{2}', '{3}', '{4}', '{5}')"\
+	.format(FTID, allValues['title'], allValues['description'], allValues['lat'], allValues['lng'], now)
 
 	logger = logging.getLogger()
 	logger.info(sqlInsert)
