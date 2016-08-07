@@ -11,6 +11,9 @@
     // parameter when you first load the API. For example:
     // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
 
+    // FusionTable ID
+    var FTID = '1sShz8nYsrUu4NSG4hb-_vPTK4xCIYbCWNN-fAmJ2';
+    
     var FTMARKER_ICON = 'placemark_circle_highlight';
 
     var itemMarker = null;
