@@ -16,11 +16,11 @@ handlers:
 # where <wsgi_application> is a WSGI application object.
 - url: /app/(.+)  # This regex directs all /app/* routes to main.app
   script: main.app
-
+  # login: required
 
 - url: /
   static_files: public/index.html
-  upload: public/(.*)
+  upload: public/index.html
 
 # App Engine serves and caches static files contained in the listed directories
 # (and subdirectories). Uncomment and set the directory as needed.
@@ -40,3 +40,6 @@ handlers:
 #- name: google-api-python-client
 #  version: latest
 
+libraries:
+- name: webapp2
+  version: latest

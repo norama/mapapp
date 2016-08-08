@@ -4,7 +4,6 @@
 # in `lib/` subdirectory.
 #
 # Note: The `lib` directory is added to `sys.path` by `appengine_config.py`.
-Flask == 0.10.1
 
 httplib2 >= 0.9.2
 

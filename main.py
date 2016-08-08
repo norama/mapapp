@@ -2,40 +2,44 @@
 
 import json
 import logging
-from flask import request
+import webapp2
+import micro_webapp2
 
 import actions
 
-# Import the Flask Framework
-from flask import Flask
-app = Flask(__name__)
-# Note: We don't need to call run() since our application is embedded within
-# the App Engine WSGI application server.
+
+class Insert(webapp2.RequestHandler):
+    def post(self):
+        logger = logging.getLogger()
+        logger.info("FORM")
+        logger.info(self.request.POST)
+        return actions.insert(self.request.POST)
+
+def handle_404(request, response, exception):
+    logging.exception(exception)
+    response.write('Oops! I could swear this page was here! Status code: 404')
+    response.set_status(404)
+
+def handle_500(request, response, exception):
+    logging.exception(exception)
+    response.write('A server error occurred! Status code: 500')
+    response.set_status(500)
 
 
-@app.route('/app/hello', methods=['GET', 'POST'])
-def hello():
-    """Return a friendly HTTP greeting."""
-    return 'Hello World!'
+config = {'foo': 'bar'}
+
+
+app = micro_webapp2.WSGIApplication([
+    webapp2.Route(r'/app/insert', handler=Insert, name='insert'),
+    #webapp2.Route(r'/sign', handler=Guestbook, name='sign'),
+    # webapp2.Route(r'/guestbook/<guestbook_name:(.+)>', handler=MainPage, name='guestbook', handler_method='get_guestbook'),
+], debug=True, config=config)
+
+app.error_handlers[404] = handle_404
+app.error_handlers[500] = handle_500
 
 @app.route('/app/store', methods=['GET', 'POST'])
-def store():
+def store(request):
+    logger = logging.getLogger()
+    logger.info(request.__dict__)
     return json.dumps({'key1' : 'value1', 'key2' : 'value2'})
-
-@app.route('/app/insert', methods=['POST'])
-def insert():
-	# logger = logging.getLogger()
-	# logger.info("Request: ")
-	# logger.info(request.form['title'])
-	return actions.insert(request.form)
-
-@app.errorhandler(404)
-def page_not_found(e):
-    """Return a custom 404 error."""
-    return 'Sorry, Nothing at this URL.', 404
-
-
-@app.errorhandler(500)
-def application_error(e):
-    """Return a custom 500 error."""
-    return 'Sorry, unexpected error: {}'.format(e), 500

@@ -118,6 +118,7 @@ function addItem(values) {
     })
     .done(function( json ) {
         alert("Success!");
+        console.log("------> SUCCESS")
         console.dir(json);
     })
     .fail(function( xhr, status, errorThrown ) {
