@@ -48,3 +48,6 @@ Temporary Items
 
 # private dir
 private
+
+# compiled python files
+*.pyc
