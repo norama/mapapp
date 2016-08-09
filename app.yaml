@@ -8,6 +8,8 @@ runtime: python27
 api_version: 1
 threadsafe: yes
 
+
+
 # Handlers define how to route requests to your application.
 handlers:
 
@@ -33,6 +35,7 @@ handlers:
 - url: /(.+)
   static_files: public/\1
   upload: public/(.*)
+  application_readable: true
 
 
 # Third party libraries that are included in the App Engine SDK must be listed
