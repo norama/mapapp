@@ -5,12 +5,10 @@ from collections import defaultdict
 
 from httplib2 import Http
 from google.appengine.api import memcache
-from google.appengine.api import users
-from oauth2client.contrib.appengine import OAuth2Decorator
+
 from oauth2client.service_account import ServiceAccountCredentials
 from apiclient.discovery import build
 
-from oauth2client.contrib.appengine import OAuth2DecoratorFromClientSecrets
 
 scopes = ['https://www.googleapis.com/auth/fusiontables']
 
@@ -22,21 +20,8 @@ credentials = ServiceAccountCredentials.from_json_keyfile_name(service_keyfile, 
 http_auth = credentials.authorize(Http(memcache))
 service = build('fusiontables', 'v2', http=http_auth)
 
-client_scopes = ['profile', 'email']
-
-client_keyfile = 'private/auth/keys/MapAppClientKeys.json'
-
-client_decorator = OAuth2DecoratorFromClientSecrets(client_keyfile, client_scopes)
-
-client_service = build('people', 'v1')
-
-# @client_decorator.oauth_required
 def insert(values):
 	logger = logging.getLogger()
-
-	# http = client_decorator.http()
-	# userinfo = client_service.get('https://www.googleapis.com/userinfo/v2/me').execute(http)
-	# logger.info(userinfo)
 
 	allValues = defaultdict(lambda: '')
 	for key in values:

@@ -61,7 +61,8 @@ function initForm() {
           
             console.log(values);
             //testCall('/store');
-            addItem(values);
+            //addItem(values);
+            $.redirect(mapappUrl(''), values);
 
         }
       });
@@ -104,7 +105,8 @@ function addItem(values) {
     $.ajax({
      
         // The URL for the request
-        url: mapappUrl('/insert'),
+        //url: mapappUrl('/insert'),
+        url: mapappUrl(''),
      
         // The data to send (will be converted to a query string)
         data: values,
@@ -113,7 +115,8 @@ function addItem(values) {
         type: "POST",
      
         // The type of data we expect back
-        dataType : "json"
+        dataType : "json",
+
 
     })
     .done(function( json ) {
@@ -133,7 +136,8 @@ function addItem(values) {
 
 function mapappUrl(uri) {
     var loc = window.location;
-    return loc.protocol + '//' + loc.host + '/app' + uri;
+    //return loc.protocol + '//' + loc.host + '/app' + uri;
+    return loc.protocol + '//' + loc.host + uri;
 }
 
 function timestamp() {
