@@ -20,6 +20,8 @@ from oauth2client.client import Error
 
 import actions
 
+logger = logging.getLogger()
+
 client_scopes = ['profile', 'email', 'https://www.googleapis.com/auth/plus.me']
 # client_scopes = ['https://www.googleapis.com/auth/tasks']
 
@@ -40,6 +42,17 @@ def _http_auth():
             logging.exception(exception)
     return None
 
+def _userinfo():
+    http_auth = _http_auth()
+    if http_auth is not None:
+        try:
+            client_service = build(serviceName='people', version='v1', http=http_auth)
+            userinfo = client_service.people().get(resourceName='people/me').execute()
+            return userinfo
+        except Error:
+            logger.error('Error during client_decorator.http()')
+            logging.exception(exception)
+    return None
 
 class Home(micro_webapp2.BaseHandler):
     def get(self):
@@ -52,12 +65,9 @@ class Insert(micro_webapp2.BaseHandler):
 
     @client_decorator.oauth_aware
     def get(self):
-        logger = logging.getLogger() 
         logger.info('******* GET *************')
-        http_auth = _http_auth()
-        if http_auth is not None:
-            client_service = build(serviceName='people', version='v1', http=http_auth)
-            userinfo = client_service.people().get(resourceName='people/me').execute()
+        userinfo = _userinfo()
+        if userinfo is not None:
             logger.info("userinfo")
             logger.info(json.dumps(userinfo, sort_keys=True, indent=4, separators=(',', ': ')))
             if 'values' in self.session:      
@@ -76,8 +86,7 @@ class Insert(micro_webapp2.BaseHandler):
 
 
     @client_decorator.oauth_aware
-    def post(self):
-        logger = logging.getLogger()       
+    def post(self):   
         logger.info('******* POST *************')
 
         values = dict()
