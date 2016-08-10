@@ -47,18 +47,13 @@ class Insert(micro_webapp2.BaseHandler):
             else:
                 logger.info('------------------------ just reloading page -----------------------')
         else:
-            logger.info('------------------------ Unauthorized reloading page -----------------------')
+            self._authorize()
+            return
 
         self.session.pop('values', None)     
 
         self.redirect('/')      
 
-        # path = os.path.join(os.path.dirname(__file__), 'index.html')
-        # logger.info("TEMPLATE PATH: " + path)
-        # template_values = {}
-        # self.response.out.write(template.render(path, template_values))
-        # return 'OK' #template.render(path, template_values)
-        # return json.dumps(self.session)
 
     @client_decorator.oauth_aware
     def post(self):
@@ -74,9 +69,12 @@ class Insert(micro_webapp2.BaseHandler):
         if client_decorator.has_credentials():
             self.get() # actions.insert(self.request.POST)
         else:
-            url = client_decorator.authorize_url()
-            path = os.path.join(os.path.dirname(__file__), 'unauth.html')
-            self.response.out.write(template.render(path, {'authorize_url': url, 'cancel_url': self.request.application_url}))
+            self._authorize()
+
+    def _authorize(self):
+        url = client_decorator.authorize_url()
+        path = os.path.join(os.path.dirname(__file__), 'unauth.html')
+        self.response.out.write(template.render(path, {'authorize_url': url, 'cancel_url': self.request.application_url}))        
 
 def handle_404(request, response, exception):
     logging.exception(exception)
