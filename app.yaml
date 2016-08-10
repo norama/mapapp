@@ -15,13 +15,12 @@ handlers:
 
 # index.html
 - url: /
-  static_files: index.html
-  upload: index.html
+  script: main.app
 
 # This handler tells app engine how to route requests to a WSGI application.
 # The script value is in the format <path.to.module>.<wsgi_application>
 # where <wsgi_application> is a WSGI application object.
-- url: /ourmap
+- url: /insert
   script: main.app
 
 - url: /oauth2callback

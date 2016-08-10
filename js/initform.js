@@ -62,7 +62,7 @@ function initForm() {
             console.log(values);
             //testCall('/store');
             //addItem(values);
-            $.redirect(mapappUrl('/ourmap'), values);
+            $.redirect(mapappUrl('/insert'), values);
 
         }
       });

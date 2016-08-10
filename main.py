@@ -15,6 +15,8 @@ from google.appengine.ext.webapp import template
 from oauth2client.contrib.appengine import OAuth2DecoratorFromClientSecrets
 from apiclient.discovery import build
 
+from oauth2client.client import Error
+
 
 import actions
 
@@ -26,6 +28,24 @@ client_keyfile = 'private/auth/keys/MapAppClientKeys.json'
 client_decorator = OAuth2DecoratorFromClientSecrets(client_keyfile, client_scopes, 'Secrets file is missing or invalid.')
 
 
+def ospath(path):
+    return os.path.join(os.path.dirname(__file__), path)
+
+def _http_auth():
+    if client_decorator.has_credentials():
+        try:
+            return client_decorator.http()
+        except Error:
+            logger.error('Error during client_decorator.http()')
+            logging.exception(exception)
+    return None
+
+
+class Home(micro_webapp2.BaseHandler):
+    def get(self):
+        path = ospath('index.html')
+        conf = {}
+        self.response.out.write(template.render(path, conf))    
 
 
 class Insert(micro_webapp2.BaseHandler):
@@ -34,8 +54,8 @@ class Insert(micro_webapp2.BaseHandler):
     def get(self):
         logger = logging.getLogger() 
         logger.info('******* GET *************')
-        if client_decorator.has_credentials():
-            http_auth = client_decorator.http()
+        http_auth = _http_auth()
+        if http_auth is not None:
             client_service = build(serviceName='people', version='v1', http=http_auth)
             userinfo = client_service.people().get(resourceName='people/me').execute()
             logger.info("userinfo")
@@ -73,8 +93,9 @@ class Insert(micro_webapp2.BaseHandler):
 
     def _authorize(self):
         url = client_decorator.authorize_url()
-        path = os.path.join(os.path.dirname(__file__), 'unauth.html')
-        self.response.out.write(template.render(path, {'authorize_url': url, 'cancel_url': self.request.application_url}))        
+        path = ospath('unauth.html')
+        conf = {'authorize_url': url, 'cancel_url': self.request.application_url}
+        self.response.out.write(template.render(path, conf))        
 
 def handle_404(request, response, exception):
     logging.exception(exception)
@@ -95,7 +116,8 @@ config['webapp2_extras.sessions'] = {
 
 
 app = micro_webapp2.WSGIApplication([
-    ('/ourmap', Insert),
+    ('/', Home),
+    ('/insert', Insert),
     #webapp2.Route(r'/', handler=Insert, name='insert'),
     # webapp2.Route(r'/app', handler=Insert, name='insert2'),
     (client_decorator.callback_path, client_decorator.callback_handler())
