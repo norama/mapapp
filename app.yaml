@@ -13,29 +13,31 @@ threadsafe: yes
 # Handlers define how to route requests to your application.
 handlers:
 
+# index.html
 - url: /
+  static_files: index.html
+  upload: index.html
+
+# This handler tells app engine how to route requests to a WSGI application.
+# The script value is in the format <path.to.module>.<wsgi_application>
+# where <wsgi_application> is a WSGI application object.
+- url: /ourmap
   script: main.app
 
 - url: /oauth2callback
   script: main.app
 
-# This handler tells app engine how to route requests to a WSGI application.
-# The script value is in the format <path.to.module>.<wsgi_application>
-# where <wsgi_application> is a WSGI application object.
-- url: /app/(.+)  # This regex directs all /app/* routes to main.app
-  script: main.app
-  # login: required
-
-# - url: /
-#  static_files: public/index.html
-#  upload: public/index.html
 
 # App Engine serves and caches static files contained in the listed directories
 # (and subdirectories). Uncomment and set the directory as needed.
-- url: /(.+)
-  static_files: public/\1
-  upload: public/(.*)
-  application_readable: true
+- url: /js
+  static_dir: js
+  
+- url: /ext
+  static_dir: ext
+
+- url: /css
+  static_dir: css
 
 
 # Third party libraries that are included in the App Engine SDK must be listed

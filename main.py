@@ -12,8 +12,6 @@ from httplib2 import Http
 from google.appengine.api import memcache
 from google.appengine.ext.webapp import template
 
-
-from oauth2client.contrib.appengine import OAuth2Decorator
 from oauth2client.contrib.appengine import OAuth2DecoratorFromClientSecrets
 from apiclient.discovery import build
 
@@ -25,7 +23,7 @@ client_scopes = ['profile', 'email', 'https://www.googleapis.com/auth/plus.me']
 
 client_keyfile = 'private/auth/keys/MapAppClientKeys.json'
 
-client_decorator = OAuth2DecoratorFromClientSecrets(client_keyfile, client_scopes)
+client_decorator = OAuth2DecoratorFromClientSecrets(client_keyfile, client_scopes, 'Secrets file is missing or invalid.')
 
 
 
@@ -35,6 +33,7 @@ class Insert(micro_webapp2.BaseHandler):
     @client_decorator.oauth_aware
     def get(self):
         logger = logging.getLogger() 
+        logger.info('******* GET *************')
         if client_decorator.has_credentials():
             http_auth = client_decorator.http()
             client_service = build(serviceName='people', version='v1', http=http_auth)
@@ -50,24 +49,28 @@ class Insert(micro_webapp2.BaseHandler):
         else:
             logger.info('------------------------ Unauthorized reloading page -----------------------')
 
-        self.session.pop('values', None)           
+        self.session.pop('values', None)     
 
-        path = os.path.join(os.path.dirname(__file__), 'public/index.html')
-        template_values = {}
-        self.response.out.write(template.render(path, template_values))
+        self.redirect('/')      
+
+        # path = os.path.join(os.path.dirname(__file__), 'index.html')
+        # logger.info("TEMPLATE PATH: " + path)
+        # template_values = {}
+        # self.response.out.write(template.render(path, template_values))
         # return 'OK' #template.render(path, template_values)
         # return json.dumps(self.session)
 
     @client_decorator.oauth_aware
     def post(self):
         logger = logging.getLogger()       
-        logger.info('POST')
-        logger.info(self.request.POST)
-        values = self.request.POST
-        allValues = defaultdict(lambda: '')
-        for key in values:
-            allValues[key] = values[key]
-        self.session['values'] = allValues
+        logger.info('******* POST *************')
+
+        values = dict()
+        for key in self.request.POST:
+            values[key] = self.request.POST[key]
+        self.session['values'] = values
+        logger.info(self.session)
+
         if client_decorator.has_credentials():
             self.get() # actions.insert(self.request.POST)
         else:
@@ -94,7 +97,7 @@ config['webapp2_extras.sessions'] = {
 
 
 app = micro_webapp2.WSGIApplication([
-    ('/', Insert),
+    ('/ourmap', Insert),
     #webapp2.Route(r'/', handler=Insert, name='insert'),
     # webapp2.Route(r'/app', handler=Insert, name='insert2'),
     (client_decorator.callback_path, client_decorator.callback_handler())
