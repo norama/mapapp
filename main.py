@@ -37,9 +37,9 @@ def _http_auth():
     if client_decorator.has_credentials():
         try:
             return client_decorator.http()
-        except Error:
+        except Error as error:
             logger.error('Error during client_decorator.http()')
-            logging.exception(exception)
+            logging.exception(error)
     return None
 
 def _userinfo():
@@ -49,9 +49,9 @@ def _userinfo():
             client_service = build(serviceName='people', version='v1', http=http_auth)
             userinfo = client_service.people().get(resourceName='people/me').execute()
             return userinfo
-        except Error:
+        except Error as error:
             logger.error('Error during client_decorator.http()')
-            logging.exception(exception)
+            logging.exception(error)
     return None
 
 class Home(micro_webapp2.BaseHandler):
