@@ -3,7 +3,6 @@
 import webapp2
 from webapp2_extras import sessions
 
-import logging
 
 class WSGIApplication(webapp2.WSGIApplication):
     def __init__(self, *args, **kwargs):
@@ -26,6 +25,7 @@ class WSGIApplication(webapp2.WSGIApplication):
             return func
 
         return wrapper
+
 
 class BaseHandler(webapp2.RequestHandler):
     def dispatch(self):
