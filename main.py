@@ -8,6 +8,8 @@ from collections import defaultdict
 import webapp2
 import micro_webapp2
 
+from gaesessions import get_current_session
+
 from httplib2 import Http
 from google.appengine.api import memcache
 from google.appengine.ext.webapp import template
@@ -48,63 +50,136 @@ def _userinfo():
         try:
             client_service = build(serviceName='people', version='v1', http=http_auth)
             userinfo = client_service.people().get(resourceName='people/me').execute()
-            return userinfo
+            return _extract(userinfo)
         except Error as error:
             logger.error('Error during client_decorator.http()')
             logging.exception(error)
     return None
 
-class Home(micro_webapp2.BaseHandler):
+def _extract(userinfo):
+    res = dict()
+    res['id'] = userinfo['resourceName']
+    res['name'] = userinfo['names'][0]['displayName']
+    res['avatar'] = userinfo['photos'][0]['url']
+    return res
+
+class SessionHandler():
+    def _conf(self, conf=None):
+        return self._item('conf', conf, {})
+
+    def _state(self, state=None):
+        return self._item('state', state, self._defstate())
+
+    def _user(self, user=None):
+        return self._item('user', user)
+
+    def _error(self, error=None):
+        return self._item('error', error) 
+
+    def _item(self, key, item=None, defval=None):
+        session = get_current_session()
+        if item is None:
+            if session.has_key(key):
+                return session[key]
+            else:
+                return defval
+        else:
+            session[key] = item
+            return item
+
+    def _defstate(self):
+        if self._user() is None:
+            return 'init'
+        else:
+            return 'loggedin'
+
+    def _clear_request(self):
+        session = get_current_session()
+        session.pop('conf', None)  
+        error = session.pop('error', None) 
+        if error is not None:
+            session.pop('state', None)  
+
+    def _new(self):
+        session = get_current_session()
+        if session.is_active():
+            session.terminate()
+
+class Base(webapp2.RequestHandler):
+    def __init__(self, request, response):
+        self.initialize(request, response)
+        self.sh = SessionHandler()
+
+    def _post_conf(self):
+        conf = dict()
+        for key in self.request.POST:
+            conf[key] = self.request.POST[key]
+        return conf
+
+class Home(Base):
     def get(self):
         path = ospath('index.html')
-        conf = {}
-        self.response.out.write(template.render(path, conf))    
+        params = self._template_params()
+        logger.info('---------- HOME TEMPLATE PARAMS -----------')
+        logger.info(params)
+        self.response.out.write(template.render(path, params)) 
+        self.sh._clear_request()
+
+    def _template_params(self):
+        params = dict()
+        params.update(self.sh._conf())
+        params['state'] = self.sh._state()
+        error = self.sh._error()
+        if error is not None:
+            params['error'] = error
+        user = self.sh._user()
+        if user is not None:
+            params['user'] = user
+        return params
 
 
-class Insert(micro_webapp2.BaseHandler):
+class Login(Base):
 
     @client_decorator.oauth_aware
     def get(self):
-        logger.info('******* GET *************')
-        userinfo = _userinfo()
-        if userinfo is not None:
-            logger.info("userinfo")
-            logger.info(json.dumps(userinfo, sort_keys=True, indent=4, separators=(',', ': ')))
-            if 'values' in self.session:      
-                logger.info('======================== session =======================')
-                logger.info(self.session)
-                actions.insert(self.session['values'])
-            else:
-                logger.info('------------------------ just reloading page -----------------------')
-        else:
-            self._authorize()
-            return
-
-        self.session.pop('values', None)     
-
-        self.redirect('/')      
-
-
-    @client_decorator.oauth_aware
-    def post(self):   
-        logger.info('******* POST *************')
-
-        values = dict()
-        for key in self.request.POST:
-            values[key] = self.request.POST[key]
-        self.session['values'] = values
-        logger.info(self.session)
-
         if client_decorator.has_credentials():
-            self.get() # actions.insert(self.request.POST)
+            self._login()
+            self.redirect('/') 
         else:
             self._authorize()
+
+    def post(self):
+        self.sh._new()
+        self.sh._state('login')
+        self.sh._conf(self._post_conf())
+        self.get()
+
+    def _login(self):
+        userinfo = _userinfo()
+        if userinfo is None:
+            self.sh._state('init')
+            self.sh._error('Login failed.')               
+        else:
+            self.sh._state('loggedin')
+            self.sh._user(userinfo)
+            # logger.info(json.dumps(userinfo, sort_keys=True, indent=4, separators=(',', ': ')))
 
     def _authorize(self):
         url = client_decorator.authorize_url()
         path = ospath('unauth.html')
         conf = {'authorize_url': url, 'cancel_url': self.request.application_url}
         self.response.out.write(template.render(path, conf))        
+
+
+class Logout(Base):
+
+    def post(self):
+        self.sh._new()
+        self.sh._state('init')
+        self.sh._conf(self._post_conf())
+        self.redirect('/')
+
+
 
 def handle_404(request, response, exception):
     logging.exception(exception)
@@ -119,14 +194,17 @@ def handle_500(request, response, exception):
 
 
 config = {}
-config['webapp2_extras.sessions'] = {
-    'secret_key': '9bef0a38-8cd1-4b64-8113-19af63f7ab10' # uuid.uuid4().urn
-}
+# config['webapp2_extras.sessions'] = {
+#     'secret_key': '9bef0a38-8cd1-4b64-8113-19af63f7ab10', # uuid.uuid4().urn
+#     'session_backend': 'memcache'
+# }
 
 
 app = micro_webapp2.WSGIApplication([
     ('/', Home),
-    ('/insert', Insert),
+    # ('/insert', Insert),
+    ('/login', Login),
+    ('/logout', Logout),
     #webapp2.Route(r'/', handler=Insert, name='insert'),
     # webapp2.Route(r'/app', handler=Insert, name='insert2'),
     (client_decorator.callback_path, client_decorator.callback_handler())

@@ -1,6 +1,39 @@
 
+function initLoginForm() {
+    $('#addItemForm').before('<p>To add items you have to log in.</p>');
+    $('#addItemForm').jsonForm({
+    "form": [
+            
+            {
+              "type": "actions",
+              "items": [
+              
+              {
+                "type": "submit",
+                "title": "Login"
+              },
+              {
+                "type": "button",
+                "title": "Cancel",
+                "onClick": function (evt) {
+                    evt.preventDefault();
+                    $( '#mapform' ).hide();    
+                    clearItemMarker();
+                }
+              }]
+            }
+          ],
+          onSubmitValid: function (values) {
+
+            $('#loginForm').submit();   
+
+          }
+      });
+
+}
 
 function initForm() {
+
       $('#addItemForm').jsonForm({
         schema: {
           title: {
@@ -13,11 +46,11 @@ function initForm() {
             title: 'Description'
           },
           lat: {
-            type: 'string',
+            type: 'hidden',
             title: 'Lat'
           },
           lng: {
-            type: 'string',
+            type: 'hidden',
             title: 'Lng'
           }
         },
@@ -44,17 +77,16 @@ function initForm() {
               {
                 "type": "submit",
                 "title": "Submit"
-              }
-              ,
+              },
               {
                 "type": "button",
                 "title": "Cancel",
                 "onClick": function (evt) {
                   	evt.preventDefault();
-                  	$( '#mapform' ).hide();      
+                  	$( '#mapform' ).hide();  
+                    clearItemMarker();    
                 }
-              }
-              ]
+              }]
             }
           ],
           onSubmitValid: function (values) {
@@ -132,13 +164,6 @@ function addItem(values) {
     });
 }
 
-
-
-function mapappUrl(uri) {
-    var loc = window.location;
-    //return loc.protocol + '//' + loc.host + '/app' + uri;
-    return loc.protocol + '//' + loc.host + uri;
-}
 
 function timestamp() {
 	var now = new Date();

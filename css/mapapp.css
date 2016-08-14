@@ -15,3 +15,29 @@
   width: 230px !important;
   
 }
+
+.login {
+  background: white;
+  margin:  10px 10px 10px 10px;
+}
+
+.logout {
+  background: white;
+  margin:  10px 10px 10px 10px;
+}
+
+.avatar {
+  background: white;
+  padding:  5px 5px 5px 5px;
+  margin:  10px 10px 10px 10px;
+}
+
+.error {
+  background: white;
+  color: red;
+  font-weight: bold;
+  padding:  5px 5px 5px 5px;
+  margin:  10px 10px 10px 10px;
+  width: 60%;
+  cursor: pointer;
+}

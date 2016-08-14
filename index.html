@@ -14,6 +14,7 @@
     <script src="ext/jquery/jquery-3.1.0.js"></script>
     <script src="ext/jquery/plugins/jquery.redirect.js"></script>
     
+    <script src="js/util.js"></script>
     <script src="js/initmap.js"></script>
     <script src="js/initform.js"></script>
 
@@ -26,15 +27,59 @@
 	<script>
 
 	$( document ).ready(function() {
- 
-    	initForm();
+ 		
+ 		if ($('#state').val() == 'init') {
+ 			initLoginForm();
+ 		} else {
+    		initForm();
+    	}
  
 	});
+
+	function loginButtonPanel() {
+		return $('<div/>', {
+			'class': 'form-actions'
+		}).append('::before')
+		.append(loginButton())
+		.append('::after');
+	}
+
+	function loginButton() {
+		return $('<button />', {
+            id: 'login',
+            'class': 'btn btn-primary',
+            value: 'Login'
+        }).click(function() {
+            $('#loginForm').submit();
+        });
+	}
 	</script>
 </head>
 <body>
 	
 	<div id="gmap"></div>
+
+	<input type='hidden' id='state' value='{{ state }}'>
+	<input type='hidden' id='error' value='{{ error }}'>
+
+	{% if user %}
+		<input type='hidden' id='user_id' value='{{ user.id }}'>
+		<input type='hidden' id='user_name' value='{{ user.name }}'>
+		<input type='hidden' id='user_avatar' value='{{ user.avatar }}'>
+	{% else %}
+		<input type='hidden' id='user_id' value=''>
+		<input type='hidden' id='user_name' value=''>
+		<input type='hidden' id='user_avatar' value=''>
+	{% endif %}
+
+	<form id='loginForm' method='POST'>
+		<input type='hidden' id='center_lat' name='center_lat' value='{{ center_lat }}'>
+		<input type='hidden' id='center_lng' name='center_lng' value='{{ center_lng }}'>
+		<input type='hidden' id='zoom' name='zoom' value='{{ zoom }}'>
+		<input type='hidden' id='mapTypeId' name='mapTypeId' value='{{ mapTypeId }}'>
+		<input type='hidden' id='item_lat' name='item_lat' value='{{ item_lat }}'>
+		<input type='hidden' id='item_lng' name='item_lng' value='{{ item_lng }}'>
+	</form>
 
 <!--
 <table>
