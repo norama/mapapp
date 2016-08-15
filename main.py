@@ -143,10 +143,9 @@ class Login(Base):
     @client_decorator.oauth_aware
     def get(self):
         if client_decorator.has_credentials():
-            self._login()
-            self.redirect('/') 
-        else:
-            self._authorize()
+            if self._login():
+                self.redirect('/') 
+        self._authorize()
 
     def post(self):
         self.sh._new()
@@ -158,10 +157,12 @@ class Login(Base):
         userinfo = _userinfo()
         if userinfo is None:
             self.sh._state('init')
-            self.sh._error('Login failed.')               
+            logger.info('Login failed.')
+            return False               
         else:
             self.sh._state('loggedin')
             self.sh._user(userinfo)
+            return True
             # logger.info(json.dumps(userinfo, sort_keys=True, indent=4, separators=(',', ': ')))
 
     def _authorize(self):
