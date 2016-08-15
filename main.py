@@ -110,7 +110,7 @@ class Base(webapp2.RequestHandler):
         self.initialize(request, response)
         self.sh = SessionHandler()
 
-    def _post_conf(self):
+    def _post_values(self):
         conf = dict()
         for key in self.request.POST:
             conf[key] = self.request.POST[key]
@@ -150,7 +150,7 @@ class Login(Base):
     def post(self):
         self.sh._new()
         self.sh._state('login')
-        self.sh._conf(self._post_conf())
+        self.sh._conf(self._post_values())
         self.get()
 
     def _login(self):
@@ -177,9 +177,17 @@ class Logout(Base):
     def post(self):
         self.sh._new()
         self.sh._state('init')
-        self.sh._conf(self._post_conf())
+        self.sh._conf(self._post_values())
         self.redirect('/')
 
+class Insert(Base):
+
+    def post(self):
+        user = self.sh._user()
+        if user is None:
+            raise ValueError('No user - log in to insert item.')
+        values = self._post_values()
+        return actions.insert(values, user['id'])
 
 
 def handle_404(request, response, exception):
@@ -189,7 +197,7 @@ def handle_404(request, response, exception):
 
 def handle_500(request, response, exception):
     logging.exception(exception)
-    response.write('A server error occurred! Status code: 500')
+    response.write('A server error occurred! Status code: 500, Details: ' + repr(exception))
     response.set_status(500)
 
 
@@ -203,7 +211,7 @@ config = {}
 
 app = micro_webapp2.WSGIApplication([
     ('/', Home),
-    # ('/insert', Insert),
+    ('/insert', Insert),
     ('/login', Login),
     ('/logout', Logout),
     #webapp2.Route(r'/', handler=Insert, name='insert'),

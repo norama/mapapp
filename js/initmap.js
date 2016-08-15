@@ -18,6 +18,13 @@
 
     var itemMarker = null;
 
+    setTimeout(function(){
+       $("img[src*='googleapis']").each(function(){
+               $(this).attr("src",$(this).attr("src")+"&"+(new Date()).getTime());
+       });
+    },3000);
+
+
     function clearItemMarker() {
         if (itemMarker != null) {
             itemMarker.setMap(null);
@@ -170,7 +177,10 @@
             'class': 'error',
             html: $('#error').val(),
             title: 'Click to hide error.',
-            click: function() { $(this).hide();} 
+            click: function() { 
+                $(this).hide();
+                $('#error').val('');
+            } 
         });
 
         map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(error.get(0));        

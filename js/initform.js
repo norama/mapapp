@@ -93,8 +93,8 @@ function initForm() {
           
             console.log(values);
             //testCall('/store');
-            //addItem(values);
-            $.redirect(mapappUrl('/insert'), values);
+            addItem(values);
+            //$.redirect(mapappUrl('/insert'), values);
 
         }
       });
@@ -138,7 +138,7 @@ function addItem(values) {
      
         // The URL for the request
         //url: mapappUrl('/insert'),
-        url: mapappUrl(''),
+        url: mapappUrl('/insert'),
      
         // The data to send (will be converted to a query string)
         data: values,
@@ -155,9 +155,14 @@ function addItem(values) {
         alert("Success!");
         console.log("------> SUCCESS")
         console.dir(json);
+        // TODO: replace item marker with stored place marker and simulate click 
     })
     .fail(function( xhr, status, errorThrown ) {
-        alert( "Sorry, there was a problem!" );
+        //alert( "Sorry, there was a problem!" );
+        
+        $('#error').val( "Error adding item: " + errorThrown + '<br/>' + xhr.responseText);
+        initError();
+
         console.log( "Error: " + errorThrown );
         console.log( "Status: " + status );
         console.dir( xhr );

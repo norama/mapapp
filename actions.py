@@ -20,16 +20,18 @@ credentials = ServiceAccountCredentials.from_json_keyfile_name(service_keyfile, 
 http_auth = credentials.authorize(Http(memcache))
 service = build('fusiontables', 'v2', http=http_auth)
 
-def insert(values):
+def insert(values, userId):
 	logger = logging.getLogger()
 
 	allValues = defaultdict(lambda: u'')
 	for key in values:
 		allValues[key] = values[key]
 	now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()).encode('utf-8')
+	userId = userId.encode('utf-8')
 
-	sqlInsert = u"INSERT INTO {0} (Title,Description,Latitude,Longitude,Timestamp) values('{1}', '{2}', '{3}', '{4}', '{5}')"\
-	.format(FTID, allValues['title'], allValues['description'], allValues['lat'], allValues['lng'], now)
+	sqlInsert = u"INSERT INTO {0} (Title,Description,Latitude,Longitude,UserId,Timestamp) values('{1}', '{2}', '{3}', '{4}', '{5}', '{6}')"\
+	.format(FTID, allValues['title'], allValues['description'], allValues['lat'], allValues['lng'], userId, now)
+
 	logger.info(sqlInsert)
 
 	res = service.query().sql(sql=sqlInsert).execute()
