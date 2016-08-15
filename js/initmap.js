@@ -246,18 +246,21 @@
     }
 
     function hideMapform() {
+        $( '#addItemForm' ).empty();
         $( '#mapform' ).hide();
     }
 
     function showMapform() {
+        $( '#addItemForm' ).empty();
+        initForm();
         $( '#mapform' ).show();        
         storePosition();
     }
 
-    function showhideMapform() {
-        $( '#mapform' ).toggle();        
-        storePosition();
-    }
+    // function showhideMapform() {
+    //     $( '#mapform' ).toggle();        
+    //     storePosition();
+    // }
 
     function initFusionTable() {
         var layer = new google.maps.FusionTablesLayer({
@@ -300,10 +303,10 @@
     function setItemMarker(pos) {
         if (itemMarker == null) {
             createItemMarker(pos);
+            showMapform();
         } else {
             itemMarker.setPosition(pos);
         }
-        showMapform();
     }
 
     function createItemMarker(pos) {
@@ -316,7 +319,7 @@
         });
 
         itemMarker.addListener('click', function() { 
-            showhideMapform(); 
+            //showhideMapform(); 
         });
 
         itemMarker.addListener('dragend', function() { 
@@ -348,7 +351,6 @@
     function addMapClickListener() {        
         map.addListener('click', function(e) { 
             setItemMarkerOnClick(e); 
-            showMapform(); 
         });
     }
 

@@ -83,7 +83,6 @@ function initForm() {
                 "title": "Cancel",
                 "onClick": function (evt) {
                   	evt.preventDefault();
-                  	$( '#mapform' ).hide();  
                     clearItemMarker();    
                 }
               }]
@@ -91,6 +90,7 @@ function initForm() {
           ],
           onSubmitValid: function (values) {
           
+            clearItemMarker(); 
             console.log(values);
             //testCall('/store');
             addItem(values);
