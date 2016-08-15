@@ -18,13 +18,6 @@
 
     var itemMarker = null;
 
-    setTimeout(function(){
-       $("img[src*='googleapis']").each(function(){
-               $(this).attr("src",$(this).attr("src")+"&"+(new Date()).getTime());
-       });
-    },3000);
-
-
     function clearItemMarker() {
         if (itemMarker != null) {
             itemMarker.setMap(null);
@@ -269,7 +262,7 @@
     function initFusionTable() {
         var layer = new google.maps.FusionTablesLayer({
             query: {
-              select: '\'Location\'',
+              select: "'Location'",
               from: FTID
             },
             map: map,
