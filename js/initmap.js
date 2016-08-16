@@ -18,6 +18,8 @@
 
     var itemMarker = null;
 
+    var infoWindow = null;
+
     function clearItemMarker() {
         if (itemMarker != null) {
             itemMarker.setMap(null);
@@ -53,6 +55,8 @@
             zoom: zoom,
             mapTypeId: mapTypeId
         });
+
+        infoWindow = new google.maps.InfoWindow();
 
         addMapClickListener();
 
@@ -263,7 +267,7 @@
     // }
 
     function initFusionTable() {
-        var layer = new google.maps.FusionTablesLayer({
+        ftlayer = new google.maps.FusionTablesLayer({
             query: {
               select: "'Location'",
               from: FTID
@@ -278,15 +282,27 @@
               }
             }]
         });
-
-        var infoWindow = new google.maps.InfoWindow();
         
-        google.maps.event.addListener(layer, 'click', function(e) {
-            console.dir(e);
-          infoWindow.setContent(format(e.row));
-          infoWindow.setPosition(e.latLng);
-          infoWindow.open(map);
+        google.maps.event.addListener(ftlayer, 'click', showInfoWindow);
+    }
+
+    // dummy where clause is needed for proper refresh
+    // after item has been added
+    function refreshFTLayer(rowid) {
+        ftlayer.setOptions({
+            query: {
+              select: "'Location'",
+              from: FTID,
+              where: "rowid=" + rowid + " or rowid <> "+rowid
+            }
         });
+    }
+
+    function showInfoWindow(e) {
+        console.dir(e);
+        infoWindow.setContent(format(e.row));
+        infoWindow.setPosition(e.latLng);
+        infoWindow.open(map);
     }
 
     function format(row) {
@@ -307,6 +323,7 @@
         } else {
             itemMarker.setPosition(pos);
         }
+        infoWindow.close();
     }
 
     function createItemMarker(pos) {

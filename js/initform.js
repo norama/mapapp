@@ -83,6 +83,7 @@ function initForm() {
                 "title": "Cancel",
                 "onClick": function (evt) {
                   	evt.preventDefault();
+                  	hideMapform();   
                     clearItemMarker();    
                 }
               }]
@@ -90,18 +91,15 @@ function initForm() {
           ],
           onSubmitValid: function (values) {
           
+            hideMapform(); 
             clearItemMarker(); 
             console.log(values);
-            //testCall('/store');
+            
             addItem(values);
-            //$.redirect(mapappUrl('/insert'), values);
 
         }
       });
 
-      //console.dir(window.location);
-
-      //$('#addItemForm').find('label').addClass('control-label');	
 }
 
 function testCall(uri) {
@@ -152,10 +150,21 @@ function addItem(values) {
 
     })
     .done(function( json ) {
-        alert("Success!");
+        
         console.log("------> SUCCESS")
-        console.dir(json);
-        // TODO: replace item marker with stored place marker and simulate click 
+        console.log(JSON.stringify(json, null, 2));
+        console.log('rowid: '+json.rowid)
+
+        refreshFTLayer(json.rowid);
+
+        var mev = {
+            stop: null,
+            latLng: new google.maps.LatLng(json.lat, json.lng),
+            row: json
+        }
+
+        showInfoWindow(mev);
+
     })
     .fail(function( xhr, status, errorThrown ) {
         //alert( "Sorry, there was a problem!" );
@@ -171,8 +180,8 @@ function addItem(values) {
 
 
 function timestamp() {
-	var now = new Date();
-	return now.getFullYear()+"-"+(now.getMonth()+1)+"-"+now.getDate()+" "+now.getHours()+":"+now.getMinutes()+":"+now.getSeconds();
+	  var now = new Date();
+	  return now.getFullYear()+"-"+(now.getMonth()+1)+"-"+now.getDate()+" "+now.getHours()+":"+now.getMinutes()+":"+now.getSeconds();
 }
 
 

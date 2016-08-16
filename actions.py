@@ -36,5 +36,24 @@ def insert(values, userId):
 
 	res = service.query().sql(sql=sqlInsert).execute()
 	logger.info(res)
-	return json.dumps(res) # '{"key" : "value"}'
+
+	rowid = res['rows'][0][0]
+
+	sqlSelect = u"SELECT Title, Description, Latitude, Longitude FROM {0} WHERE rowid = {1}"\
+	.format(FTID, rowid)
+	res = service.query().sql(sql=sqlSelect).execute()
+
+	logger.info('----------- RES --------------')
+	logger.info(res)
+
+	row = res['rows'][0]
+
+	result = {
+		'rowid': rowid,
+		'Title': { 'columnName': 'Title', 'value': row[0] },
+		'Description':  { 'columnName': 'Description', 'value': row[1] },
+		'lat': row[2],
+		'lng': row[3]
+	}
+	return json.dumps(result) # '{"key" : "value"}'
 	
