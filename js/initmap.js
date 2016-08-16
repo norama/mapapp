@@ -250,13 +250,17 @@
     }
 
     function hideMapform() {
-        $( '#addItemForm' ).empty();
+        if ($('#state').val() != 'init') {
+            $( '#addItemForm' ).empty();
+        }
         $( '#mapform' ).hide();
     }
 
     function showMapform() {
-        $( '#addItemForm' ).empty();
-        initForm();
+        if ($('#state').val() != 'init') {
+            $( '#addItemForm' ).empty();
+            initForm();
+        }
         $( '#mapform' ).show();        
         storePosition();
     }
