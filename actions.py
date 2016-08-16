@@ -37,6 +37,10 @@ def insert(values, userId):
 	res = service.query().sql(sql=sqlInsert).execute()
 	logger.info(res)
 
+	if 'rows' not in res:
+		raise ValueError('Error in insert: ' + json.dumps(res, sort_keys=True, indent=4, separators=(',', ': ')))
+
+
 	rowid = res['rows'][0][0]
 
 	sqlSelect = u"SELECT Title, Description, Latitude, Longitude FROM {0} WHERE rowid = {1}"\
@@ -45,6 +49,9 @@ def insert(values, userId):
 
 	logger.info('----------- RES --------------')
 	logger.info(res)
+
+	if 'rows' not in res:
+		raise ValueError('Error in select: ' + json.dumps(res, sort_keys=True, indent=4, separators=(',', ': ')))
 
 	row = res['rows'][0]
 

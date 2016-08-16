@@ -41,3 +41,10 @@
   width: 60%;
   cursor: pointer;
 }
+
+.itemEditDelete {
+  float: right;
+  cursor: pointer;
+  border-collapse: separate; 
+  border-spacing: 5px 0px;
+}

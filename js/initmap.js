@@ -109,9 +109,6 @@
         var msg = browserHasGeolocation ?
                             'Error: The Geolocation service failed: ' + error.code +" : "+error.message :
                             'Error: Your browser doesn\'t support geolocation.';
-        // var infoWindow = new google.maps.InfoWindow({map: map});
-        // infoWindow.setPosition(map.getCenter());
-        // infoWindow.setContent(msg);
 
         console.warn(msg);
     }
@@ -312,7 +309,11 @@
     function format(row) {
         return '<div class="googft-info-window">'+
             '<b>'+row.Title.columnName+':</b> '+row.Title.value+'<br/>'+
-            '<b>'+row.Description.columnName+':</b> '+row.Description.value+
+            '<b>'+row.Description.columnName+':</b> '+row.Description.value+'<br/>'+
+            '<table class="itemEditDelete"><tr>'+
+                '<td><img src="/img/edit.png" alt="Edit" title="Edit" height="16" width="16"></td>'+
+                '<td><img src="/img/delete.png" alt="Delete" title="Delete" height="16" width="16"></td>'+
+            '</tr></table>'+
             '</div>';
     }
 
