@@ -31,7 +31,9 @@
  		
  		if ($('#state').val() == 'init') {
  			initLoginForm();
- 		} 
+ 		} else {
+ 			initItemForm(emptyItem);
+ 		}
  
 	});
 
@@ -97,7 +99,7 @@
 -->
 		<div id='mapform' class="mapform" style="display: none;">
 			<h1>Add Item</h1>
-			<form id='addItemForm' role='form'></form>
+			<form id='itemForm' role='form'></form>
  		</div>
 <!--
 </td></tr>

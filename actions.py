@@ -45,7 +45,7 @@ def insert(values, userId):
 
 	rowid = res['rows'][0][0]
 
-	sqlSelect = u"SELECT Title, Description, Latitude, Longitude FROM {0} WHERE rowid = {1}"\
+	sqlSelect = u"SELECT Title, Description, Latitude, Longitude, UserId FROM {0} WHERE rowid = {1}"\
 	.format(FTID, rowid)
 	res = service.query().sql(sql=sqlSelect).execute()
 
@@ -62,7 +62,8 @@ def insert(values, userId):
 		'Title': { 'columnName': 'Title', 'value': row[0] },
 		'Description':  { 'columnName': 'Description', 'value': row[1] },
 		'lat': row[2],
-		'lng': row[3]
+		'lng': row[3],
+		'UserId': { 'columnName': 'UserId', 'value': row[4] },
 	}
 	return json.dumps(result) # '{"key" : "value"}'
 	

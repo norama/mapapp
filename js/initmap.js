@@ -252,25 +252,15 @@
     }
 
     function hideMapform() {
-        if ($('#state').val() != 'init') {
-            $( '#addItemForm' ).empty();
-        }
         $( '#mapform' ).hide();
     }
 
     function showMapform() {
         if ($('#state').val() != 'init') {
-            $( '#addItemForm' ).empty();
-            initForm();
+            fillItemForm(emptyItem);
         }
         $( '#mapform' ).show();        
-        storePosition();
     }
-
-    // function showhideMapform() {
-    //     $( '#mapform' ).toggle();        
-    //     storePosition();
-    // }
 
     function initFusionTable() {
         ftlayer = new google.maps.FusionTablesLayer({
@@ -310,6 +300,7 @@
 
     function showInfoWindow(e) {
         console.log('lat: '+e.latLng.lat()+', lng: '+e.latLng.lng());
+        console.log(JSON.stringify(e.row, null, 2));
         infoWindow.setContent(format(e.row));
         infoWindow.setPosition(e.latLng);
         infoWindow.open(map);
@@ -324,8 +315,10 @@
             '<b>'+row.Title.columnName+':</b> '+row.Title.value+'<br/>'+
             '<b>'+row.Description.columnName+':</b> '+row.Description.value+'<br/>'+
             '<table class="itemEditDelete"><tr>'+
+            ($('#user_id').val() == row.UserId.value ?
                 '<td><img id="editItem" src="/img/edit.png" alt="Edit" title="Edit" height="16" width="16"/></td>'+
-                '<td><img id="deleteItem" src="/img/delete.png" alt="Delete" title="Delete" height="16" width="16"/></td>'+
+                '<td><img id="deleteItem" src="/img/delete.png" alt="Delete" title="Delete" height="16" width="16"/></td>' :
+                '<td><img id="viewItem" src="/img/view.png" alt="View" title="View" height="16" width="16"/></td>') +
             '</tr></table>'+
             '</div>';
     }
@@ -341,6 +334,7 @@
         } else {
             itemMarker.setPosition(pos);
         }
+        storePosition();
         infoWindow.close();
     }
 
@@ -360,27 +354,6 @@
         itemMarker.addListener('dragend', function() { 
             storePosition();
         });
-    }
-
-    function storePosition() {
-        if (itemMarker == null) {
-            return;
-        }
-        if ($( '#mapform' ).css('display') == 'none') {
-            return;
-        }
-
-        var lat = itemMarker.getPosition().lat();
-        var lng = itemMarker.getPosition().lng();
-
-        $('#addItemForm').find('input[name="lat"]').val(lat);
-        $('#addItemForm').find('input[name="lng"]').val(lng);
-
-        
-        console.log(lat + ", " + lng);
-
-        // document.getElementById('lat').value = lat;
-        // document.getElementById('lng').value = lng;
     }
 
     function addMapClickListener() {        

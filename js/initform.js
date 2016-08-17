@@ -32,26 +32,72 @@ function initLoginForm() {
 
 }
 
-function initForm() {
+var emptyItem = {
+    title: '',
+    description: '',
+    lat: '',
+    lng: ''
+}
 
-      $('#addItemForm').jsonForm({
+function fillItemForm(formItem) {
+
+    $('#itemForm').empty();
+    initItemForm(formItem);
+    
+    // $('#itemForm').find('input[name="title"]').attr('value', formItem['title']);
+    // $('#itemForm').find('input[name="description"]').attr('value', formItem['description']);    
+
+    // $('#itemForm').find('input[name="lat"]').val(formItem['lat']);
+    // $('#itemForm').find('input[name="lng"]').val(formItem['lng']);    
+
+    // storePosition();
+}
+
+function storePosition() {
+    if (itemMarker == null) {
+        return;
+    }
+    if ($( '#mapform' ).css('display') == 'none') {
+        return;
+    }
+
+    var lat = itemMarker.getPosition().lat();
+    var lng = itemMarker.getPosition().lng();
+
+    $('#itemForm').find('input[name="lat"]').val(lat);
+    $('#itemForm').find('input[name="lng"]').val(lng);
+
+    
+    console.log(lat + ", " + lng);
+
+    // document.getElementById('lat').value = lat;
+    // document.getElementById('lng').value = lng;
+}
+
+function initItemForm(formItem) {
+
+      $('#itemForm').jsonForm({
         schema: {
           title: {
             type: 'string',
             title: 'Title',
+            default: formItem['title'],
             required: true
           },
           description: {
             type: 'string',
-            title: 'Description'
+            title: 'Description',
+            default: formItem['description']
           },
           lat: {
             type: 'hidden',
-            title: 'Lat'
+            title: 'Lat',
+            default: formItem['lat']
           },
           lng: {
             type: 'hidden',
-            title: 'Lng'
+            title: 'Lng',
+            default: formItem['lng']
           }
         },
         "form": [
@@ -156,6 +202,8 @@ function addItem(values) {
         console.log('rowid: '+json.rowid)
 
         refreshFTLayer(json.rowid);
+        var randomRowid = Math.floor(Math.random() * 100000)
+        refreshFTLayer(randomRowid);
 
         var mev = {
             stop: null,
