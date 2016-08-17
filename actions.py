@@ -77,7 +77,4 @@ def delete(rowid):
 	res = service.query().sql(sql=sqlDelete).execute()
 	logger.info(res)
 
-	result = {
-		'rowid': rowid
-	}
-	return json.dumps(result)
+	return json.dumps(res)

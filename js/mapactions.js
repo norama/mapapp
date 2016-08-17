@@ -38,9 +38,9 @@ function doDeleteItem(rowid) {
         
         console.log("------> SUCCESS")
         console.log(JSON.stringify(json, null, 2));
-        console.log('rowid: '+json.rowid)
 
-        refreshFTLayer(json.rowid);
+        var randomRowid = Math.floor(Math.random() * 100000)
+        refreshFTLayer(randomRowid);
 
     })
     .fail(function( xhr, status, errorThrown ) {
