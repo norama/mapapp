@@ -165,6 +165,11 @@
         map.controls[google.maps.ControlPosition.TOP_RIGHT].push(avatar.get(0));
     }
 
+    function initErrorWithText(text) {
+        $('#error').val(text);
+        initError();
+    }
+
     function initError() {
         var error = $('<div/>', {
             
@@ -172,7 +177,7 @@
             html: $('#error').val(),
             title: 'Click to hide error.',
             click: function() { 
-                $(this).hide();
+                $(this).remove();
                 $('#error').val('');
             } 
         });
@@ -299,11 +304,19 @@
         });
     }
 
+    function hideInfoWindow() {
+        infoWindow.close();
+    }
+
     function showInfoWindow(e) {
-        console.dir(e);
+        console.log('lat: '+e.latLng.lat()+', lng: '+e.latLng.lng());
         infoWindow.setContent(format(e.row));
         infoWindow.setPosition(e.latLng);
         infoWindow.open(map);
+        $('#deleteItem').on(
+            'click', 
+            { 'itemLatLng': e.latLng, 'itemTitle': e.row.Title.value }, 
+            deleteItem);
     }
 
     function format(row) {
@@ -311,8 +324,8 @@
             '<b>'+row.Title.columnName+':</b> '+row.Title.value+'<br/>'+
             '<b>'+row.Description.columnName+':</b> '+row.Description.value+'<br/>'+
             '<table class="itemEditDelete"><tr>'+
-                '<td><img src="/img/edit.png" alt="Edit" title="Edit" height="16" width="16"></td>'+
-                '<td><img src="/img/delete.png" alt="Delete" title="Delete" height="16" width="16"></td>'+
+                '<td><img id="editItem" src="/img/edit.png" alt="Edit" title="Edit" height="16" width="16"/></td>'+
+                '<td><img id="deleteItem" src="/img/delete.png" alt="Delete" title="Delete" height="16" width="16"/></td>'+
             '</tr></table>'+
             '</div>';
     }

@@ -167,10 +167,8 @@ function addItem(values) {
 
     })
     .fail(function( xhr, status, errorThrown ) {
-        //alert( "Sorry, there was a problem!" );
         
-        $('#error').val( "Error adding item: " + errorThrown + '<br/>' + xhr.responseText);
-        initError();
+        initErrorWithText("Error adding item: " + errorThrown + '<br/>' + xhr.responseText);
 
         console.log( "Error: " + errorThrown );
         console.log( "Status: " + status );

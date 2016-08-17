@@ -29,6 +29,9 @@ handlers:
 - url: /insert
   script: main.app
 
+- url: /delete
+  script: main.app
+
 - url: /oauth2callback
   script: main.app
 

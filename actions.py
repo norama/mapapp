@@ -20,8 +20,10 @@ credentials = ServiceAccountCredentials.from_json_keyfile_name(service_keyfile, 
 http_auth = credentials.authorize(Http(memcache))
 service = build('fusiontables', 'v2', http=http_auth)
 
+logger = logging.getLogger()
+
+
 def insert(values, userId):
-	logger = logging.getLogger()
 
 	allValues = defaultdict(lambda: u'')
 	for key in values:
@@ -64,3 +66,18 @@ def insert(values, userId):
 	}
 	return json.dumps(result) # '{"key" : "value"}'
 	
+
+def delete(rowid):
+
+	sqlDelete = u"DELETE FROM {0} WHERE rowid = '{1}'"\
+	.format(FTID, rowid)
+
+	logger.info(sqlDelete)
+
+	res = service.query().sql(sql=sqlDelete).execute()
+	logger.info(res)
+
+	result = {
+		'rowid': rowid
+	}
+	return json.dumps(result)

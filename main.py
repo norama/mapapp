@@ -189,10 +189,21 @@ class Insert(Base):
         values = self._post_values()
         return actions.insert(values, user['id'])
 
+class Delete(Base):
+
+    def post(self):
+        user = self.sh._user()
+        if user is None:
+            raise ValueError('No user - log in to delete item.')
+        if 'rowid' not in self.request.POST:
+            raise ValueError('No rowid - cannot delete item.')
+        rowid = self.request.POST['rowid']
+        return actions.delete(rowid)
+
 
 def handle_404(request, response, exception):
     logging.exception(exception)
-    response.write('Oops! I could swear this page was here! Status code: 404')
+    response.write('Oops! I could swear this page was here! Status code: 404, Details: ' + repr(exception))
     response.set_status(404)
 
 def handle_500(request, response, exception):
@@ -212,6 +223,7 @@ config = {}
 app = micro_webapp2.WSGIApplication([
     ('/', Home),
     ('/insert', Insert),
+    ('/delete', Delete),
     ('/login', Login),
     ('/logout', Logout),
     #webapp2.Route(r'/', handler=Insert, name='insert'),
