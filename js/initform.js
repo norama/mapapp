@@ -1,7 +1,15 @@
 
 function initLoginForm() {
-    $('#addItemForm').before('<p>To add items you have to log in.</p>');
-    $('#addItemForm').jsonForm({
+
+    $('#itemHeader').empty();
+    $('#itemComment').empty();
+    $('#itemForm').empty();
+
+    $('#itemHeader').append(itemHeaders['add'])
+
+    $('#itemComment').append('<p>To add items you have to log in.</p>');
+
+    $('#itemForm').jsonForm({
     "form": [
             
             {
@@ -32,6 +40,14 @@ function initLoginForm() {
 
 }
 
+function itemAction(e) {
+    var formItem = e.data.item;
+    var action = e.data.action;
+    clearItemMarker();
+    fillItemForm(formItem, action);
+    showMapform();
+}
+
 var emptyItem = {
     title: '',
     description: '',
@@ -39,10 +55,33 @@ var emptyItem = {
     lng: ''
 }
 
-function fillItemForm(formItem) {
+var itemHeaders = {
+    'add': 'Add Item',
+    'view': 'View Item',
+    'edit': 'Edit Item',
+    'delete': 'Delete Item'
+}
+
+var submitLabels = {
+    'add': 'Store',
+    'edit': 'Change',
+    'delete': 'Delete'
+}
+
+var cancelLabels = {
+    'add': 'Cancel',
+    'view': 'Close',
+    'edit': 'Cancel',
+    'delete': 'Cancel'
+}
+
+function fillItemForm(formItem, action) {
+
+    $('#itemHeader').empty();
+    $('#itemHeader').append(itemHeaders[action])
 
     $('#itemForm').empty();
-    initItemForm(formItem);
+    initItemForm(formItem, action);
     
     // $('#itemForm').find('input[name="title"]').attr('value', formItem['title']);
     // $('#itemForm').find('input[name="description"]').attr('value', formItem['description']);    
@@ -74,7 +113,9 @@ function storePosition() {
     // document.getElementById('lng').value = lng;
 }
 
-function initItemForm(formItem) {
+function initItemForm(formItem, action) {
+
+    var readonly = (action == 'view') || (action == 'delete');
 
       $('#itemForm').jsonForm({
         schema: {
@@ -82,12 +123,14 @@ function initItemForm(formItem) {
             type: 'string',
             title: 'Title',
             default: formItem['title'],
-            required: true
+            required: true,
+            readonly: readonly
           },
           description: {
             type: 'string',
             title: 'Description',
-            default: formItem['description']
+            default: formItem['description'],
+            readonly: readonly
           },
           lat: {
             type: 'hidden',
@@ -119,20 +162,7 @@ function initItemForm(formItem) {
         	},
             {
               "type": "actions",
-              "items": [
-              {
-                "type": "submit",
-                "title": "Submit"
-              },
-              {
-                "type": "button",
-                "title": "Cancel",
-                "onClick": function (evt) {
-                  	evt.preventDefault();
-                  	hideMapform();   
-                    clearItemMarker();    
-                }
-              }]
+              "items": buttonPanel(action)
             }
           ],
           onSubmitValid: function (values) {
@@ -141,48 +171,43 @@ function initItemForm(formItem) {
             clearItemMarker(); 
             console.log(values);
             
-            addItem(values);
+            submit(values, action);
 
         }
       });
 
 }
 
-function testCall(uri) {
-
-
-    $.ajax({
-
-        url: mapappUrl(uri),
-
-        type: "POST",
-
-        dataType: "json",
-
-
-
-    })
-    .done(function( json ) {
-        alert("Result: "+JSON.stringify(json));
-        
-    })
-    .fail(function( xhr, status, errorThrown ) {
-        alert( "Sorry, there was a problem!" );
-        console.log( "Error: " + errorThrown );
-        console.log( "Status: " + status );
-        console.dir( xhr );
-    });
-
+function buttonPanel(action) {
+    var buttons = [];
+    if (action in submitLabels) {
+        buttons.push({
+            "type": "submit",
+            "title": submitLabels[action]
+        });
+    }
+    if (action in cancelLabels) {
+        buttons.push({
+            "type": "button",
+            "title": cancelLabels[action],
+            "onClick": function (evt) {
+                evt.preventDefault();
+                hideMapform();   
+                clearItemMarker();    
+            }
+        });
+    }
+    return buttons;
 }
 
 
-function addItem(values) {
+function submit(values, action) {
 
     $.ajax({
      
         // The URL for the request
         //url: mapappUrl('/insert'),
-        url: mapappUrl('/insert'),
+        url: mapappUrl('/' + action),
      
         // The data to send (will be converted to a query string)
         data: values,
@@ -199,19 +224,19 @@ function addItem(values) {
         
         console.log("------> SUCCESS")
         console.log(JSON.stringify(json, null, 2));
-        console.log('rowid: '+json.rowid)
+        console.log('rowid: '+json.rowid);
 
-        refreshFTLayer(json.rowid);
-        var randomRowid = Math.floor(Math.random() * 100000)
-        refreshFTLayer(randomRowid);
+        var pos = new google.maps.LatLng(json.lat, json.lng);
+        var row = json;
 
-        var mev = {
-            stop: null,
-            latLng: new google.maps.LatLng(json.lat, json.lng),
-            row: json
+        console.log('lat: '+pos.lat()+', lng: '+pos.lng());
+
+        if (action == 'delete') {
+            hideInfoWindow();
+            refreshFTLayer();
+        } else {
+            refreshFTLayer(pos, row);
         }
-
-        showInfoWindow(mev);
 
     })
     .fail(function( xhr, status, errorThrown ) {

@@ -256,9 +256,6 @@
     }
 
     function showMapform() {
-        if ($('#state').val() != 'init') {
-            fillItemForm(emptyItem);
-        }
         $( '#mapform' ).show();        
     }
 
@@ -279,35 +276,48 @@
             }]
         });
         
-        google.maps.event.addListener(ftlayer, 'click', showInfoWindow);
-    }
-
-    // dummy where clause is needed for proper refresh
-    // after item has been added
-    function refreshFTLayer(rowid) {
-        ftlayer.setOptions({
-            query: {
-              select: "'Location'",
-              from: FTID,
-              where: "rowid=" + rowid + " or rowid <> "+rowid
-            }
-        });
+        google.maps.event.addListener(ftlayer, 'click', showInfoWindowOnClick);
     }
 
     function hideInfoWindow() {
         infoWindow.close();
     }
 
-    function showInfoWindow(e) {
-        console.log('lat: '+e.latLng.lat()+', lng: '+e.latLng.lng());
-        console.log(JSON.stringify(e.row, null, 2));
-        infoWindow.setContent(format(e.row));
-        infoWindow.setPosition(e.latLng);
+    function showInfoWindowOnClick(e) {
+        clearItemMarker();
+        hideMapform();
+        showInfoWindow(e.latLng, e.row);
+    }
+
+    function showInfoWindow(pos, row) {
+        console.log('lat: '+pos.lat()+', lng: '+pos.lng());
+        console.log(JSON.stringify(row, null, 2));
+        infoWindow.setContent(format(row));
+        infoWindow.setPosition(pos);
         infoWindow.open(map);
+
+        item = {
+            title: row.Title.value,
+            description: row.Description.value,
+            lat: pos.lat(),
+            lng: pos.lng()
+        }
+        // $('#deleteItem').on(
+        //     'click', 
+        //     { 'itemLatLng': pos, 'itemTitle': row.Title.value }, 
+        //     deleteItem);
+        $('#editItem').on(
+            'click', 
+            { 'item': item, 'action': 'edit' }, 
+            itemAction);
         $('#deleteItem').on(
             'click', 
-            { 'itemLatLng': e.latLng, 'itemTitle': e.row.Title.value }, 
-            deleteItem);
+            { 'item': item, 'action': 'delete' }, 
+            itemAction);
+        $('#viewItem').on(
+            'click', 
+            { 'item': item, 'action': 'view' }, 
+            itemAction);
     }
 
     function format(row) {
@@ -329,7 +339,12 @@
 
     function setItemMarker(pos) {
         if (itemMarker == null) {
-            createItemMarker(pos);
+            createItemMarker(pos); 
+            if ($('#state').val() != 'init') {
+                fillItemForm(emptyItem, 'add');
+            } else {
+                initLoginForm();
+            }
             showMapform();
         } else {
             itemMarker.setPosition(pos);
@@ -364,4 +379,23 @@
 
     function removeMapClickListener() {
         google.maps.event.clearListeners(map, 'click');
+    }
+
+    // dummy where clause is needed for proper refresh
+    // after item has been added
+    function refreshFTLayer(pos, row) {
+        setTimeout(function() {
+            var randomRowid = Math.floor(Math.random() * 1000000)
+            ftlayer.setOptions({
+                query: {
+                    select: "'Location'",
+                    from: FTID,
+                    where: "rowid <> "+randomRowid
+                }
+            }); 
+
+            if (pos !== undefined && row !== undefined) {
+                showInfoWindow(pos, row);
+            }
+        }, 500);
     }

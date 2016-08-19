@@ -116,6 +116,18 @@ class Base(webapp2.RequestHandler):
             conf[key] = self.request.POST[key]
         return conf
 
+    def _user(self):
+        user = self.sh._user()
+        if user is None:
+            raise ValueError('No user - log in required to perform action.')
+        return user
+
+    def _rowid(self):
+        user = self._user()
+        lat = self.request.POST['lat']
+        lng = self.request.POST['lng']
+        return actions.rowid(lat, lng)
+
 class Home(Base):
     def get(self):
         path = ospath('index.html')
@@ -180,25 +192,28 @@ class Logout(Base):
         self.sh._conf(self._post_values())
         self.redirect('/')
 
+
 class Insert(Base):
 
     def post(self):
-        user = self.sh._user()
-        if user is None:
-            raise ValueError('No user - log in to insert item.')
+        user = self._user()
         values = self._post_values()
         return actions.insert(values, user['id'])
+
+class Edit(Base):
+
+    def post(self):
+        user = self._user()
+        rowid = self._rowid()
+        values = self._post_values()
+        return actions.update(rowid, values, user['id'])
 
 class Delete(Base):
 
     def post(self):
-        user = self.sh._user()
-        if user is None:
-            raise ValueError('No user - log in to delete item.')
-        if 'rowid' not in self.request.POST:
-            raise ValueError('No rowid - cannot delete item.')
-        rowid = self.request.POST['rowid']
-        return actions.delete(rowid)
+        user = self._user()
+        rowid = self._rowid()
+        return actions.delete(rowid, user['id'])
 
 
 def handle_404(request, response, exception):
@@ -222,7 +237,8 @@ config = {}
 
 app = micro_webapp2.WSGIApplication([
     ('/', Home),
-    ('/insert', Insert),
+    ('/add', Insert),
+    ('/edit', Edit),
     ('/delete', Delete),
     ('/login', Login),
     ('/logout', Logout),
@@ -243,3 +259,7 @@ def store(request):
     logger = logging.getLogger()
     logger.info(request.__dict__)
     return json.dumps({'key1' : 'value1', 'key2' : 'value2'})
+
+@app.route('/rowid', methods=['GET', 'POST'])
+def rowid(request):
+    return json.dumps(actions.rowid(request.params['lat'], request.params['lng']))

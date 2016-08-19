@@ -29,11 +29,9 @@
 
 	$( document ).ready(function() {
  		
- 		if ($('#state').val() == 'init') {
- 			initLoginForm();
- 		} else {
- 			initItemForm(emptyItem);
- 		}
+ 		// if ($('#state').val() == 'init') {
+ 		// 	initLoginForm();
+ 		// } 
  
 	});
 
@@ -98,7 +96,8 @@
 <tr><td>
 -->
 		<div id='mapform' class="mapform" style="display: none;">
-			<h1>Add Item</h1>
+			<h1 id='itemHeader'></h1>
+			<div id='itemComment'></div>
 			<form id='itemForm' role='form'></form>
  		</div>
 <!--
