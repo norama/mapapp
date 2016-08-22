@@ -168,6 +168,7 @@ function initItemForm(formItem, action) {
           onSubmitValid: function (values) {
           
             hideMapform(); 
+            hideInfoWindow();
             clearItemMarker(); 
             console.log(values);
             
@@ -203,6 +204,11 @@ function buttonPanel(action) {
 
 function submit(values, action) {
 
+    var lat = Number(values['lat']);
+    var lng = Number(values['lng']);
+
+    showWait(lat, lng);
+
     $.ajax({
      
         // The URL for the request
@@ -232,7 +238,6 @@ function submit(values, action) {
         console.log('lat: '+pos.lat()+', lng: '+pos.lng());
 
         if (action == 'delete') {
-            hideInfoWindow();
             refreshFTLayer();
         } else {
             refreshFTLayer(pos, row);
@@ -246,6 +251,9 @@ function submit(values, action) {
         console.log( "Error: " + errorThrown );
         console.log( "Status: " + status );
         console.dir( xhr );
+    })
+    .always(function() {
+        hideWait(lat, lng);
     });
 }
 

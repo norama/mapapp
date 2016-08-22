@@ -6,6 +6,43 @@ function mapappUrl(uri) {
     return loc.protocol + '//' + loc.host + uri;
 }
 
+var waitMap = new Map();
+
+function inProgress() {
+	return (waitMap.size > 0);
+}
+
+function showWait(lat, lng) {
+	var pos = new google.maps.LatLng({lat: lat, lng: lng}); 
+	var key = pos.toString();
+	var marker=new google.maps.Marker({
+  		position: pos,
+  		icon: '/img/processing.gif',
+  		title: 'In progress ...',
+  		map: map,
+  		draggable: false,
+  		optimized: false
+  	});
+  	waitMap.set(key, marker);
+
+	// $("body").css("cursor", "progress");
+	// map.setOptions({draggableCursor: 'wait'});
+}
+
+function hideWait(lat, lng) {
+	var pos = new google.maps.LatLng({lat: lat, lng: lng}); 
+	var key = pos.toString();
+	if (waitMap.has(key)) {
+		var marker = waitMap.get(key);
+		marker.setMap(null);
+		waitMap.delete(key);
+	}
+
+	
+	// $("body").css("cursor", "auto");
+	// map.setOptions({draggableCursor: null});
+}
+
 
 
 

@@ -284,6 +284,9 @@
     }
 
     function showInfoWindowOnClick(e) {
+        if (inProgress()) {
+            return;
+        }
         clearItemMarker();
         hideMapform();
         showInfoWindow(e.latLng, e.row);
@@ -334,6 +337,9 @@
     }
 
     function setItemMarkerOnClick(e) {
+       if (inProgress()) {
+            return;
+        }
         setItemMarker(e.latLng);
     }
 
