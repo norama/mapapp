@@ -201,7 +201,7 @@
             source: '#sidr',
             onOpen: function() { 
                 clearItemMarker();
-                hideMapform();
+                hideItemForm();
             }
         });
      
@@ -281,13 +281,13 @@
 
     }
 
-    function hideMapform() {
-        $( '#mapform' ).hide();
+    function hideItemForm() {
+        $( '#itemMapForm' ).hide();
     }
 
-    function showMapform() {
+    function showItemForm() {
         hideMenu();
-        $( '#mapform' ).show();        
+        $( '#itemMapForm' ).show();        
     }
 
     function hideInfoWindow() {
@@ -299,7 +299,7 @@
             return;
         }
         clearItemMarker();
-        hideMapform();
+        hideItemForm();
         showInfoWindow(e.latLng, e.row);
     }
 
@@ -363,7 +363,7 @@
             } else {
                 initLoginForm();
             }
-            showMapform();
+            showItemForm();
         } else {
             itemMarker.setPosition(pos);
         }
@@ -378,10 +378,6 @@
             title: 'Add new item',
             draggable: true,
             animation: google.maps.Animation.DROP
-        });
-
-        itemMarker.addListener('click', function() { 
-            //showhideMapform(); 
         });
 
         itemMarker.addListener('dragend', function() { 

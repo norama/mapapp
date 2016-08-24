@@ -25,7 +25,7 @@ function initLoginForm() {
                 "title": "Cancel",
                 "onClick": function (evt) {
                     evt.preventDefault();
-                    $( '#mapform' ).hide();    
+                    hideItemForm();    
                     clearItemMarker();
                 }
               }]
@@ -45,7 +45,7 @@ function itemAction(e) {
     var action = e.data.action;
     clearItemMarker();
     fillItemForm(formItem, action);
-    showMapform();
+    showItemForm();
 }
 
 var emptyItem = {
@@ -167,7 +167,7 @@ function initItemForm(formItem, action) {
           ],
           onSubmitValid: function (values) {
           
-            hideMapform(); 
+            hideItemForm(); 
             hideInfoWindow();
             clearItemMarker(); 
             console.log(values);
@@ -193,7 +193,7 @@ function buttonPanel(action) {
             "title": cancelLabels[action],
             "onClick": function (evt) {
                 evt.preventDefault();
-                hideMapform();   
+                hideItemForm();   
                 clearItemMarker();    
             }
         });
