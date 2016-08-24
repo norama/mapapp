@@ -11,11 +11,6 @@
     // parameter when you first load the API. For example:
     // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
 
-    // FusionTable ID
-    var FTID = '1sShz8nYsrUu4NSG4hb-_vPTK4xCIYbCWNN-fAmJ2';
-    
-    var FTMARKER_ICON = 'placemark_circle_highlight';
-
     var itemMarker = null;
 
     var infoWindow = null;
@@ -24,6 +19,7 @@
         if (itemMarker != null) {
             itemMarker.setMap(null);
             itemMarker = null;
+            map.setOptions({ draggableCursor: null });
         }  
     }
 
@@ -80,6 +76,7 @@
         if ($('#error').val().length > 0) {
             initError();
         }
+        initMenu();
         initAutocomplete();
         initFusionTable();
     }
@@ -185,6 +182,39 @@
         map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(error.get(0));        
     }
 
+    function initMenu() {
+
+        var menu = $('#menu').append($('<img>', { 
+            id:'menu-button', 
+            'class': 'menuButton', 
+            src:'/img/menu.png', 
+            title: 'Menu', 
+            width: '26px', 
+            height: '26px' 
+        }));
+        map.controls[google.maps.ControlPosition.TOP_LEFT].push(menu.get(0));
+
+        menu.sidr({
+            displace: false,
+            renaming: false,
+            name: 'sidr-main',
+            source: '#sidr',
+            onOpen: function() { 
+                clearItemMarker();
+                hideMapform();
+            }
+        });
+     
+    }
+
+    function showMenu() {
+         $.sidr('open', 'sidr-main');
+    }
+
+    function hideMenu() {
+         $.sidr('close', 'sidr-main');
+    }
+
     function initAutocomplete() {
 
         // Create the search box and link it to the UI element.
@@ -256,27 +286,8 @@
     }
 
     function showMapform() {
+        hideMenu();
         $( '#mapform' ).show();        
-    }
-
-    function initFusionTable() {
-        ftlayer = new google.maps.FusionTablesLayer({
-            query: {
-              select: "'Location'",
-              from: FTID
-            },
-            map: map,
-            options: {
-                suppressInfoWindows: true
-            },
-            styles: [{
-              markerOptions: {
-                iconName: FTMARKER_ICON
-              }
-            }]
-        });
-        
-        google.maps.event.addListener(ftlayer, 'click', showInfoWindowOnClick);
     }
 
     function hideInfoWindow() {
@@ -340,6 +351,7 @@
        if (inProgress()) {
             return;
         }
+        $.sidr('close', 'sidr-main');
         setItemMarker(e.latLng);
     }
 
@@ -385,23 +397,4 @@
 
     function removeMapClickListener() {
         google.maps.event.clearListeners(map, 'click');
-    }
-
-    // dummy where clause is needed for proper refresh
-    // after item has been added
-    function refreshFTLayer(pos, row) {
-        setTimeout(function() {
-            var randomRowid = Math.floor(Math.random() * 1000000)
-            ftlayer.setOptions({
-                query: {
-                    select: "'Location'",
-                    from: FTID,
-                    where: "rowid <> "+randomRowid
-                }
-            }); 
-
-            if (pos !== undefined && row !== undefined) {
-                showInfoWindow(pos, row);
-            }
-        }, 500);
     }

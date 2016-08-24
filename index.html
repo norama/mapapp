@@ -11,16 +11,21 @@
     <link rel="stylesheet" style="text/css" href="ext/jsonform/deps/opt/bootstrap.css" />
     <link rel="stylesheet" style="text/css" href="ext/jsonform/custom/custom.css" />
 
+    <link rel="stylesheet" style="text/css" href="ext/sidr/stylesheets/jquery.sidr.light.css" />
+
     <script src="ext/jquery/jquery-3.1.0.js"></script>
     <script src="ext/jquery/plugins/jquery.redirect.js"></script>
     
     <script src="js/util.js"></script>
+    <script src="js/datalayer.js"></script>
     <script src="js/initmap.js"></script>
     <script src="js/initform.js"></script>
 
     <script type="text/javascript" src="ext/jsonform/deps/underscore.js"></script>
     <script type="text/javascript" src="ext/jsonform/deps/opt/jsv.js"></script>
     <script type="text/javascript" src="ext/jsonform/lib/jsonform.js"></script>
+
+    <script type="text/javascript" src="ext/sidr/jquery.sidr.js"></script>
 
 	<title>Google Map App</title>
 
@@ -57,6 +62,20 @@
 	
 	<div id="gmap"></div>
 
+<div style="display: none;">
+	<div id="menu"></div>
+</div>
+
+<div style="display: none;">
+	<div class="menu" id="sidr">
+	  <ul>
+	    <li><div onclick="map.setOptions({ draggableCursor: 'pointer' });" ><a href="#"><b>Add Item:</b> click on map</a></div></li>
+	    <li><div onclick="filter();" ><a href="#"><b>Filter Items</b></a></div></li>
+	  </ul>
+	  <div class='licence'>Powered by <a href='https://github.com/artberri/sidr' target='_blank'>SIDR</a> side menu</div>
+	</div>
+</div>
+
 	<input type='hidden' id='state' value='{{ state }}'>
 	<input type='hidden' id='error' value='{{ error }}'>
 
@@ -70,6 +89,7 @@
 		<input type='hidden' id='user_avatar' value=''>
 	{% endif %}
 
+<div style="display: none;">
 	<form id='loginForm' method='POST'>
 		<input type='hidden' id='center_lat' name='center_lat' value='{{ center_lat }}'>
 		<input type='hidden' id='center_lng' name='center_lng' value='{{ center_lng }}'>
@@ -78,12 +98,13 @@
 		<input type='hidden' id='item_lat' name='item_lat' value='{{ item_lat }}'>
 		<input type='hidden' id='item_lng' name='item_lng' value='{{ item_lng }}'>
 	</form>
+</div>
 
 <!--
 <table>
 <tr><td>
 -->
-	<div class="container">
+	<div id='container' class="container">
 
 		<input id="pac-input" class="controls searchbox" type="text" placeholder="Search Box">
 
@@ -94,12 +115,14 @@
 </td></tr>
 <tr><td>
 -->
+
 		<div id='mapform' class="mapform" style="display: none;">
 			<h1 id='itemHeader'></h1>
 			<div id='itemComment'></div>
 			<form id='itemForm' role='form'></form>
 			<div class='licence'>Powered by <a href='https://github.com/joshfire/jsonform' target='_blank'>JSON Form</a></div>
  		</div>
+
 <!--
 </td></tr>
 </table>
