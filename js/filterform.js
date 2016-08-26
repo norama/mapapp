@@ -50,6 +50,16 @@ function filterButtonPanel() {
 
     buttons.push({
         "type": "button",
+        "title": "All",
+         "onClick": function (evt) {
+            evt.preventDefault();
+            fillFilterForm();   
+            setFilter(null);
+        }
+    });
+
+    buttons.push({
+        "type": "button",
         "title": "Cancel",
         "onClick": function (evt) {
             evt.preventDefault();
@@ -73,5 +83,5 @@ function filterItems(values) {
     if (description.length > 0) {
         where.push("'Description' contains ignoring case '" + description + "'");
     }
-    setFilter(where.join(" "));
+    setFilter(where.length > 0 ? where.join(" ") : null);
 }
