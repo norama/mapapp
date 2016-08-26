@@ -202,6 +202,7 @@
             onOpen: function() { 
                 clearItemMarker();
                 hideItemForm();
+                hideFilterForm();
             }
         });
      
@@ -287,7 +288,18 @@
 
     function showItemForm() {
         hideMenu();
+        hideFilterForm();
         $( '#itemMapForm' ).show();        
+    }
+
+    function hideFilterForm() {
+        $( '#filterMapForm' ).hide();
+    }
+
+    function showFilterForm() {
+        hideMenu();
+        hideItemForm();
+        $( '#filterMapForm' ).show();        
     }
 
     function hideInfoWindow() {

@@ -20,6 +20,7 @@
     <script src="js/datalayer.js"></script>
     <script src="js/initmap.js"></script>
     <script src="js/initform.js"></script>
+    <script src="js/filterform.js"></script>
 
     <script type="text/javascript" src="ext/jsonform/deps/underscore.js"></script>
     <script type="text/javascript" src="ext/jsonform/deps/opt/jsv.js"></script>
@@ -32,6 +33,8 @@
 	<script>
 
 	$( document ).ready(function() {
+
+		initFilterForm();
  		
  		// if ($('#state').val() == 'init') {
  		// 	initLoginForm();
@@ -70,7 +73,7 @@
 	<div class="menu" id="sidr">
 	  <ul>
 	    <li><div onclick="map.setOptions({ draggableCursor: 'pointer' });" ><a href="#"><b>Add Item:</b> click on map</a></div></li>
-	    <li><div onclick="filter();" ><a href="#"><b>Filter Items</b></a></div></li>
+	    <li><div onclick="showFilterForm();" ><a href="#"><b>Filter Items</b></a></div></li>
 	  </ul>
 	  <div class='licence'>Powered by <a href='https://github.com/artberri/sidr' target='_blank'>SIDR</a> side menu</div>
 	</div>
@@ -124,9 +127,9 @@
 	</div>
 
 	<div id='filterMapForm' class="mapform" style="display: none;">
-		<h1 id='itemHeader'></h1>
-		<div id='itemComment'></div>
-		<form id='itemForm' role='form'></form>
+		<h1 id='filterHeader'>Filter Items</h1>
+		<div id='filterComment'></div>
+		<form id='filterForm' role='form'></form>
 		<div class='licence'>Powered by <a href='https://github.com/joshfire/jsonform' target='_blank'>JSON Form</a></div>
 	</div>
 

@@ -4,6 +4,8 @@
     
     var FTMARKER_ICON = 'placemark_circle_highlight';
 
+    var filter = null;
+
 
 	function initFusionTable() {
 	    ftlayer = new google.maps.FusionTablesLayer({
@@ -25,16 +27,26 @@
 	    google.maps.event.addListener(ftlayer, 'click', showInfoWindowOnClick);
 	}
 
+	function setFilter(where) {
+		filter = where;
+		refreshFTLayer();
+	}
+
     // dummy where clause is needed for proper refresh
     // after item has been added
     function refreshFTLayer(pos, row) {
         setTimeout(function() {
-            var randomRowid = Math.floor(Math.random() * 1000000)
+            
+            var where = (filter !== null) ?
+            	filter :
+            	"ROWID <> '" + Math.floor(Math.random() * 1000000) + "'";
+   
+            console.log(where);
             ftlayer.setOptions({
                 query: {
                     select: "'Location'",
                     from: FTID,
-                    where: "rowid <> "+randomRowid
+                    where: where
                 }
             }); 
 

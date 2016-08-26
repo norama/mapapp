@@ -162,7 +162,7 @@ function initItemForm(formItem, action) {
         	},
             {
               "type": "actions",
-              "items": buttonPanel(action)
+              "items": itemButtonPanel(action)
             }
           ],
           onSubmitValid: function (values) {
@@ -179,7 +179,7 @@ function initItemForm(formItem, action) {
 
 }
 
-function buttonPanel(action) {
+function itemButtonPanel(action) {
     var buttons = [];
     if (action in submitLabels) {
         buttons.push({
