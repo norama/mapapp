@@ -15,6 +15,7 @@
 
     <script src="ext/jquery/jquery-3.1.0.js"></script>
     <script src="ext/jquery/plugins/jquery.redirect.js"></script>
+    <script src="ext/jquery/plugins/jquery.hotkeys.js"></script>
     
     <script src="js/util.js"></script>
     <script src="js/datalayer.js"></script>
@@ -35,6 +36,9 @@
 	$( document ).ready(function() {
 
 		initFilterForm();
+
+		$(document).bind('keydown', 'ctrl+f', showFilterForm);
+
  		
  		// if ($('#state').val() == 'init') {
  		// 	initLoginForm();
@@ -73,7 +77,7 @@
 	<div class="menu" id="sidr">
 	  <ul>
 	    <li><div onclick="map.setOptions({ draggableCursor: 'pointer' });" ><a href="#"><b>Add Item:</b> click on map</a></div></li>
-	    <li><div onclick="showFilterForm();" ><a href="#"><b>Filter Items</b></a></div></li>
+	    <li><div onclick="showFilterForm();" ><a href="#"><b>Filter Items</b> (Ctrl-F)</a></div></li>
 	  </ul>
 	  <div class='licence'>Powered by <a href='https://github.com/artberri/sidr' target='_blank'>SIDR</a> side menu</div>
 	</div>
