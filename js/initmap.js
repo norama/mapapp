@@ -298,6 +298,7 @@
 
     function showFilterForm() {
         hideMenu();
+        clearItemMarker();
         hideItemForm();
         $( '#filterMapForm' ).show();        
     }
