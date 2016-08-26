@@ -37,7 +37,11 @@
 
 		initFilterForm();
 
-		$(document).bind('keydown', 'ctrl+f', showFilterForm);
+		$( document ).bind('keydown', 'ctrl+f', function(e) {
+    		e.preventDefault();
+    		return false;
+		});
+		$( document ).bind('keydown', 'ctrl+f', showFilterForm);
 
  		
  		// if ($('#state').val() == 'init') {
