@@ -60,7 +60,7 @@ function filterButtonPanel() {
 
     buttons.push({
         "type": "button",
-        "title": "Cancel",
+        "title": "Close",
         "onClick": function (evt) {
             evt.preventDefault();
             hideFilterForm();   
