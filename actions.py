@@ -63,7 +63,7 @@ def insert(values, userId):
 	now = _current_time()
 	userId = userId.encode('utf-8')
 
-	sqlInsert = u"INSERT INTO {0} (Title,Description,Latitude,Longitude,UserId,Timestamp) values('{1}', '{2}', '{3}', '{4}', '{5}', '{6}')"\
+	sqlInsert = u"INSERT INTO {0} (Title,Description,Latitude,Longitude,UserId,Timestamp,Helper) values('{1}', '{2}', '{3}', '{4}', '{5}', '{6}', 0)"\
 	.format(FTID, allValues['title'], allValues['description'], allValues['lat'], allValues['lng'], userId, now)
 
 	logger.info(sqlInsert)
