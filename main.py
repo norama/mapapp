@@ -237,6 +237,7 @@ config = {}
 
 app = micro_webapp2.WSGIApplication([
     ('/', Home),
+    ('/index.html', Home),
     ('/add', Insert),
     ('/edit', Edit),
     ('/delete', Delete),

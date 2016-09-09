@@ -20,7 +20,7 @@
             itemMarker.setMap(null);
             itemMarker = null;
             map.setOptions({ draggableCursor: null });
-        }  
+        }
     }
 
 
@@ -65,7 +65,7 @@
              };
              setItemMarker(pos);
         }
-        
+
         var state = $('#state').val();
         if (state == 'init') {
             initLogin();
@@ -110,7 +110,7 @@
         console.warn(msg);
     }
 
-    function setConfOnSubmit() { 
+    function setConfOnSubmit() {
         var center = map.getCenter();
         $('#center_lat').val(center.lat());
         $('#center_lng').val(center.lng());
@@ -119,7 +119,7 @@
         var pos = itemMarker != null ? itemMarker.getPosition() : null;
         $('#item_lat').val(pos != null ? pos.lat() : '');
         $('#item_lng').val(pos != null ? pos.lng() : '');
-        return true; 
+        return true;
     }
 
     function initLogin() {
@@ -153,7 +153,7 @@
     function initAvatar() {
         var avatar = $('<img/>', {
             'class': 'avatar',
-            width: 42, 
+            width: 42,
             height: 42,
             src: $('#user_avatar').val(),
             title: $('#user_name').val()
@@ -169,28 +169,28 @@
 
     function initError() {
         var error = $('<div/>', {
-            
+
             'class': 'error',
             html: $('#error').val(),
             title: 'Click to hide error.',
-            click: function() { 
+            click: function() {
                 $(this).remove();
                 $('#error').val('');
-            } 
+            }
         });
 
-        map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(error.get(0));        
+        map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(error.get(0));
     }
 
     function initMenu() {
 
-        var menu = $('#menu').append($('<img>', { 
-            id:'menu-button', 
-            'class': 'menuButton', 
-            src:'/img/menu.png', 
-            title: 'Menu', 
-            width: '26px', 
-            height: '26px' 
+        var menu = $('#menu').append($('<img>', {
+            id:'menu-button',
+            'class': 'menuButton',
+            src:'/img/menu.png',
+            title: 'Menu',
+            width: '26px',
+            height: '26px'
         }));
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(menu.get(0));
 
@@ -199,13 +199,13 @@
             renaming: false,
             name: 'sidr-main',
             source: '#sidr',
-            onOpen: function() { 
+            onOpen: function() {
                 clearItemMarker();
                 hideItemForm();
                 hideFilterForm();
             }
         });
-     
+
     }
 
     function showMenu() {
@@ -289,7 +289,7 @@
     function showItemForm() {
         hideMenu();
         hideFilterForm();
-        $( '#itemMapForm' ).show();        
+        $( '#itemMapForm' ).show();
     }
 
     function hideFilterForm() {
@@ -300,7 +300,7 @@
         hideMenu();
         clearItemMarker();
         hideItemForm();
-        $( '#filterMapForm' ).show();        
+        $( '#filterMapForm' ).show();
     }
 
     function hideInfoWindow() {
@@ -330,20 +330,20 @@
             lng: pos.lng()
         }
         // $('#deleteItem').on(
-        //     'click', 
-        //     { 'itemLatLng': pos, 'itemTitle': row.Title.value }, 
+        //     'click',
+        //     { 'itemLatLng': pos, 'itemTitle': row.Title.value },
         //     deleteItem);
         $('#editItem').on(
-            'click', 
-            { 'item': item, 'action': 'edit' }, 
+            'click',
+            { 'item': item, 'action': 'edit' },
             itemAction);
         $('#deleteItem').on(
-            'click', 
-            { 'item': item, 'action': 'delete' }, 
+            'click',
+            { 'item': item, 'action': 'delete' },
             itemAction);
         $('#viewItem').on(
-            'click', 
-            { 'item': item, 'action': 'view' }, 
+            'click',
+            { 'item': item, 'action': 'view' },
             itemAction);
     }
 
@@ -370,7 +370,7 @@
 
     function setItemMarker(pos) {
         if (itemMarker == null) {
-            createItemMarker(pos); 
+            createItemMarker(pos);
             if ($('#state').val() != 'init') {
                 fillItemForm(emptyItem, 'add');
             } else {
@@ -385,7 +385,7 @@
     }
 
     function createItemMarker(pos) {
-        itemMarker = new google.maps.Marker({             
+        itemMarker = new google.maps.Marker({
             map: map,
             position: pos,
             title: 'Add new item',
@@ -393,14 +393,14 @@
             animation: google.maps.Animation.DROP
         });
 
-        itemMarker.addListener('dragend', function() { 
+        itemMarker.addListener('dragend', function() {
             storePosition();
         });
     }
 
-    function addMapClickListener() {        
-        map.addListener('click', function(e) { 
-            setItemMarkerOnClick(e); 
+    function addMapClickListener() {
+        map.addListener('click', function(e) {
+            setItemMarkerOnClick(e);
         });
     }
 

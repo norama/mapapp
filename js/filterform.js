@@ -21,7 +21,7 @@ function initFilterForm() {
           }
         },
         "form": [
-            "title", 
+            "title",
             "description",
 
             {
@@ -30,10 +30,10 @@ function initFilterForm() {
             }
           ],
           onSubmitValid: function (values) {
-          
+
             hideInfoWindow();
             console.log(values);
-            
+
             filterItems(values);
 
           }
@@ -53,7 +53,7 @@ function filterButtonPanel() {
         "title": "All",
          "onClick": function (evt) {
             evt.preventDefault();
-            fillFilterForm();   
+            fillFilterForm();
             setFilter(null);
         }
     });
@@ -63,7 +63,7 @@ function filterButtonPanel() {
         "title": "Close",
         "onClick": function (evt) {
             evt.preventDefault();
-            hideFilterForm();   
+            hideFilterForm();
         }
     });
 
