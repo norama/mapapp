@@ -21,6 +21,7 @@ from oauth2client.client import Error
 
 
 import actions
+from fileupload import FileUpload, FileDelete
 
 logger = logging.getLogger()
 
@@ -243,6 +244,8 @@ app = micro_webapp2.WSGIApplication([
     ('/delete', Delete),
     ('/login', Login),
     ('/logout', Logout),
+    ('/fileupload', FileUpload),
+    ('/fileupload/delete', FileDelete),
     #webapp2.Route(r'/', handler=Insert, name='insert'),
     # webapp2.Route(r'/app', handler=Insert, name='insert2'),
     (client_decorator.callback_path, client_decorator.callback_handler())

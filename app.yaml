@@ -9,6 +9,10 @@ api_version: 1
 threadsafe: yes
 
 
+env_variables:
+    # enable public-read access by:
+    # gsutil defacl set public-read gs://rich-tribute-135219.appspot.com
+    CLOUD_STORAGE_BUCKET: rich-tribute-135219.appspot.com
 
 # Handlers define how to route requests to your application.
 handlers:
@@ -17,7 +21,7 @@ handlers:
 # (and subdirectories). Uncomment and set the directory as needed.
 - url: /js
   static_dir: js
-  
+
 - url: /ext
   static_dir: ext
 
