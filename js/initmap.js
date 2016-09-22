@@ -329,6 +329,7 @@
         item = {
             title: row.Title.value,
             description: row.Description.value,
+			image: row.Image.value,
             lat: pos.lat(),
             lng: pos.lng()
         }

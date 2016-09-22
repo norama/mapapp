@@ -150,11 +150,14 @@ function initItemForm(formItem, action) {
             {
              	"key": "description",
              	"type": "textarea",
+				"height": "100px",
+				"width": "230px",
 				"value": formItem['description']
         	},
             {
              	"key": "image",
              	"type": "fileupload",
+				//"prepend": "(gif, jpg, png), max 1MB",
 				"value": formItem['image']
         	},
 			{
@@ -258,7 +261,7 @@ function submit(values, action) {
     })
     .fail(function( xhr, status, errorThrown ) {
         
-        initErrorWithText("Error adding item: " + errorThrown + '<br/>' + xhr.responseText);
+        initErrorWithText("Error processing item: " + errorThrown + '<br/>' + xhr.responseText);
 
         console.log( "Error: " + errorThrown );
         console.log( "Status: " + status );

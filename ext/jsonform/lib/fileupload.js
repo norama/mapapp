@@ -1,17 +1,17 @@
 var DEF_MAX_FILESIZE = 999000;
 
 function fileuploadTemplate() {
-    return '<div class="panel panel-default"> \n' +
-        '<input type="hidden" id="<%= id %>" name="<%= node.name %>" value="">' +
+    return '<div class="image-panel"> \n' +
+        '<input type="hidden" id="<%= id %>" name="<%= node.name %>" value="<%= node.value %>">' +
 //        '<% if (node.title && !elt.notitle) { %>' +
 //            '<label class="control-label" for="<%= node.id %>"><%= node.title %></label>' +
 //        '<% } %>' +
-        '<div class="panel-body"> \n' +
+        '<div id="<%= id %>Div" class="panel-body"> \n' +
         '<!-- The fileinput-button span is used to style the file input field as button --> \n' +
 		'<table><tr><td> \n' +
-        '<span class="btn btn-success fileinput-button"> \n' +
+        '<span class="btn btn-success fileinput-button" title="(gif, jpg, png), max 1MB"> \n' +
         '    <i class="glyphicon icon-white icon-upload"></i> \n' +
-        '    <span>Load image file...</span> \n' +
+        '    <span>Load file...</span> \n' +
         '    <!-- The file input field used as target for the file upload widget --> \n' +
         '    <input id="fileupload" type="file" name="files[]" > \n' +
         '</span> \n' +
@@ -53,91 +53,20 @@ function renderFileupload(formNode) {
         previewCrop: false
     }).on('fileuploadadd', function (e, data) {      
         
-        if ($('#deleteFile').length > 0) {
-            var delButton = $('#deleteFile');
-            var file = {
-                'url': delButton.attr('data-url'),
-                'thumbnailUrl': delButton.attr('data-thumbnailUrl') 
-            };
-            var url = delButton.data().url;
-
-            $('#' + formNode.id).val('');
-            deleteFile(file, url, delButton);
-        } 
-        
-		$('#deleteDiv').empty();
-        $('#progress').empty();
-        $('#progress').append('<div class="progress"><div class="bar bar-success"></div></div>');
-        $('#files').empty();
-        data.context = $('<div/>').appendTo('#files');
-        $.each(data.files, function (index, file) {
-            var node = $('<p/>')
-                    .append($('<span/>').text(file.name));
-            node.appendTo(data.context);
-        });      
+		_add(data, formNode);
 
     }).on('fileuploadstart', function (e) {
         
     }).on('fileuploadprocessalways', function (e, data) {
-        var index = data.index,
-            file = data.files[index],
-            node = $(data.context.children()[index]);
-        if (file.preview) {
-            node
-                .prepend('<br>')
-                .prepend(file.preview);
-        }
-        if (file.error) {
-            node
-                .append('<br>')
-                .append($('<span class="text-danger"/>').text(file.error));
-        }
-        if (index + 1 === data.files.length) {
-            data.context.find('button')
-                .text('')
-                .append($('<i class="glyphicon icon-upload"></i>'))
-                .append($('<span> Upload</span>'))
-                .prop('disabled', !!data.files.error);
-        }
+        
+		_always(data, formNode);
+		
     }).on('fileuploadprogressall', function (e, data) {
         var progress = parseInt(data.loaded / data.total * 100, 10);
-        $('#progress .bar').css(
-            'width',
-            progress + '%'
-        );
+		_progress(progress);
     }).on('fileuploaddone', function (e, data) {
-        var file = data.result.files[0];
-        if (file.url) {
-            $('#' + formNode.id).val(file.url);
-            var link = $('<a>')
-                .attr('target', '_blank')
-                .prop('href', file.url);
-            $(data.context.children()[0])
-                .wrap(link);
-            var delButton = $('<button id="deleteFile"/>').addClass('btn delete');
-            delButton.on('click', function (e) {
-				e.preventDefault();
-                var $this = $(this),
-                    data = $this.data();
 
-                $('#' + formNode.id).val('');
-                deleteFile(file, data.url, $this);
-
-            });
-            delButton
-                .append($('<i class="glyphicon icon-trash"></i>'))
-                .append($('<span> Delete</span>'))
-            $('#deleteDiv')
-                .append(delButton.data(data).attr('data-type', 'DELETE')
-                        .attr('data-url', file.url)
-                        .attr('data-thumbnailUrl', file.thumbnailUrl));
-        } else if (file.error) {
-            $('#' + formNode.id).val('');
-            var error = $('<span class="text-danger"/>').text(file.error);
-            $(data.context.children()[0])
-                .append('<br>')
-                .append(error);
-        }
+		_done(data, formNode, true);
 
     }).on('fileuploadfail', function (e, data) {
         $.each(data.files, function (index) {
@@ -147,13 +76,40 @@ function renderFileupload(formNode) {
                 .append(error);
         });
     }).prop('disabled', !$.support.fileInput)
-        .parent().addClass($.support.fileInput ? undefined : 'disabled');    
+        .parent().addClass($.support.fileInput ? undefined : 'disabled');  
+	
+	
+	var readonly = formNode.schemaElement.readonly;
+	var value = formNode.value;
+	if (readonly) {
+		$('#' + formNode.id + 'Div').empty();
+		if (value) {
+			$('#' + formNode.id + 'Div').append(_preview(value));
+		}
+	} else if (value) {
+		var file = {
+			url: value,
+			name: 'Image',
+			preview: _preview(value)
+		}
+		var data = {
+			files: [ file ],
+			result: {
+				files: [ file ]
+			}
+		};
+		_add(data, formNode);
+		_always(data, formNode);
+		_progress(100);
+		_done(data, formNode, false);
+	} 
+}
+
+function _preview(url) {
+	return '<img src="' + url + '" style="height:100px;">';
 }
 
 function deleteFile(file, url, button) {
-    
-    $('#progress').empty();
-    $('#files').empty();
     
     $("body").css("cursor", "progress");
     button.addClass('disabled');
@@ -164,7 +120,7 @@ function deleteFile(file, url, button) {
         url: url + '/delete',
      
         // The data to send (will be converted to a query string)
-        data: {'url': file.url, 'thumbnailUrl': file.thumbnailUrl},
+        data: { 'url': file.url },
      
         // Whether this is a POST or GET request
         type: "POST",
@@ -194,4 +150,97 @@ function deleteFile(file, url, button) {
         $("body").css("cursor", "auto");
     });
 
+}
+
+function _add(data, formNode) {
+	if ($('#deleteFile').length > 0) {
+		var delButton = $('#deleteFile');
+		var file = {
+			'url': delButton.attr('data-url')
+		};
+		var url = delButton.data().url;
+
+		$('#' + formNode.id).val('');
+		deleteFile(file, url, delButton);
+	} 
+
+	$('#deleteDiv').empty();
+	$('#progress').empty();
+	$('#progress').append('<div class="progress"><div class="bar bar-info"></div></div>');
+	$('#files').empty();
+	data.context = $('<div/>').appendTo('#files');
+	$.each(data.files, function (index, file) {
+		var node = $('<p/>')
+				.append($('<span/>').text(file.name));
+		node.appendTo(data.context);
+	});    
+}
+
+function _always(data, formNode) {
+	var file = data.files[0],
+		node = $(data.context.children()[0]);
+	if (file.preview) {
+		node
+			.prepend('<br>')
+			.prepend(file.preview);
+	}
+	if (file.error) {
+		node
+			.append('<br>')
+			.append($('<span class="text-danger"/>').text(file.error));
+	}
+	data.context.find('button')
+		.text('')
+		.append($('<i class="glyphicon icon-upload"></i>'))
+		.append($('<span> Upload</span>'))
+		.prop('disabled', !!data.files.error);
+}
+
+function _progress(percent) {
+	$('#progress .bar').css(
+        'width',
+        percent + '%'
+    );
+}
+
+function _done(data, formNode, realDelete) {
+	var file = data.result.files[0];
+	if (file.url) {
+		$('#' + formNode.id).val(file.url);
+		var link = $('<a>')
+			.attr('target', '_blank')
+			.prop('href', file.url);
+		$(data.context.children()[0])
+			.wrap(link);
+		var delButton = $('<button id="deleteFile"/>').addClass('btn delete');
+		delButton.on('click', function (e) {
+			e.preventDefault();
+			var $this = $(this),
+				data = $this.data();
+
+			$('#' + formNode.id).val('');
+			
+			$('#progress').empty();
+    		$('#files').empty();
+			
+			if (realDelete) {
+				deleteFile(file, data.url, $this);
+			} else {
+				delButton.remove();
+			}
+
+		});
+		delButton
+			.append($('<i class="glyphicon icon-trash"></i>'))
+			.append($('<span> Delete</span>'))
+		$('#deleteDiv')
+			.append(delButton.data(data).attr('data-type', 'DELETE')
+					.attr('data-url', file.url));
+	} else if (file.error) {
+		$('#' + formNode.id).val('');
+		var error = $('<span class="text-danger"/>').text(file.error);
+		$(data.context.children()[0])
+			.append('<br>')
+			.append(error);
+	}
 }

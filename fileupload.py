@@ -43,6 +43,20 @@ CLOUD_STORAGE_BUCKET = os.environ['CLOUD_STORAGE_BUCKET']
 def json_stringify(obj):
     return json.dumps(obj, separators=(',', ':'))
 
+def thumbnail(url):
+	return url + THUMB_SUFFIX
+
+def delete_with_thumbnail(url):
+	delete(url)
+	delete(thumbnail(url))
+
+def delete(url):
+	bucket = storage.Client().get_bucket(CLOUD_STORAGE_BUCKET)
+	i = url.find(CLOUD_STORAGE_BUCKET) + len(CLOUD_STORAGE_BUCKET) + 1
+	key = url[i:]
+	key = urllib.unquote(key)
+	bucket.delete_blob(key)
+
 class FileUpload(webapp2.RequestHandler):
     
     def validate(self, file):
@@ -99,7 +113,7 @@ class FileUpload(webapp2.RequestHandler):
                     height=THUMB_MAX_HEIGHT
                 )
                 thumbnail_data = img.execute_transforms()
-                thumbnail_key = key + THUMB_SUFFIX
+                thumbnail_key = thumbnail(key)
                 thumbnail_blob = bucket.blob(thumbnail_key)
                 thumbnail_blob.upload_from_string(thumbnail_data, content_type=info['type'])
             except Exception, e: #Failed to resize Image or add to memcache
@@ -162,19 +176,10 @@ class FileDelete(webapp2.RequestHandler):
         try:
             url = self.request.POST.get('url')
             if url is not None:
-                self.delete(url)
-            url = self.request.POST.get('thumbnailUrl')
-            if url is not None:
-                self.delete(url)
+                delete_with_thumbnail(url)
             self.response.write(json_stringify({'result': 'OK'}))
         except Exception, e: 
             logging.exception(e)
             self.response.write(json_stringify({'result': 'ERROR'}))    
-        
-    def delete(self, url):
-        bucket = storage.Client().get_bucket(CLOUD_STORAGE_BUCKET)
-        i = url.find(CLOUD_STORAGE_BUCKET) + len(CLOUD_STORAGE_BUCKET) + 1
-        key = url[i:]
-        key = urllib.unquote(key)
-        bucket.delete_blob(key)
+
 

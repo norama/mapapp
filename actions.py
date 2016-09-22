@@ -8,6 +8,7 @@ from google.appengine.api import memcache
 
 from oauth2client.service_account import ServiceAccountCredentials
 from apiclient.discovery import build
+from fileupload import delete_with_thumbnail
 
 
 scopes = ['https://www.googleapis.com/auth/fusiontables']
@@ -89,8 +90,8 @@ def update(rowid, values, userId):
 	now = _current_time()
 	userId = userId.encode('utf-8')
 
-	sqlUpdate = u"UPDATE {0} SET Title='{1}', Description='{2}', Timestamp='{3}' WHERE rowid = '{4}'"\
-	.format(FTID, allValues['title'], allValues['description'], now, rowid)
+	sqlUpdate = u"UPDATE {0} SET Title='{1}', Description='{2}', Image='{3}', Timestamp='{4}' WHERE rowid = '{5}'"\
+	.format(FTID, allValues['title'], allValues['description'], allValues['image'], now, rowid)
 
 	logger.info(sqlUpdate)
 
@@ -111,6 +112,8 @@ def update(rowid, values, userId):
 def delete(rowid, userId):
 
 	_check_same_user(rowid, userId)
+	
+	_delete_image(rowid)
 
 	sqlDelete = u"DELETE FROM {0} WHERE rowid = '{1}'"\
 	.format(FTID, rowid)
@@ -130,6 +133,18 @@ def _all_values(values):
 
 def _current_time():
 	return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()).encode('utf-8')
+
+def _delete_image(rowid):
+	sqlSelect = u"SELECT Image FROM {0} WHERE rowid = {1}"\
+	.format(FTID, rowid)
+	res = service.query().sql(sql=sqlSelect).execute()
+
+	if 'rows' not in res:
+		raise ValueError('No item with rowid: {0}'.format(rowid))
+
+	image = res['rows'][0][0]
+	if image:
+		delete_with_thumbnail(image)
 
 def _check_same_user(rowid, userId):
 	sqlSelect = u"SELECT UserId FROM {0} WHERE rowid = {1}"\
