@@ -10,6 +10,7 @@ function fileuploadTemplate() {
         '<!-- The fileinput-button span is used to style the file input field as button --> \n' +
 		'<table><tr><td> \n' +
         '<span class="btn btn-success fileinput-button"> \n' +
+        '    <i class="glyphicon icon-white icon-upload"></i> \n' +
         '    <span>Load image file...</span> \n' +
         '    <!-- The file input field used as target for the file upload widget --> \n' +
         '    <input id="fileupload" type="file" name="files[]" > \n' +
@@ -94,6 +95,7 @@ function renderFileupload(formNode) {
         if (index + 1 === data.files.length) {
             data.context.find('button')
                 .text('')
+                .append($('<i class="glyphicon icon-upload"></i>'))
                 .append($('<span> Upload</span>'))
                 .prop('disabled', !!data.files.error);
         }
@@ -112,6 +114,7 @@ function renderFileupload(formNode) {
                 .prop('href', file.url);
             $(data.context.children()[0])
                 .wrap(link);
+            var delButton = $('<button id="deleteFile"/>').addClass('btn delete');
             delButton.on('click', function (e) {
 				e.preventDefault();
                 var $this = $(this),
@@ -122,6 +125,7 @@ function renderFileupload(formNode) {
 
             });
             delButton
+                .append($('<i class="glyphicon icon-trash"></i>'))
                 .append($('<span> Delete</span>'))
             $('#deleteDiv')
                 .append(delButton.data(data).attr('data-type', 'DELETE')
