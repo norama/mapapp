@@ -9,9 +9,14 @@
 	<link rel="stylesheet" type="text/css" href="./css/searchbox.css">
 
     <link rel="stylesheet" style="text/css" href="ext/jsonform/deps/opt/bootstrap.css" />
+    <!-- <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"> -->
     <link rel="stylesheet" style="text/css" href="ext/jsonform/custom/custom.css" />
 
     <link rel="stylesheet" style="text/css" href="ext/sidr/stylesheets/jquery.sidr.light.css" />
+    
+    <!-- fileupload -->
+    <link rel="stylesheet" href="ext/fileupload/css/style.css">
+    <link rel="stylesheet" href="ext/fileupload/css/jquery.fileupload.css">
 
     <script src="ext/jquery/jquery-3.1.0.js"></script>
     <script src="ext/jquery/plugins/jquery.redirect.js"></script>
@@ -22,9 +27,34 @@
     <script src="js/initmap.js"></script>
     <script src="js/initform.js"></script>
     <script src="js/filterform.js"></script>
+    
+    <!-- fileupload -->
+    <script src="ext/fileupload/js/vendor/jquery.ui.widget.js"></script>
+    <!-- The Load Image plugin is included for the preview images and image resizing functionality -->
+    <script src="//blueimp.github.io/JavaScript-Load-Image/js/load-image.all.min.js"></script>
+    <!-- The Canvas to Blob plugin is included for image resizing functionality -->
+    <script src="//blueimp.github.io/JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js"></script>
+    <!-- Bootstrap JS is not required, but included for the responsive demo navigation -->
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
+    <script src="ext/fileupload/js/jquery.iframe-transport.js"></script>
+    <!-- The basic File Upload plugin -->
+    <script src="ext/fileupload/js/jquery.fileupload.js"></script>
+    <!-- The File Upload processing plugin -->
+    <script src="ext/fileupload/js/jquery.fileupload-process.js"></script>
+    <!-- The File Upload image preview & resize plugin -->
+    <script src="ext/fileupload/js/jquery.fileupload-image.js"></script>
+    <!-- The File Upload audio preview plugin -->
+    <script src="ext/fileupload/js/jquery.fileupload-audio.js"></script>
+    <!-- The File Upload video preview plugin -->
+    <script src="ext/fileupload/js/jquery.fileupload-video.js"></script>
+    <!-- The File Upload validation plugin -->
+    <script src="ext/fileupload/js/jquery.fileupload-validate.js"></script>
+    
 
     <script type="text/javascript" src="ext/jsonform/deps/underscore.js"></script>
     <script type="text/javascript" src="ext/jsonform/deps/opt/jsv.js"></script>
+    <script type="text/javascript" src="ext/jsonform/lib/fileupload.js"></script>
     <script type="text/javascript" src="ext/jsonform/lib/jsonform.js"></script>
 
     <script type="text/javascript" src="ext/sidr/jquery.sidr.js"></script>
@@ -131,7 +161,10 @@
 		<h1 id='itemHeader'></h1>
 		<div id='itemComment'></div>
 		<form id='itemForm' role='form'></form>
-		<div class='licence'>Powered by <a href='https://github.com/joshfire/jsonform' target='_blank'>JSON Form</a></div>
+		<div class='licence'>Powered by 
+			<p><a href='https://github.com/joshfire/jsonform' target='_blank'>JSON Form</a>, 
+			   <a href='https://github.com/blueimp/jQuery-File-Upload' target='_blank'>jQuery File Upload</a></p>
+		</div>
 	</div>
 
 	<div id='filterMapForm' class="mapform" style="display: none;">

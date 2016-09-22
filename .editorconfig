@@ -1,0 +1,11 @@
+# top-most EditorConfig file
+root = true
+
+# 4 space indentation
+[*.py]
+indent_style = tab
+indent_size = 4
+
+[*.js]
+indent_style = tab
+indent_size = 4

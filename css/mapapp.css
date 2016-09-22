@@ -6,7 +6,7 @@
 
 .mapform {
   position: relative;
-  margin-top: 62px;
+  margin-top: 10px;
   margin-left: 10px;
   z-index:20;
   background: white;
@@ -51,7 +51,8 @@
 
 .menuButton {
   padding:  5px 5px 5px 5px;
-  margin-top: 10px;
+  margin-left: 10px;
+  margin-top: 11px;
   background: white;
   cursor: pointer;
 }

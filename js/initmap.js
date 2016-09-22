@@ -49,7 +49,10 @@
         map = new google.maps.Map(document.getElementById('gmap'), {
             center: {lat: lat, lng: lng},
             zoom: zoom,
-            mapTypeId: mapTypeId
+            mapTypeId: mapTypeId,
+			mapTypeControlOptions: {
+				position:google.maps.ControlPosition.TOP_CENTER
+			}
         });
 
         infoWindow = new google.maps.InfoWindow();
@@ -349,8 +352,12 @@
 
     function format(row) {
         return '<div class="googft-info-window">'+
-            '<b>'+row.Title.columnName+':</b> '+row.Title.value+'<br/>'+
-            '<b>'+row.Description.columnName+':</b> '+row.Description.value+'<br/>'+
+            '<b>'+row.Title.value+'</b><br/>'+
+			
+			(row.Image.value.trim() !== "" ? '<img src="'+ row.Image.value.trim() +'" style="vertical-align: top; height: 90px"/>' : '')+
+			
+            '<p>'+row.Description.value+'</p>'+
+			
             '<table class="itemEditDelete"><tr>'+
             ($('#user_id').val() == row.UserId.value ?
                 '<td><img id="editItem" src="/img/edit.png" alt="Edit" title="Edit" height="16" width="16"/></td>'+

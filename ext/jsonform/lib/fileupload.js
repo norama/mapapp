@@ -1,90 +1,47 @@
-<!DOCTYPE HTML>
-<!--
-/*
- * jQuery File Upload Plugin Basic Plus Demo
- * https://github.com/blueimp/jQuery-File-Upload
- *
- * Copyright 2013, Sebastian Tschan
- * https://blueimp.net
- *
- * Licensed under the MIT license:
- * http://www.opensource.org/licenses/MIT
- */
--->
-<html lang="en">
-<head>
-<!-- Force latest IE rendering engine or ChromeFrame if installed -->
-<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><![endif]-->
-<meta charset="utf-8">
-<title>jQuery File Upload Demo - Basic Plus version</title>
-<meta name="description" content="File Upload widget with multiple file selection, drag&amp;drop support, progress bar, validation and preview images, audio and video for jQuery. Supports cross-domain, chunked and resumable file uploads. Works with any server-side platform (Google App Engine, PHP, Python, Ruby on Rails, Java, etc.) that supports standard HTML form file uploads.">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Bootstrap styles -->
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-<!-- Generic page styles -->
-<link rel="stylesheet" href="css/style.css">
-<!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
-<link rel="stylesheet" href="css/jquery.fileupload.css">
-</head>
-<body>
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">Item image</h3>
-    </div>
-    <div class="panel-body">
-    <!-- The fileinput-button span is used to style the file input field as button -->
-    <span class="btn btn-success fileinput-button">
-        <i class="glyphicon glyphicon-plus"></i>
-        <span>Load image file...</span>
-        <!-- The file input field used as target for the file upload widget -->
-        <input id="fileupload" type="file" name="files[]" >
-    </span>
-    <br>
-    <br>
-    <!-- The global progress bar -->
-    <div id="progress">
-    </div>
-    <!-- The container for the uploaded files -->
-    <div id="files" class="files"></div>
-    </div>
-</div>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
-<script src="js/vendor/jquery.ui.widget.js"></script>
-<!-- The Load Image plugin is included for the preview images and image resizing functionality -->
-<script src="//blueimp.github.io/JavaScript-Load-Image/js/load-image.all.min.js"></script>
-<!-- The Canvas to Blob plugin is included for image resizing functionality -->
-<script src="//blueimp.github.io/JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js"></script>
-<!-- Bootstrap JS is not required, but included for the responsive demo navigation -->
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-<!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
-<script src="js/jquery.iframe-transport.js"></script>
-<!-- The basic File Upload plugin -->
-<script src="js/jquery.fileupload.js"></script>
-<!-- The File Upload processing plugin -->
-<script src="js/jquery.fileupload-process.js"></script>
-<!-- The File Upload image preview & resize plugin -->
-<script src="js/jquery.fileupload-image.js"></script>
-<!-- The File Upload audio preview plugin -->
-<script src="js/jquery.fileupload-audio.js"></script>
-<!-- The File Upload video preview plugin -->
-<script src="js/jquery.fileupload-video.js"></script>
-<!-- The File Upload validation plugin -->
-<script src="js/jquery.fileupload-validate.js"></script>
-<script>
-/*jslint unparam: true, regexp: true */
-/*global window, $ */
-$(function () {
+var DEF_MAX_FILESIZE = 999000;
+
+function fileuploadTemplate() {
+    return '<div class="panel panel-default"> \n' +
+        '<input type="hidden" id="<%= id %>" name="<%= node.name %>" value="">' +
+//        '<% if (node.title && !elt.notitle) { %>' +
+//            '<label class="control-label" for="<%= node.id %>"><%= node.title %></label>' +
+//        '<% } %>' +
+        '<div class="panel-body"> \n' +
+        '<!-- The fileinput-button span is used to style the file input field as button --> \n' +
+		'<table><tr><td> \n' +
+        '<span class="btn btn-success fileinput-button"> \n' +
+        '    <span>Load image file...</span> \n' +
+        '    <!-- The file input field used as target for the file upload widget --> \n' +
+        '    <input id="fileupload" type="file" name="files[]" > \n' +
+        '</span> \n' +
+		'</td><td> \n' +
+		'<div id="deleteDiv"></div> \n' +
+		'</td></tr></table> \n' +
+        '<br> \n' +
+        '<!-- The global progress bar --> \n' +
+        '<div id="progress"></div> \n' +
+        '<!-- The container for the uploaded files --> \n' +
+        '<div id="files" class="files"></div> \n' +
+        '</div> \n' +
+    '</div>';
+}
+
+function renderFileupload(formNode) {
     'use strict';
     // Change this to the location of your server-side upload handler:
     var url = window.location.protocol + '//' + window.location.host + '/fileupload';
+    
+    var maxFileSize = formNode.schemaElement.maxFileSize;
+    if (maxFileSize === undefined) {
+        maxFileSize = DEF_MAX_FILESIZE;
+    }
    
     $('#fileupload').fileupload({
         url: url,
         dataType: 'json',
         autoUpload: true,
         acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
-        maxFileSize: 999000,
+        maxFileSize: maxFileSize,
         // Enable image resizing, except for Android and Opera,
         // which actually support image resizing, but fail to
         // send Blob objects via XHR requests:
@@ -103,11 +60,13 @@ $(function () {
             };
             var url = delButton.data().url;
 
+            $('#' + formNode.id).val('');
             deleteFile(file, url, delButton);
         } 
         
+		$('#deleteDiv').empty();
         $('#progress').empty();
-        $('#progress').append('<div class="progress"><div class="progress-bar progress-bar-success"></div></div>');
+        $('#progress').append('<div class="progress"><div class="bar bar-success"></div></div>');
         $('#files').empty();
         data.context = $('<div/>').appendTo('#files');
         $.each(data.files, function (index, file) {
@@ -135,41 +94,41 @@ $(function () {
         if (index + 1 === data.files.length) {
             data.context.find('button')
                 .text('')
-                .append($('<i class="glyphicon glyphicon-upload"></i>'))
                 .append($('<span> Upload</span>'))
                 .prop('disabled', !!data.files.error);
         }
     }).on('fileuploadprogressall', function (e, data) {
         var progress = parseInt(data.loaded / data.total * 100, 10);
-        $('#progress .progress-bar').css(
+        $('#progress .bar').css(
             'width',
             progress + '%'
         );
     }).on('fileuploaddone', function (e, data) {
         var file = data.result.files[0];
         if (file.url) {
+            $('#' + formNode.id).val(file.url);
             var link = $('<a>')
                 .attr('target', '_blank')
                 .prop('href', file.url);
             $(data.context.children()[0])
                 .wrap(link);
-            var delButton = $('<button id="deleteFile"/>').addClass('btn btn-danger delete');
-            delButton.on('click', function () {
+            delButton.on('click', function (e) {
+				e.preventDefault();
                 var $this = $(this),
                     data = $this.data();
 
-                console.log(file);
+                $('#' + formNode.id).val('');
                 deleteFile(file, data.url, $this);
 
             });
             delButton
-                .append($('<i class="glyphicon glyphicon-trash"></i>'))
                 .append($('<span> Delete</span>'))
-            $(data.context.children()[0]).parent()
+            $('#deleteDiv')
                 .append(delButton.data(data).attr('data-type', 'DELETE')
                         .attr('data-url', file.url)
                         .attr('data-thumbnailUrl', file.thumbnailUrl));
         } else if (file.error) {
+            $('#' + formNode.id).val('');
             var error = $('<span class="text-danger"/>').text(file.error);
             $(data.context.children()[0])
                 .append('<br>')
@@ -184,9 +143,9 @@ $(function () {
                 .append(error);
         });
     }).prop('disabled', !$.support.fileInput)
-        .parent().addClass($.support.fileInput ? undefined : 'disabled');
-});
-    
+        .parent().addClass($.support.fileInput ? undefined : 'disabled');    
+}
+
 function deleteFile(file, url, button) {
     
     $('#progress').empty();
@@ -198,7 +157,6 @@ function deleteFile(file, url, button) {
     $.ajax({
      
         // The URL for the request
-        //url: mapappUrl('/insert'),
         url: url + '/delete',
      
         // The data to send (will be converted to a query string)
@@ -225,12 +183,11 @@ function deleteFile(file, url, button) {
         console.log( "Error: " + errorThrown );
         console.log( "Status: " + status );
         console.dir( xhr );
+		
+		button.removeClass('disabled');
     })
     .always(function() {
         $("body").css("cursor", "auto");
     });
 
 }
-</script>
-</body>
-</html>

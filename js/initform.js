@@ -108,9 +108,6 @@ function storePosition() {
 
     
     console.log(lat + ", " + lng);
-
-    // document.getElementById('lat').value = lat;
-    // document.getElementById('lng').value = lng;
 }
 
 function initItemForm(formItem, action) {
@@ -132,6 +129,12 @@ function initItemForm(formItem, action) {
             default: formItem['description'],
             readonly: readonly
           },
+          image: {
+            type: 'string',
+            title: 'Image',
+            maxFileSize: 1000000,
+            readonly: readonly
+          },
           lat: {
             type: 'hidden',
             title: 'Lat',
@@ -150,6 +153,10 @@ function initItemForm(formItem, action) {
              	"type": "textarea"
         	},
             {
+             	"key": "image",
+             	"type": "fileupload"
+        	},
+            {
             	"type": "section",
                 "items": {
                 	"type": "section",
@@ -166,11 +173,14 @@ function initItemForm(formItem, action) {
             }
           ],
           onSubmitValid: function (values) {
+              
+            // var img = $("#itemForm [name='image']");
+            // console.log(img.val());
           
             hideItemForm(); 
             hideInfoWindow();
             clearItemMarker(); 
-            console.log(values);
+            console.log(JSON.stringify(values, null, 4));
             
             submit(values, action);
 
@@ -203,6 +213,8 @@ function itemButtonPanel(action) {
 
 
 function submit(values, action) {
+    
+    console.log('IMAGE: ' + values['image']);
 
     var lat = Number(values['lat']);
     var lng = Number(values['lng']);

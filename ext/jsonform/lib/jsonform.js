@@ -457,6 +457,20 @@ jsonform.elementTypes = {
     'fieldtemplate': true,
     'inputfield': true
   },
+  'htmlsnippet':{
+    'template': '<%= node.value %>'
+  },
+  'fileupload':{
+      'template': fileuploadTemplate(),
+      'onInsert': function (evt, node) {
+          renderFileupload(node);
+      },
+      getElement: function (el) {
+          return $(el).parent().get(0);
+      },
+      'fieldtemplate': true,
+      'inputfield': true
+  },
   'file-hosted-public':{
     'template':'<span><% if (value && (value.type||value.url)) { %>'+fileDisplayTemplate+'<% } %><input class="input-file" id="_transloadit_<%= id %>" type="file" name="<%= transloaditname %>" /><input data-transloadit-name="_transloadit_<%= transloaditname %>" type="hidden" id="<%= id %>" name="<%= node.name %>" value=\'<%= escape(JSON.stringify(node.value)) %>\' /></span>',
     'fieldtemplate': true,
