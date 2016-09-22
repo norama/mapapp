@@ -119,14 +119,12 @@ function initItemForm(formItem, action) {
           title: {
             type: 'string',
             title: 'Title',
-            default: formItem['title'],
             required: true,
             readonly: readonly
           },
           description: {
             type: 'string',
             title: 'Description',
-            default: formItem['description'],
             readonly: readonly
           },
           image: {
@@ -136,36 +134,38 @@ function initItemForm(formItem, action) {
             readonly: readonly
           },
           lat: {
-            type: 'hidden',
-            title: 'Lat',
-            default: formItem['lat']
+            type: 'string',
+            title: 'Lat'
           },
           lng: {
-            type: 'hidden',
-            title: 'Lng',
-            default: formItem['lng']
+            type: 'string',
+            title: 'Lng'
           }
         },
         "form": [
-            "title", 
+            {
+             	"key": "title",
+				"value": formItem['title']
+        	}, 
             {
              	"key": "description",
-             	"type": "textarea"
+             	"type": "textarea",
+				"value": formItem['description']
         	},
             {
              	"key": "image",
-             	"type": "fileupload"
+             	"type": "fileupload",
+				"value": formItem['image']
         	},
-            {
-            	"type": "section",
-                "items": {
-                	"type": "section",
-                	"title": "Location",
-                	"items": [
-            			"lat", 
-            			"lng"
-            		]
-            	}
+			{
+             	"key": "lat",
+             	"type": "hidden",
+				"value": formItem['lat']
+        	},
+			{
+             	"key": "lng",
+             	"type": "hidden",
+				"value": formItem['lng']
         	},
             {
               "type": "actions",
