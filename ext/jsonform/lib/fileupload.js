@@ -75,6 +75,7 @@ function renderFileupload(formNode) {
                 .append('<br>')
                 .append(error);
         });
+		$('.form-actions input[type=submit]').attr('disabled', false);
     }).prop('disabled', !$.support.fileInput)
         .parent().addClass($.support.fileInput ? undefined : 'disabled');  
 	
@@ -153,6 +154,9 @@ function deleteFile(file, url, button) {
 }
 
 function _add(data, formNode) {
+	
+	$('.form-actions input[type=submit]').attr('disabled', true);
+	
 	if ($('#deleteFile').length > 0) {
 		var delButton = $('#deleteFile');
 		var file = {
@@ -243,4 +247,5 @@ function _done(data, formNode, realDelete) {
 			.append('<br>')
 			.append(error);
 	}
+	$('.form-actions input[type=submit]').attr('disabled', false);
 }
