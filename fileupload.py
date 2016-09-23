@@ -17,6 +17,7 @@ from gcloud import storage
 import json
 import os
 import re
+import uuid
 import urllib
 import webapp2
 import logging
@@ -45,6 +46,11 @@ def json_stringify(obj):
 
 def thumbnail(url):
 	return url + THUMB_SUFFIX
+
+def imageUrl(info):
+	return urllib.quote(info['type'].encode('utf-8'), '') +\
+		'/' + str(uuid.uuid4()) +\
+		'/' + urllib.quote(info['name'].encode('utf-8'), '')
 
 def delete_with_thumbnail(url):
 	delete(url)
@@ -94,9 +100,7 @@ class FileUpload(webapp2.RequestHandler):
         gcs1 = storage.Client()
         bucket = gcs1.get_bucket(CLOUD_STORAGE_BUCKET)
         
-        key = urllib.quote(info['type'].encode('utf-8'), '') +\
-            '/' + str(hash(data)) +\
-            '/' + urllib.quote(info['name'].encode('utf-8'), '')
+        key = imageUrl(info)
         blob = bucket.blob(key)
         
         try:
@@ -104,7 +108,6 @@ class FileUpload(webapp2.RequestHandler):
         except Exception, e: #Failed to add to memcache
             logging.exception(e)
             return (None, None)
-        thumbnail_key = None
         if IMAGE_TYPES.match(info['type']):
             try:
                 img = images.Image(image_data=data)
@@ -113,8 +116,7 @@ class FileUpload(webapp2.RequestHandler):
                     height=THUMB_MAX_HEIGHT
                 )
                 thumbnail_data = img.execute_transforms()
-                thumbnail_key = thumbnail(key)
-                thumbnail_blob = bucket.blob(thumbnail_key)
+                thumbnail_blob = bucket.blob(thumbnail(key))
                 thumbnail_blob.upload_from_string(thumbnail_data, content_type=info['type'])
             except Exception, e: #Failed to resize Image or add to memcache
                 logging.exception(e)
