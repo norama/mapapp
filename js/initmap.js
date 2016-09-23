@@ -355,9 +355,9 @@
         return '<div class="googft-info-window">'+
             '<b>'+row.Title.value+'</b><br/>'+
 			
-			(row.Image.value.trim() !== "" ? '<img src="'+ row.Image.value.trim() +'" style="vertical-align: top; height: 90px"/>' : '')+
+			(row.Image.value.trim() !== "" ? '<img src="'+ row.Image.value.trim() +'" style="vertical-align: top; height: 90px"/>' : '')+'<br/><br/>'+
 			
-            '<p>'+row.Description.value+'</p>'+
+            '<p>'+replaceAll(row.Description.value, '\n', '<br/>')+'</p>'+
 			
             '<table class="itemEditDelete"><tr>'+
             ($('#user_id').val() == row.UserId.value ?

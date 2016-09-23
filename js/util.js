@@ -1,3 +1,14 @@
+// http://stackoverflow.com/a/1144788/6686659
+
+function escapeRegExp(str) {
+    return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+}
+
+function replaceAll(str, find, replace) {
+  return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+}
+
+
 
 
 function mapappUrl(uri) {
