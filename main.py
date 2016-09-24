@@ -53,7 +53,7 @@ def _userinfo():
             userinfo = client_service.people().get(resourceName='people/me').execute()
             return _extract(userinfo)
         except Error as error:
-            logger.error('Error during client_decorator.http()')
+            logger.error('Error during user info service')
             logging.exception(error)
     return None
 
@@ -162,7 +162,7 @@ class Login(Base):
 
     def post(self):
         self.sh._new()
-        self.sh._state('login')
+        self.sh._state('init')
         self.sh._conf(self._post_values())
         self.get()
 
