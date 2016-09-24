@@ -2,7 +2,7 @@ var DEF_MAX_FILESIZE = 999000;
 
 function fileuploadTemplate() {
     return '<div class="image-panel"> \n' +
-        '<input type="hidden" id="<%= id %>" name="<%= node.name %>" value="<%= node.value %>">' +
+        '<input type="hidden" id="<%= id %>" name="<%= node.name %>" value="<%= escape(value) %>">' +
 //        '<% if (node.title && !elt.notitle) { %>' +
 //            '<label class="control-label" for="<%= node.id %>"><%= node.title %></label>' +
 //        '<% } %>' +

@@ -51,6 +51,7 @@ function itemAction(e) {
 var emptyItem = {
     title: '',
     description: '',
+	image: '',
     lat: '',
     lng: ''
 }
