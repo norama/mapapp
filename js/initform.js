@@ -51,6 +51,7 @@ function itemAction(e) {
 var emptyItem = {
     title: '',
     description: '',
+	details: '',
 	image: '',
     lat: '',
     lng: ''
@@ -125,13 +126,18 @@ function initItemForm(formItem, action) {
           },
           description: {
             type: 'string',
-            title: 'Description',
+            title: 'Short description',
             readonly: readonly
           },
           image: {
             type: 'string',
             title: 'Image',
             maxFileSize: 1000000,
+            readonly: readonly
+          },
+		  details: {
+            type: 'string',
+            title: 'More details',
             readonly: readonly
           },
           lat: {
@@ -144,23 +150,39 @@ function initItemForm(formItem, action) {
           }
         },
         "form": [
-            {
-             	"key": "title",
-				"value": formItem['title']
-        	}, 
-            {
-             	"key": "description",
-             	"type": "textarea",
-				"height": "100px",
-				"width": "230px",
-				"value": formItem['description']
-        	},
-            {
-             	"key": "image",
-             	"type": "fileupload",
-				//"prepend": "(gif, jpg, png), max 1MB",
-				"value": formItem['image']
-        	},
+		
+				{
+					"key": "title",
+					"value": formItem['title']
+				}, 
+	
+				{
+					"type": "fieldset",
+					"expandable": true,
+					"title": "Details",
+					"items": [
+					{
+						"key": "description",
+						"type": "textarea",
+						"height": "80px",
+						"width": "230px",
+						"value": formItem['description']
+					},
+					{
+						"key": "details",
+						"type": "wysihtml5",
+						"width": "230px",
+						"value": formItem['details']
+					}
+					]
+				},		
+				{
+					"key": "image",
+					"type": "fileupload",
+					//"prepend": "(gif, jpg, png), max 1MB",
+					"value": formItem['image']
+        		},
+		
 			{
              	"key": "lat",
              	"type": "hidden",

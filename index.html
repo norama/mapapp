@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<meta charset="UTF-8">
 
@@ -9,10 +9,19 @@
 	<link rel="stylesheet" type="text/css" href="./css/searchbox.css">
 
     <link rel="stylesheet" style="text/css" href="ext/jsonform/deps/opt/bootstrap.css" />
+	<link rel="stylesheet" style="text/css" href="ext/jsonform/deps/opt/bootstrap-theme.css" />
     <!-- <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"> -->
     <link rel="stylesheet" style="text/css" href="ext/jsonform/custom/custom.css" />
 
     <link rel="stylesheet" style="text/css" href="ext/sidr/stylesheets/jquery.sidr.light.css" />
+	
+	<!-- wysiwyg -->
+	<link rel="stylesheet" style="text/css" href="ext/font-awesome/css/font-awesome.css" />
+	<link rel="stylesheet" style="text/css" href="ext/jsonform/deps/opt/wysiwyg/bootstrap3-wysihtml5.css" />
+	<link rel="stylesheet" style="text/css" href="ext/jsonform/deps/opt/wysiwyg/wysiwyg-color.css" />
+	
+	<link rel="stylesheet" style="text/css" href="ext/jscrollpane/css/jquery.jscrollpane.css" />
+	<link rel="stylesheet" style="text/css" href="ext/jscrollpane/css/custom.css" />
     
     <!-- fileupload -->
     <link rel="stylesheet" href="ext/fileupload/css/style.css">
@@ -58,12 +67,26 @@
     <script type="text/javascript" src="ext/jsonform/lib/jsonform.js"></script>
 
     <script type="text/javascript" src="ext/sidr/jquery.sidr.js"></script>
+	
+	<!-- wysiwyg -->
+	<script type="text/javascript" src="ext/jsonform/deps/opt/wysiwyg/wysihtml5x-toolbar.js"></script>
+	<script type="text/javascript" src="ext/jsonform/deps/opt/wysiwyg/handlebars.js"></script>
+	<script type="text/javascript" src="ext/jsonform/deps/opt/wysiwyg/bootstrap3-wysihtml5.min.js"></script>
+	<script type="text/javascript" src="ext/jsonform/deps/opt/wysiwyg/wysihtml5x.js"></script>
+	
+	<script type="text/javascript" src="ext/jscrollpane/js/jquery.jscrollpane.js"></script>
+	<script type="text/javascript" src="ext/jscrollpane/js/jquery.mousewheel.js"></script>
 
 	<title>Google Map App</title>
 
 	<script>
 
 	$( document ).ready(function() {
+		
+		$('.item-scroll-pane').jScrollPane({
+			showArrows: true,
+    		autoReinitialise: true
+		});
 
 		initFilterForm();
 
@@ -160,10 +183,15 @@
 	<div id='itemMapForm' class="mapform" style="display: none;">
 		<h1 id='itemHeader'></h1>
 		<div id='itemComment'></div>
-		<form id='itemForm' role='form'></form>
+		<div class='item-scroll-pane'>
+			<form id='itemForm' role='form'></form>
+		</div>
 		<div class='licence'>Powered by 
-			<p><a href='https://github.com/joshfire/jsonform' target='_blank'>JSON Form</a>, 
-			   <a href='https://github.com/blueimp/jQuery-File-Upload' target='_blank'>jQuery File Upload</a></p>
+			<ul>
+			<li><a href='https://github.com/joshfire/jsonform' target='_blank'>JSON Form</a></li>
+			<li><a href='https://github.com/blueimp/jQuery-File-Upload' target='_blank'>jQuery File Upload</a></li>
+			<li><a href='https://github.com/bootstrap-wysiwyg/bootstrap3-wysiwyg' target='_blank'>Bootstrap3 Wysiwyg</a></li>
+			</ul>
 		</div>
 	</div>
 

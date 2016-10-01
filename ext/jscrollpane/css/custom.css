@@ -1,0 +1,11 @@
+.scroll-pane {
+    width: 100% !important;
+    height: 200px;
+    overflow: auto !important;
+}
+
+.item-scroll-pane {
+    width: 100% !important;
+    height: 600px;
+    overflow: auto !important;
+}

@@ -22,3 +22,13 @@
   	border-top: 1px solid #e5e5e5;
   	*zoom: 1;
 }
+
+.expandable > legend:before {
+  	content: '\25B8';
+  	padding-right: 5px;
+  	cursor: pointer;
+}
+.expanded > legend:before {
+  	content: '\25BE';
+	cursor: pointer;
+}

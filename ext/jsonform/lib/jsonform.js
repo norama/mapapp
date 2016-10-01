@@ -335,7 +335,7 @@ jsonform.elementTypes = {
   },
   'wysihtml5':{
     'template':'<textarea id="<%= id %>" name="<%= node.name %>" style="height:<%= elt.height || "300px" %>;width:<%= elt.width || "100%" %>;"' +
-      '<%= (node.disabled? " disabled" : "")%>' +
+      '<%= (node.disabled ? " disabled" : "")%>' +
       '<%= (node.readOnly ? " readonly=\'readonly\'" : "") %>' +
       '<%= (node.schemaElement && node.schemaElement.maxLength ? " maxlength=\'" + node.schemaElement.maxLength + "\'" : "") %>' +
       '<%= (node.schemaElement && node.schemaElement.required ? " required=\'required\'" : "") %>' +
@@ -350,10 +350,15 @@ jsonform.elementTypes = {
         $(node.el).data("wysihtml5_loaded",true);
 
         $(node.el).find('#' + escapeSelector(node.id)).wysihtml5({
-          "html": true,
-          "link": true,
-          "font-styles":true,
-          "image": true,
+			toolbar: {
+      			fa: true,
+          		"html": true,
+          		"link": true,
+          		//"font-styles":true,
+          		"image": true,
+		  		"color": true,
+				"size": "mini"
+			},
           "events": {
             "load": function () {
               // In chrome, if an element is required and hidden, it leads to

@@ -66,8 +66,8 @@ def insert(values, userId):
 	now = _current_time()
 	userId = userId.encode('utf-8')
 
-	sqlInsert = u"INSERT INTO {0} (Title,Description,Image,Latitude,Longitude,UserId,Timestamp,Helper) values('{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', 0)"\
-	.format(FTID, allValues['title'], allValues['description'],  allValues['image'], allValues['lat'], allValues['lng'], userId, now)
+	sqlInsert = u"INSERT INTO {0} (Title,Description,Details,Image,Latitude,Longitude,UserId,Timestamp,Helper) values('{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', 0)"\
+	.format(FTID, allValues['title'], allValues['description'],  allValues['details'],  allValues['image'], allValues['lat'], allValues['lng'], userId, now)
 
 	logger.info('SQL INSERT: ' + sqlInsert)
 
@@ -90,8 +90,8 @@ def update(rowid, values, userId):
 	now = _current_time()
 	userId = userId.encode('utf-8')
 
-	sqlUpdate = u"UPDATE {0} SET Title='{1}', Description='{2}', Image='{3}', Timestamp='{4}' WHERE rowid = '{5}'"\
-	.format(FTID, allValues['title'], allValues['description'], allValues['image'], now, rowid)
+	sqlUpdate = u"UPDATE {0} SET Title='{1}', Description='{2}', Details='{3}', Image='{4}', Timestamp='{5}' WHERE rowid = '{6}'"\
+	.format(FTID, allValues['title'], allValues['description'], allValues['details'],  allValues['image'], now, rowid)
 
 	logger.info(sqlUpdate)
 
@@ -160,7 +160,7 @@ def _check_same_user(rowid, userId):
 
 def _get_item(rowid):
 
-	sqlSelect = u"SELECT Title, Description, Image, Latitude, Longitude, UserId FROM {0} WHERE rowid = {1}"\
+	sqlSelect = u"SELECT Title, Description, Details, Image, Latitude, Longitude, UserId FROM {0} WHERE rowid = {1}"\
 	.format(FTID, rowid)
 	res = service.query().sql(sql=sqlSelect).execute()
 	logger.info(res)
@@ -174,10 +174,11 @@ def _get_item(rowid):
 		'rowid': rowid,
 		'Title': { 'columnName': 'Title', 'value': row[0] },
 		'Description':  { 'columnName': 'Description', 'value': row[1] },
-		'Image':  { 'columnName': 'Image', 'value': row[2] },
-		'lat':  row[3],
-		'lng':  row[4],
-		'UserId': { 'columnName': 'UserId', 'value': row[5] },
+		'Details':  { 'columnName': 'Details', 'value': row[2] },
+		'Image':  { 'columnName': 'Image', 'value': row[3] },
+		'lat':  row[4],
+		'lng':  row[5],
+		'UserId': { 'columnName': 'UserId', 'value': row[6] },
 	}
 
 	return result
