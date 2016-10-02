@@ -66,8 +66,8 @@ def insert(values, userId):
 	now = _current_time()
 	userId = userId.encode('utf-8')
 
-	sqlInsert = u"INSERT INTO {0} (Title,Description,Details,Image,Latitude,Longitude,UserId,Timestamp,Helper) values('{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', 0)"\
-	.format(FTID, allValues['title'], allValues['description'],  allValues['details'],  allValues['image'], allValues['lat'], allValues['lng'], userId, now)
+	sqlInsert = u"INSERT INTO {0} (Title,URL,Description,Details,Image,Latitude,Longitude,UserId,Timestamp,Helper) values('{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', 0)"\
+	.format(FTID, allValues['title'], allValues['url'], allValues['description'],  allValues['details'],  allValues['image'], allValues['lat'], allValues['lng'], userId, now)
 
 	logger.info('SQL INSERT: ' + sqlInsert)
 
@@ -90,8 +90,8 @@ def update(rowid, values, userId):
 	now = _current_time()
 	userId = userId.encode('utf-8')
 
-	sqlUpdate = u"UPDATE {0} SET Title='{1}', Description='{2}', Details='{3}', Image='{4}', Timestamp='{5}' WHERE rowid = '{6}'"\
-	.format(FTID, allValues['title'], allValues['description'], allValues['details'],  allValues['image'], now, rowid)
+	sqlUpdate = u"UPDATE {0} SET Title='{1}', URL='{2}', Description='{3}', Details='{4}', Image='{5}', Timestamp='{6}' WHERE rowid = '{7}'"\
+	.format(FTID, allValues['title'], allValues['url'], allValues['description'], allValues['details'],  allValues['image'], now, rowid)
 
 	logger.info(sqlUpdate)
 
@@ -160,7 +160,7 @@ def _check_same_user(rowid, userId):
 
 def _get_item(rowid):
 
-	sqlSelect = u"SELECT Title, Description, Details, Image, Latitude, Longitude, UserId FROM {0} WHERE rowid = {1}"\
+	sqlSelect = u"SELECT Title, URL, Description, Details, Image, Latitude, Longitude, UserId FROM {0} WHERE rowid = {1}"\
 	.format(FTID, rowid)
 	res = service.query().sql(sql=sqlSelect).execute()
 	logger.info(res)
@@ -173,12 +173,13 @@ def _get_item(rowid):
 	result = {
 		'rowid': rowid,
 		'Title': { 'columnName': 'Title', 'value': row[0] },
-		'Description':  { 'columnName': 'Description', 'value': row[1] },
-		'Details':  { 'columnName': 'Details', 'value': row[2] },
-		'Image':  { 'columnName': 'Image', 'value': row[3] },
-		'lat':  row[4],
-		'lng':  row[5],
-		'UserId': { 'columnName': 'UserId', 'value': row[6] },
+		'URL': { 'columnName': 'URL', 'value': row[1] },
+		'Description':  { 'columnName': 'Description', 'value': row[2] },
+		'Details':  { 'columnName': 'Details', 'value': row[3] },
+		'Image':  { 'columnName': 'Image', 'value': row[4] },
+		'lat':  row[5],
+		'lng':  row[6],
+		'UserId': { 'columnName': 'UserId', 'value': row[7] },
 	}
 
 	return result

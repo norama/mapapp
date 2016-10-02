@@ -244,6 +244,18 @@ var inputFieldTemplate = function (type) {
     'inputfield': true
   }
 };
+	
+var urlTemplate = function () {
+  var res = inputFieldTemplate('url');
+  res['onInsert'] = function (evt, node) {
+			var readonly = node.schemaElement.readonly;
+			if (readonly) {
+				var value = $(node.el).find('#' + escapeSelector(node.id)).val();
+				$(node.el).find('#' + escapeSelector(node.id)).replaceWith('<div class="wysiwyg-view"><a href="'+value+'" title="'+value+'" target="_blank">'+value+'</a></div>');			
+			}
+	  };
+	return res;
+};
 
 jsonform.elementTypes = {
   'none': {
@@ -263,7 +275,7 @@ jsonform.elementTypes = {
   'search': inputFieldTemplate('search'),
   'tel': inputFieldTemplate('tel'),
   'time': inputFieldTemplate('time'),
-  'url': inputFieldTemplate('url'),
+  'url': urlTemplate('url'),
   'week': inputFieldTemplate('week'),
   'range': {
     'template': '<input type="range" ' +

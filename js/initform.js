@@ -50,6 +50,7 @@ function itemAction(e) {
 
 var emptyItem = {
     title: '',
+	url: '',
     description: '',
 	details: '',
 	image: '',
@@ -124,6 +125,12 @@ function initItemForm(formItem, action) {
             required: true,
             readonly: readonly
           },
+		  url: {
+			type: 'url',
+            title: 'URL',
+			format: 'url',
+			readonly: readonly
+		  },
           description: {
             type: 'string',
             title: 'Short description',
@@ -155,7 +162,10 @@ function initItemForm(formItem, action) {
 					"key": "title",
 					"value": formItem['title']
 				}, 
-	
+				{
+					"key": "url",
+					"value": formItem['url']
+				}, 
 				{
 					"type": "fieldset",
 					"expandable": true,
