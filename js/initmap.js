@@ -361,10 +361,11 @@
             '<p>'+replaceAll(row.Description.value, '\n', '<br/>')+'</p>'+
 			
             '<table class="itemEditDelete"><tr>'+
+			'<td><img id="viewItem" src="/img/view.png" alt="View" title="View" height="16" width="16"/></td>'+
             ($('#user_id').val() == row.UserId.value ?
                 '<td><img id="editItem" src="/img/edit.png" alt="Edit" title="Edit" height="16" width="16"/></td>'+
                 '<td><img id="deleteItem" src="/img/delete.png" alt="Delete" title="Delete" height="16" width="16"/></td>' :
-                '<td><img id="viewItem" src="/img/view.png" alt="View" title="View" height="16" width="16"/></td>') +
+                '') +
             '</tr></table>'+
             '</div>';
     }

@@ -23,11 +23,32 @@
   	*zoom: 1;
 }
 
+.wysiwyg-view {
+	background-color: #eeeeee;
+	border: 1px solid #cccccc;
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	vertical-align: middle;
+	border-radius: 4px;
+	padding-left: 6px;
+	padding-top: 6px;
+	padding-right: 6px;
+	padding-bottom: 6px;
+}
+
+.expandable > legend {
+	cursor: pointer;
+}
+
 .expandable > legend:before {
   	content: '\25B8';
   	padding-right: 5px;
   	cursor: pointer;
 }
+
+.expanded > legend {
+	cursor: pointer;
+}
+
 .expanded > legend:before {
   	content: '\25BE';
 	cursor: pointer;

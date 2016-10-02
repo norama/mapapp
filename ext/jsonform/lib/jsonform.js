@@ -334,13 +334,13 @@ jsonform.elementTypes = {
     'inputfield': true
   },
   'wysihtml5':{
-    'template':'<textarea id="<%= id %>" name="<%= node.name %>" style="height:<%= elt.height || "300px" %>;width:<%= elt.width || "100%" %>;"' +
+    'template':'<div id="<%= id %>Div"><textarea id="<%= id %>" name="<%= node.name %>" style="height:<%= elt.height || "300px" %>;width:<%= elt.width || "100%" %>;"' +
       '<%= (node.disabled ? " disabled" : "")%>' +
       '<%= (node.readOnly ? " readonly=\'readonly\'" : "") %>' +
       '<%= (node.schemaElement && node.schemaElement.maxLength ? " maxlength=\'" + node.schemaElement.maxLength + "\'" : "") %>' +
       '<%= (node.schemaElement && node.schemaElement.required ? " required=\'required\'" : "") %>' +
       '<%= (node.placeholder? "placeholder=" + \'"\' + escape(node.placeholder) + \'"\' : "")%>' +
-      '><%= value %></textarea>',
+      '><%= value %></textarea></div>',
     'fieldtemplate': true,
     'inputfield': true,
     'onInsert': function (evt, node) {
@@ -348,6 +348,13 @@ jsonform.elementTypes = {
         //protect from double init
         if ($(node.el).data("wysihtml5")) return;
         $(node.el).data("wysihtml5_loaded",true);
+		  
+		var readonly = node.schemaElement.readonly;
+		if (readonly) {
+			var value = $(node.el).find('#' + escapeSelector(node.id)).val();
+			$('#' + escapeSelector(node.id) + 'Div').addClass('wysiwyg-view').html(value);
+			return;
+		}
 
         $(node.el).find('#' + escapeSelector(node.id)).wysihtml5({
 			toolbar: {
@@ -368,6 +375,7 @@ jsonform.elementTypes = {
             }
           }
         });
+		  
       };
 
       // Is there a setup hook?
@@ -383,7 +391,10 @@ jsonform.elementTypes = {
           setup();
         }
       },1000);
-    }
+    },
+	getElement: function (el) {
+      return $(el).parent().get(0);
+    },
   },
   'ace':{
     'template':'<div id="<%= id %>" style="position:relative;height:<%= elt.height || "300px" %>;"><div id="<%= id %>__ace" style="width:<%= elt.width || "100%" %>;height:<%= elt.height || "300px" %>;"></div><input type="hidden" name="<%= node.name %>" id="<%= id %>__hidden" value="<%= escape(value) %>"/></div>',
