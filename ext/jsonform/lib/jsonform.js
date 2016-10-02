@@ -251,7 +251,7 @@ var urlTemplate = function () {
 			var readonly = node.schemaElement.readonly;
 			if (readonly) {
 				var value = $(node.el).find('#' + escapeSelector(node.id)).val();
-				$(node.el).find('#' + escapeSelector(node.id)).replaceWith('<div class="wysiwyg-view"><a href="'+value+'" title="'+value+'" target="_blank">'+value+'</a></div>');			
+				$(node.el).find('#' + escapeSelector(node.id)).replaceWith('<div class="wysiwyg-view url-text"><a href="'+value+'" title="'+value+'" target="_blank">'+value+'</a></div>');			
 			}
 	  };
 	return res;
