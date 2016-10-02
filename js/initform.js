@@ -1,15 +1,8 @@
 
 function initLoginForm() {
 
-    $('#itemHeader').empty();
-    $('#itemComment').empty();
-    $('#itemForm').empty();
-
-    $('#itemHeader').append(itemHeaders['add'])
-
-    $('#itemComment').append('<p>To add items you have to log in.</p>');
-
-    $('#itemForm').jsonForm({
+	$('#loginItemForm').empty();
+    $('#loginItemForm').jsonForm({
     "form": [
             
             {
@@ -25,7 +18,7 @@ function initLoginForm() {
                 "title": "Cancel",
                 "onClick": function (evt) {
                     evt.preventDefault();
-                    hideItemForm();    
+                    hideLoginForm();    
                     clearItemMarker();
                 }
               }]

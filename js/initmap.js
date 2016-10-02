@@ -204,8 +204,7 @@
             source: '#sidr',
             onOpen: function() {
                 clearItemMarker();
-                hideItemForm();
-                hideFilterForm();
+                hideForms();
             }
         });
 
@@ -285,14 +284,30 @@
 
     }
 
+	function hideForms() {
+		hideItemForm();
+		hideFilterForm();
+		hideLoginForm();
+	}
+
     function hideItemForm() {
         $( '#itemMapForm' ).hide();
     }
 
     function showItemForm() {
         hideMenu();
-        hideFilterForm();
+        hideForms();
         $( '#itemMapForm' ).show();
+    }
+
+	function hideLoginForm() {
+        $( '#loginMapForm' ).hide();
+    }
+
+    function showLoginForm() {
+        hideMenu();
+        hideForms();
+        $( '#loginMapForm' ).show();
     }
 
     function hideFilterForm() {
@@ -302,7 +317,7 @@
     function showFilterForm() {
         hideMenu();
         clearItemMarker();
-        hideItemForm();
+        hideForms();
         $( '#filterMapForm' ).show();
     }
 
@@ -316,6 +331,7 @@
         }
         clearItemMarker();
         hideItemForm();
+		hideLoginForm();
         showInfoWindow(e.latLng, e.row);
     }
 
@@ -386,10 +402,11 @@
             createItemMarker(pos);
             if ($('#state').val() != 'init') {
                 fillItemForm(emptyItem, 'add');
+				showItemForm();
             } else {
                 initLoginForm();
-            }
-            showItemForm();
+				showLoginForm();
+            }          
         } else {
             itemMarker.setPosition(pos);
         }
