@@ -16,7 +16,7 @@ function initFilterForm() {
           },
           description: {
             type: 'string',
-            title: 'Description',
+            title: 'Short description',
             default: ''
           }
         },
