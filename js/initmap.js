@@ -373,9 +373,9 @@
         return '<div class="googft-info-window">'+
             '<b>'+row.Title.value+'</b><br/>'+
 			
-			(row.URL.value.trim() !== "" ? '<a href="'+ row.URL.value.trim() +'" title="'+row.URL.value.trim() +'" target="_blank">Open Home Page</a><br/>' : '')+'<br/>'+
+			(row.URL.value.trim() !== "" ? '<a href="'+ row.URL.value.trim() +'" title="'+row.URL.value.trim() +'" target="_blank">Open Home Page</a><br/><br/>' : '')+''+
 			
-			(row.Image.value.trim() !== "" ? '<img src="'+ row.Image.value.trim() +'" style="vertical-align: top; height: 90px"/>' : '')+'<br/><br/>'+
+			(row.Image.value.trim() !== "" ? '<img src="'+ row.Image.value.trim() +'" style="vertical-align: top; height: 90px"/><br/><br/>' : '')+''+
 			
             '<p>'+replaceAll(row.Description.value, '\n', '<br/>')+'</p>'+
 			

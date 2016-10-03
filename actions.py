@@ -128,7 +128,7 @@ def delete(rowid, userId):
 def _all_values(values):
 	allValues = defaultdict(lambda: u'')
 	for key in values:
-		allValues[key] = values[key]
+		allValues[key] = values[key].replace("'","\\'")
 	return allValues
 
 def _current_time():
