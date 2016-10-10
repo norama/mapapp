@@ -377,7 +377,9 @@ class JpegImageFile(ImageFile.ImageFile):
             raise ValueError("Invalid Filename")
 
         try:
-            self.im = Image.core.open_ppm(path)
+            _im = Image.open(path)
+            _im.load()
+            self.im = _im.im
         finally:
             try:
                 os.unlink(path)
@@ -583,9 +585,17 @@ def _save(im, fp, filename):
     except KeyError:
         raise IOError("cannot write mode %s as JPEG" % im.mode)
 
+    if im.mode == 'RGBA':
+        warnings.warn(
+            'You are saving RGBA image as JPEG. The alpha channel will be '
+            'discarded. This conversion is deprecated and will be disabled '
+            'in Pillow 3.7. Please, convert the image to RGB explicitly.',
+            DeprecationWarning
+        )
+
     info = im.encoderinfo
 
-    dpi = info.get("dpi", (0, 0))
+    dpi = [int(round(x)) for x in info.get("dpi", (0, 0))]
 
     quality = info.get("quality", 0)
     subsampling = info.get("subsampling", -1)
@@ -674,15 +684,20 @@ def _save(im, fp, filename):
                       o8(len(markers)) + marker)
             i += 1
 
+    # "progressive" is the official name, but older documentation
+    # says "progression"
+    # FIXME: issue a warning if the wrong form is used (post-1.1.7)
+    progressive = info.get("progressive", False) or\
+                  info.get("progression", False)
+
+    optimize = info.get("optimize", False)
+
     # get keyword arguments
     im.encoderconfig = (
         quality,
-        # "progressive" is the official name, but older documentation
-        # says "progression"
-        # FIXME: issue a warning if the wrong form is used (post-1.1.7)
-        "progressive" in info or "progression" in info,
+        progressive,
         info.get("smooth", 0),
-        "optimize" in info,
+        optimize,
         info.get("streamtype", 0),
         dpi[0], dpi[1],
         subsampling,
@@ -696,7 +711,7 @@ def _save(im, fp, filename):
     # channels*size, this is a value that's been used in a django patch.
     # https://github.com/matthewwithanm/django-imagekit/issues/50
     bufsize = 0
-    if "optimize" in info or "progressive" in info or "progression" in info:
+    if optimize or progressive:
         # keep sets quality to 0, but the actual value may be high.
         if quality >= 95 or quality == 0:
             bufsize = 2 * im.size[0] * im.size[1]

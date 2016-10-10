@@ -169,20 +169,20 @@ class FreeTypeFont(object):
                             encoding=self.encoding if encoding is None else
                             encoding)
 
-##
-# Wrapper that creates a transposed font from any existing font
-# object.
-#
-# @param font A font object.
-# @param orientation An optional orientation.  If given, this should
-#     be one of Image.FLIP_LEFT_RIGHT, Image.FLIP_TOP_BOTTOM,
-#     Image.ROTATE_90, Image.ROTATE_180, or Image.ROTATE_270.
-
 
 class TransposedFont(object):
     "Wrapper for writing rotated or mirrored text"
 
     def __init__(self, font, orientation=None):
+        """
+        Wrapper that creates a transposed font from any existing font
+        object.
+
+        :param font: A font object.
+        :param orientation: An optional orientation.  If given, this should
+            be one of Image.FLIP_LEFT_RIGHT, Image.FLIP_TOP_BOTTOM,
+            Image.ROTATE_90, Image.ROTATE_180, or Image.ROTATE_270.
+        """
         self.font = font
         self.orientation = orientation  # any 'transpose' argument, or None
 
@@ -315,7 +315,7 @@ def load_default():
     f = ImageFont()
     f._load_pilfont_data(
         # courB08
-        BytesIO(base64.decodestring(b'''
+        BytesIO(base64.b64decode(b'''
 UElMZm9udAo7Ozs7OzsxMDsKREFUQQoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
@@ -407,7 +407,7 @@ AJsAEQAGAAAAAP/6AAX//wCbAAoAoAAPAAYAAAAA//oABQABAKAACgClABEABgAA////+AAGAAAA
 pQAKAKwAEgAGAAD////4AAYAAACsAAoAswASAAYAAP////gABgAAALMACgC6ABIABgAA////+QAG
 AAAAugAKAMEAEQAGAAD////4AAYAAgDBAAoAyAAUAAYAAP////kABQACAMgACgDOABMABgAA////
 +QAGAAIAzgAKANUAEw==
-''')), Image.open(BytesIO(base64.decodestring(b'''
+''')), Image.open(BytesIO(base64.b64decode(b'''
 iVBORw0KGgoAAAANSUhEUgAAAx4AAAAUAQAAAAArMtZoAAAEwElEQVR4nABlAJr/AHVE4czCI/4u
 Mc4b7vuds/xzjz5/3/7u/n9vMe7vnfH/9++vPn/xyf5zhxzjt8GHw8+2d83u8x27199/nxuQ6Od9
 M43/5z2I+9n9ZtmDBwMQECDRQw/eQIQohJXxpBCNVE6QCCAAAAD//wBlAJr/AgALyj1t/wINwq0g
@@ -433,5 +433,3 @@ Gc/eeW7BwPj5+QGZhANUswMAAAD//2JgqGBgYGBgqEMXlvhMPUsAAAAA//8iYDd1AAAAAP//AwDR
 w7IkEbzhVQAAAABJRU5ErkJggg==
 '''))))
     return f
-
-# End of file

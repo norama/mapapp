@@ -33,7 +33,7 @@ from __future__ import absolute_import
 import collections
 
 
-__version__ = '0.13.0'
+__version__ = '0.12.5'
 
 
 INITIAL_PAGE = object()
@@ -48,7 +48,7 @@ CallOptions belongs will attempt to inherit that field from its default
 settings."""
 
 
-class _CallSettings(object):
+class CallSettings(object):
     """Encapsulates the call settings for an API call."""
     # pylint: disable=too-few-public-methods
     def __init__(self, timeout=30, retry=None, page_descriptor=None,
@@ -94,10 +94,10 @@ class _CallSettings(object):
         return self.page_token is None
 
     def merge(self, options):
-        """Returns new _CallSettings merged from this and a CallOptions object.
+        """Returns a new CallSettings merged from this and a CallOptions object.
 
         Note that passing if the CallOptions instance specifies a page_token,
-        the merged _CallSettings will have ``flatten_pages`` disabled. This
+        the merged CallSettings will have ``flatten_pages`` disabled. This
         permits toggling per-resource/per-page page streaming.
 
         Args:
@@ -106,10 +106,10 @@ class _CallSettings(object):
               object
 
         Returns:
-            A :class:`_CallSettings` object.
+            A :class:`CallSettings` object.
         """
         if not options:
-            return _CallSettings(
+            return CallSettings(
                 timeout=self.timeout, retry=self.retry,
                 page_descriptor=self.page_descriptor,
                 page_token=self.page_token,
@@ -142,7 +142,7 @@ class _CallSettings(object):
                 kwargs = self.kwargs.copy()
                 kwargs.update(options.kwargs)
 
-            return _CallSettings(
+            return CallSettings(
                 timeout=timeout, retry=retry,
                 page_descriptor=self.page_descriptor, page_token=page_token,
                 bundler=bundler, bundle_descriptor=self.bundle_descriptor,

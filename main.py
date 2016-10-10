@@ -200,6 +200,13 @@ class Insert(Base):
         user = self._user()
         values = self._post_values()
         return actions.insert(values, user['id'])
+	
+class InsertExternal(Base):
+
+    def post(self):
+        user = self._user()
+        values = self._post_values()
+        return actions.insert_external(values['url'], user['id'])
 
 class Edit(Base):
 
@@ -240,6 +247,7 @@ app = micro_webapp2.WSGIApplication([
     ('/', Home),
     ('/index.html', Home),
     ('/add', Insert),
+	('/externalitem', InsertExternal),
     ('/edit', Edit),
     ('/delete', Delete),
     ('/login', Login),

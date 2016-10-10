@@ -343,7 +343,14 @@ jsonform.elementTypes = {
       '<%= (node.placeholder? "placeholder=" + \'"\' + escape(node.placeholder) + \'"\' : "")%>' +
       '><%= value %></textarea>',
     'fieldtemplate': true,
-    'inputfield': true
+    'inputfield': true,
+	'onInsert': function (evt, node) {
+			var readonly = node.schemaElement.readonly;
+			if (readonly) {
+				var value = $(node.el).find('#' + escapeSelector(node.id)).val();
+				$(node.el).find('#' + escapeSelector(node.id)).replaceWith('<div class="wysiwyg-view ">'+value+'</div>');
+			}
+	  }
   },
   'wysihtml5':{
     'template':'<div id="<%= id %>Div"><textarea id="<%= id %>" name="<%= node.name %>" style="height:<%= elt.height || "300px" %>;width:<%= elt.width || "100%" %>;"' +

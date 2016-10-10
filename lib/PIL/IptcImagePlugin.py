@@ -168,14 +168,9 @@ class IptcImageFile(ImageFile.ImageFile):
         o.close()
 
         try:
-            try:
-                # fast
-                self.im = Image.core.open_ppm(outfile)
-            except:
-                # slightly slower
-                im = Image.open(outfile)
-                im.load()
-                self.im = im.im
+            _im = Image.open(outfile)
+            _im.load()
+            self.im = _im.im
         finally:
             try:
                 os.unlink(outfile)
@@ -188,15 +183,14 @@ Image.register_open(IptcImageFile.format, IptcImageFile)
 Image.register_extension(IptcImageFile.format, ".iim")
 
 
-##
-# Get IPTC information from TIFF, JPEG, or IPTC file.
-#
-# @param im An image containing IPTC data.
-# @return A dictionary containing IPTC information, or None if
-#     no IPTC information block was found.
-
 def getiptcinfo(im):
+    """
+    Get IPTC information from TIFF, JPEG, or IPTC file.
 
+    :param im: An image containing IPTC data.
+    :returns: A dictionary containing IPTC information, or None if
+        no IPTC information block was found.
+    """
     from PIL import TiffImagePlugin, JpegImagePlugin
     import io
 

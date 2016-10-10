@@ -44,6 +44,7 @@ function itemAction(e) {
 var emptyItem = {
     title: '',
 	url: '',
+	config: '',
     description: '',
 	details: '',
 	image: '',

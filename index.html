@@ -37,6 +37,7 @@
     <script src="js/initmap.js"></script>
     <script src="js/initform.js"></script>
     <script src="js/filterform.js"></script>
+	<script src="js/externalitem.js"></script>
     
     <!-- fileupload -->
     <script src="ext/fileupload/js/vendor/jquery.ui.widget.js"></script>
@@ -98,6 +99,14 @@
     		return false;
 		});
 		$( document ).bind('keydown', 'ctrl+f', showFilterForm);
+		
+		initExternalItemForm();
+		
+		$( document ).bind('keydown', 'ctrl+x', function(e) {
+    		e.preventDefault();
+    		return false;
+		});
+		$( document ).bind('keydown', 'ctrl+x', showExternalItemForm);
 
  		
  		// if ($('#state').val() == 'init') {
@@ -137,6 +146,7 @@
 	<div class="menu" id="sidr">
 	  <ul>
 	    <li><div onclick="setItemMarkerOnClick({ latLng: map.getCenter() });" ><a href="#"><b>Add Item:</b> click on map</a></div></li>
+		<li><div onclick="showExternalItemForm();" ><a href="#"><b>External Item</b> (Ctrl-X)</a></div></li>
 	    <li><div onclick="showFilterForm();" ><a href="#"><b>Filter Items</b> (Ctrl-F)</a></div></li>
 	  </ul>
 	  <div class='licence'>Powered by <a href='https://github.com/artberri/sidr' target='_blank'>SIDR</a> side menu</div>
@@ -197,6 +207,13 @@
 			<li><a href='https://github.com/bootstrap-wysiwyg/bootstrap3-wysiwyg' target='_blank'>Bootstrap3 Wysiwyg</a></li>
 			</ul>
 		</div>
+	</div>
+	
+ 	<div id='externalItemMapForm' class="mapform" style="display: none;">
+		<h1 id='externalItemHeader'>External Item</h1>
+		<form id='externalItemForm' role='form'></form>
+		<br/>
+		<div class='licence'>Powered by <a href='https://github.com/joshfire/jsonform' target='_blank'>JSON Form</a></div>
 	</div>
 	
 	<div id='loginMapForm' class="mapform" style="display: none;">

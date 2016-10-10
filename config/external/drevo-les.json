@@ -1,0 +1,8 @@
+{
+	"title": "h1",
+	"description": {"div": {"id": "informace"}},
+	"details": [{"div": {"id": "popis"}}, "p"],
+	"css": {
+		"description": "http://www.drevo-les.cz/css/style.css"
+	}
+}

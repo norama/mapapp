@@ -154,7 +154,7 @@ class ImageFile(Image.Image):
             if d == "raw" and a[0] == self.mode and a[0] in Image._MAPMODES:
                 try:
                     if hasattr(Image.core, "map"):
-                        # use built-in mapper
+                        # use built-in mapper  WIN32 only
                         self.map = Image.core.map(self.filename)
                         self.map.seek(o)
                         self.im = self.map.readimage(
@@ -170,6 +170,9 @@ class ImageFile(Image.Image):
                             self.map, self.size, d, e, o, a
                             )
                     readonly = 1
+                    # After trashing self.im, we might need to reload the palette data.
+                    if self.palette:
+                        self.palette.dirty = 1
                 except (AttributeError, EnvironmentError, ImportError):
                     self.map = None
 
@@ -226,7 +229,7 @@ class ImageFile(Image.Image):
                         if n < 0:
                             break
                         b = b[n:]
-                    
+
                 # Need to cleanup here to prevent leaks in PyPy
                 decoder.cleanup()
 
@@ -305,8 +308,6 @@ class Parser(object):
     """
     Incremental image parser.  This class implements the standard
     feed/close consumer interface.
-
-    In Python 2.x, this is an old-style class.
     """
     incremental = None
     image = None
@@ -473,7 +474,7 @@ def _save(im, fp, tile, bufsize=0):
             e.setimage(im.im, b)
             if e.pushes_fd:
                 e.setfd(fp)
-                l,s = e.encode_to_pyfd()
+                l, s = e.encode_to_pyfd()
             else:
                 while True:
                     l, s, d = e.encode(bufsize)
@@ -492,7 +493,7 @@ def _save(im, fp, tile, bufsize=0):
             e.setimage(im.im, b)
             if e.pushes_fd:
                 e.setfd(fp)
-                l,s = e.encode_to_pyfd()
+                l, s = e.encode_to_pyfd()
             else:
                 s = e.encode_to_file(fh, bufsize)
             if s < 0:

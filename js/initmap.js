@@ -286,6 +286,7 @@
 
 	function hideForms() {
 		hideItemForm();
+		hideExternalItemForm();
 		hideFilterForm();
 		hideLoginForm();
 	}
@@ -321,6 +322,17 @@
         $( '#filterMapForm' ).show();
     }
 
+	function hideExternalItemForm() {
+        $( '#externalItemMapForm' ).hide();
+    }
+
+	function showExternalItemForm() {
+        hideMenu();
+        clearItemMarker();
+        hideForms();
+        $( '#externalItemMapForm' ).show();
+    }
+
     function hideInfoWindow() {
         infoWindow.close();
     }
@@ -338,56 +350,96 @@
     function showInfoWindow(pos, row) {
         console.log('lat: '+pos.lat()+', lng: '+pos.lng());
         console.log(JSON.stringify(row, null, 2));
-        infoWindow.setContent(format(row));
-        infoWindow.setPosition(pos);
-        infoWindow.open(map);
-
-        item = {
+		
+		var config = row.Config.value;
+		if (config) {
+			config = JSON.parse(config);
+		}
+		
+		var item = {
             title: row.Title.value,
 			url: row.URL.value,
+			config: row.Config.value,
             description: row.Description.value,
 			details: row.Details.value,
 			image: row.Image.value,
             lat: pos.lat(),
-            lng: pos.lng()
+            lng: pos.lng(),
+			userId: row.UserId.value
         }
-        // $('#deleteItem').on(
-        //     'click',
-        //     { 'itemLatLng': pos, 'itemTitle': row.Title.value },
-        //     deleteItem);
+		
+		var itemView = {
+            title: row.Title.value,
+			url: row.URL.value,
+			config: row.Config.value,
+            description: styleHTML(row.Description.value.trim(), css('description', config)),
+			details: styleHTML(row.Details.value.trim(), css('details', config)),
+			image: row.Image.value,
+            lat: pos.lat(),
+            lng: pos.lng(),
+			userId: row.UserId.value
+        }
+		
+        infoWindow.setContent(format(itemView));
+        infoWindow.setPosition(pos);
+        infoWindow.open(map);
+
+        
         $('#editItem').on(
             'click',
             { 'item': item, 'action': 'edit' },
             itemAction);
         $('#deleteItem').on(
             'click',
-            { 'item': item, 'action': 'delete' },
+            { 'item': itemView, 'action': 'delete' },
             itemAction);
         $('#viewItem').on(
             'click',
-            { 'item': item, 'action': 'view' },
+            { 'item': itemView, 'action': 'view' },
             itemAction);
     }
 
-    function format(row) {
+    function format(item) {
         return '<div class="googft-info-window">'+
-            '<b>'+row.Title.value+'</b><br/>'+
+            '<b>'+item.title+'</b><br/>'+
 			
-			(row.URL.value.trim() !== "" ? '<a href="'+ row.URL.value.trim() +'" title="'+row.URL.value.trim() +'" target="_blank">Open Home Page</a><br/><br/>' : '')+''+
+			(item.url !== "" ? '<a href="'+ item.url.trim() +'" title="'+item.url.trim() +'" target="_blank">Open Home Page</a><br/><br/>' : '')+''+
 			
-			(row.Image.value.trim() !== "" ? '<img src="'+ row.Image.value.trim() +'" style="vertical-align: top; height: 90px"/><br/><br/>' : '')+''+
+			(item.image.trim() !== "" ? '<img src="'+ item.image.trim() +'" style="vertical-align: top; height: 90px"/><br/><br/>' : '')+''+
 			
-            '<p>'+replaceAll(row.Description.value, '\n', '<br/>')+'</p>'+
+            '<p>'+item.description+'</p>'+
 			
             '<table class="itemEditDelete"><tr>'+
 			'<td><img id="viewItem" src="/img/view.png" alt="View" title="View" height="16" width="16"/></td>'+
-            ($('#user_id').val() == row.UserId.value ?
+            ($('#user_id').val() == item.userId ?
                 '<td><img id="editItem" src="/img/edit.png" alt="Edit" title="Edit" height="16" width="16"/></td>'+
                 '<td><img id="deleteItem" src="/img/delete.png" alt="Delete" title="Delete" height="16" width="16"/></td>' :
                 '') +
             '</tr></table>'+
             '</div>';
     }
+
+	function css(key, config) {
+		if (config) {
+			var css = config['css'];
+			if (css) {
+				return css[key];
+			}
+		}
+		return null;
+	}
+
+	function styleHTML(text, css) {
+		if (text.toLowerCase().indexOf('</') !== -1) {
+			if (css) {
+				text = '<section><style scoped>@import url('+css+');</style>' + text + '</section>';
+			}
+			
+		} else {
+			text = replaceAll(text, '\n', '<br/>');
+		}		
+		return text;
+	}
 
     function setItemMarkerOnClick(e) {
        if (inProgress()) {
