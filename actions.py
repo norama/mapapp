@@ -11,7 +11,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 from apiclient.discovery import build
 from apiclient.http import HttpRequest
 from fileupload import delete_with_thumbnail
-from externalitem import read_external
+from itemloader import read_external
 
 
 scopes = ['https://www.googleapis.com/auth/fusiontables']
