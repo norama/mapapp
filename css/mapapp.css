@@ -4,6 +4,10 @@
   height: 100%;
 }
 
+input[type="text"], input[type="url"], textarea {
+   width: 310px !important;
+}
+
 .mapform {
   position: relative;
   margin-top: 10px;

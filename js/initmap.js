@@ -61,7 +61,7 @@
 
         if (initloc) {
             initLocation();
-        } else if ($('#item_lat').val().length != 0 && $('#item_lng').val().length != 0) {
+        } else if ($('#item_lat').val() && $('#item_lng').val()) {
              var pos = {
                   lat: parseFloat($('#item_lat').val()),
                   lng: parseFloat($('#item_lng').val())
@@ -70,15 +70,20 @@
         }
 
         var state = $('#state').val();
-        if (state == 'init') {
+        if (state === 'init') {
             initLogin();
         } else {
             initAvatar();
             initLogout();
+			
+			if ($('#action').val() === 'externalItem') {
+				showExternalItemForm();
+			}
         }
         if ($('#error').val().length > 0) {
             initError();
         }
+		
         initMenu();
         initAutocomplete();
         initFusionTable();
@@ -284,6 +289,17 @@
 
     }
 
+	function externalItemForm() {
+ 		if ($('#state').val() !== 'init') {
+			$('#action').val(''); 
+			showExternalItemForm();
+		} else {
+			$('#action').val('externalItem'); 
+			initLoginForm();
+			showLoginForm();
+		} 
+	}
+
 	function hideForms() {
 		hideItemForm();
 		hideExternalItemForm();
@@ -452,7 +468,7 @@
     function setItemMarker(pos) {
         if (itemMarker == null) {
             createItemMarker(pos);
-            if ($('#state').val() != 'init') {
+            if ($('#state').val() !== 'init') {
                 fillItemForm(emptyItem, 'add');
 				showItemForm();
             } else {
