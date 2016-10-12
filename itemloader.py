@@ -5,6 +5,7 @@ import urllib2
 import httplib
 
 import json
+import re
 
 import sys
 
@@ -14,8 +15,9 @@ logger = logging.getLogger()
 
 def read_external(url):
 	
-	config = read_config('config/external/drevo-les.json')
+	config_string = read_file('config/external/drevo-les.json')
 	# logger.info(json.dumps(config, indent=4))
+	config = json.loads(config_string)
 	
 	html = read_url(url)
 	# logger.info(html)
@@ -26,20 +28,28 @@ def read_external(url):
 	values['title'] = _select('title', config, soup) 
 	values['description'] = _select('description', config, soup) 
 	values['details'] = _select('details', config, soup) 
-	values['config'] = json.dumps(config)
-	values['lat'] = '49.2107918'
-	values['lng'] = '14.0124039'
+	values['config'] = config_string.replace('\\','\\\\')
+	
+	latlng = _select('latlng', config, soup) 
+	if (len(latlng) != 2):
+		raise ValueError('Could not add item: latlng missing.')
+	lat = latlng[0]
+	lng = latlng[1]
+	
+	logger.info('lat: '+lat+' lng: '+lng)
+	values['lat'] = lat
+	values['lng'] = lng
 	
 	return values
 
-def read_config(path):
+def read_file(path):
 	try:
 		f = open(path, 'r')
 	except IOError:
-		raise ValueError('IOError while opening config file: ' + path)
+		raise ValueError('IOError while opening file: ' + path)
 	s = f.read()
 	f.close()
-	return json.loads(s)
+	return s
 	
 
 def read_url(url):
@@ -61,41 +71,71 @@ def _select(key, config, soup):
 	if selector is None:
 		return u''
 	
-	value = _content(_find(selector, soup))
-
-	# URL encoding problem with this
-#	if 'css' in config:
-#		css = config['css']
-#		if key in css:
-#			value = u"<section>{0} {1}</section>".format(_style(css[key]), value)
-
-	return value
-
-def _style(url):
-	return u"<style scoped>@import url({0});</style>".format(unicode(url))
+	return _find(selector, soup)
 
 def _find(selector, soup):
 	tag = soup
 	if not isinstance(selector, list):
 		selector = [selector]
 	for s in selector:
-		print s, type(s)
 		if isinstance(s, basestring):
-			tag = tag.find(s)
+			tag_list = tag.select(s)
+			if tag_list:
+				tag = tag_list[0]
+			else:
+				tag = None
 		elif isinstance(s, dict):
-			elem, attributes = s.items()[0]
-			tag = tag.find(elem, attrs=attributes)
+			entry = s.items()[0]
+			tag_name = entry[0]
+			x = entry[1]
+			if isinstance(x, basestring):
+				return _extract(tag, tag_name, pattern=x)
+			elif isinstance(x, list):
+				if len(x) != 2 or not isinstance(x[0], dict) or not isinstance(x[1], basestring):
+					raise ValueError('Config error: list should be [attrs, pattern] of type [dict, string]')
+				return _extract(tag, tag_name, attrs=x[0], pattern=x[1])
+			elif isinstance(x, dict):
+				tag = tag.find(tag_name, attrs=x)
+			else:
+				raise ValueError('Config error: selector type' +type(x) + ' is not supported, use list, string or dict')
 		else:
-			raise ValueError('Config error: ' + s + ' should be string or list')
-		print s, tag
+			raise ValueError('Config error: selector type' +type(s) + ' is not supported, use string or dict')
 		if tag is None:
-			return None
-	return tag
-	
+			return u''
+	return _content(tag)
+
+# <div id="map"><script>ddd</script><script>latlng(15.6, 14.2)</script></div>
+#
+# string = soup.find('div', attrs={'id': 'map'}).find('script', text=re.compile('^latlng\((.*?),(.*?)\)')).string
+# m = re.search('^latlng\((.*?),(.*?)\)', string)
+# m.group(1), m.group(2)
+# m.groups() -> if empty, take m.group(0)
+def _extract(base_tag, tag_name, attrs={}, pattern=None):
+	# logger.info('------------------ base_tag: '+str(base_tag)+' tag_name: '+tag_name)
+	tag = base_tag.find(tag_name, attrs=attrs, text=re.compile(pattern))
+	if tag is None:
+		return u''
+	# logger.info('------------------ pattern: '+pattern+' tag.string: '+tag.string)
+	match = re.search(pattern, tag.string)
+	groups = match.groups()
+	groups = tuple(g.strip() for g in groups)
+	if len(groups) == 0:
+		return match(0)
+	elif len(groups) == 1:
+		return groups[0]
+	else:
+		return groups
+
+# http://stackoverflow.com/questions/9044088/beautifulsoup-strip-specified-attributes-but-preserve-the-tag-and-its-contents
 def _content(tag):
 	if tag is None:
 		return u''
-	return u''.join(unicode(x) for x in tag.contents)
+	REMOVE_ATTRIBUTES = ['id']
+	soup = BeautifulSoup(tag.decode(), 'html.parser')
+	for tag in soup.recursiveChildGenerator():
+		if hasattr(tag, 'attrs'):
+			tag.attrs = {key:value for key,value in tag.attrs.iteritems() if key not in REMOVE_ATTRIBUTES}
+	return unicode(soup).strip()
 		
 def _string(s):
 	if s is None:
@@ -103,7 +143,7 @@ def _string(s):
 	return unicode(s.string)
 
 # Usage: 
-# python .\externalitem.py 'title' .\test\externalitem.json .\test\externalitem.html
+# python .\itemloader.py 'title' .\test\externalitem.json .\test\externalitem.html
 if __name__ == '__main__':
 	key = sys.argv[1]
 	config = read_config(sys.argv[2])

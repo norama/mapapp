@@ -1,5 +1,9 @@
 {
 	"title": "h1",
-	"description": [{"p": {"data-x": "vx", "data-y": "vy"}}, {"div": {"id": "desc"}}], 
-	"details": [{"div": {"id": "details"}}, "h2"]
+	"description": [{"p": {"data-x": "vx", "data-y": "vy"}}, {"div": {"id": "desc"}}],
+	"details": [{"div": {"id": "details"}}, "h2"],
+	"spec": "#spec div[data-x='dat']",
+	"ppp": ["div div[data-y='ppp']", {"script": "ppp(.*?)ppp"}],
+	"latlng":  [{"div": {"id": "map"}}, {"script": [{"id": "latlng"}, "^latlng\\((.*?),(.*?)\\)"]}]
+
 }
