@@ -1,5 +1,7 @@
 {
+	"home": "http://www.drevo-les.cz",
 	"title": "h1",
+	"image": ["#obrazky", {"img": [{}, {"src": "(.*)"}]}],
 	"description": {"div": {"id": "informace"}},
 	"details": [{"div": {"id": "popis"}}, "p"],
 	"latlng": ["#mapa", {"script": "CreateCustomMap\\((.*?),(.*?),"}],

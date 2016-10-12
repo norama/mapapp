@@ -4,6 +4,8 @@
 	"details": [{"div": {"id": "details"}}, "h2"],
 	"spec": "#spec div[data-x='dat']",
 	"ppp": ["div div[data-y='ppp']", {"script": "ppp(.*?)ppp"}],
-	"latlng":  [{"div": {"id": "map"}}, {"script": [{"id": "latlng"}, "^latlng\\((.*?),(.*?)\\)"]}]
-
+	"latlng": [{"div": {"id": "map"}}, {"script": [{"id": "latlng"}, "^latlng\\((.*?),(.*?)\\)"]}],
+	"attr": {"div": [{"data-x": "x", "data-y": "y"}, {"data-q": "ppp(.*?)ppp"}]},
+    "attr2": ["div", {"div": [{"data-x": "x", "data-y": "y"}, {"data-q": "ppp(.*?)ppp"}]}],
+	"attr3": {"span": [{}, {"data-q": "ppp(.*?)ppp"}]}
 }

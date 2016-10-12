@@ -23,9 +23,18 @@ def read_external(url):
 	# logger.info(html)
 	soup = BeautifulSoup(html, 'html.parser')
 	
+	home = ''
+	if 'home' in config:
+		home = config['home']
+		
+	image = _select('image', config, soup)
+	if image:
+		image = home + image
+	
 	values = dict()
 	values['url'] = url
 	values['title'] = _select('title', config, soup) 
+	values['image'] = image
 	values['description'] = _select('description', config, soup) 
 	values['details'] = _select('details', config, soup) 
 	values['config'] = config_string.replace('\\','\\\\')
@@ -67,11 +76,10 @@ def read_url(url):
 
 
 def _select(key, config, soup):
-	selector = config[key]
-	if selector is None:
+	if key not in config:
 		return u''
 	
-	return _find(selector, soup)
+	return _find(selector=config[key], soup=soup)
 
 def _find(selector, soup):
 	tag = soup
@@ -89,11 +97,18 @@ def _find(selector, soup):
 			tag_name = entry[0]
 			x = entry[1]
 			if isinstance(x, basestring):
-				return _extract(tag, tag_name, pattern=x)
+				return _extract_text(tag, tag_name, text_pattern=x)
 			elif isinstance(x, list):
-				if len(x) != 2 or not isinstance(x[0], dict) or not isinstance(x[1], basestring):
-					raise ValueError('Config error: list should be [attrs, pattern] of type [dict, string]')
-				return _extract(tag, tag_name, attrs=x[0], pattern=x[1])
+				if len(x) != 2 or not isinstance(x[0], dict):
+					raise ValueError('Config error: list should be [attrs, pattern] of type [dict, string] or [dict, dict]')
+					
+				if isinstance(x[1], basestring):				
+					return _extract_text(tag, tag_name, attrs=x[0], text_pattern=x[1])
+				elif isinstance(x[1], dict):
+					return _extract_attr(tag, tag_name, attrs=x[0], attr_pattern=x[1])
+				else:
+					raise ValueError('Config error: pattern should be string or dict')
+					
 			elif isinstance(x, dict):
 				tag = tag.find(tag_name, attrs=x)
 			else:
@@ -110,13 +125,30 @@ def _find(selector, soup):
 # m = re.search('^latlng\((.*?),(.*?)\)', string)
 # m.group(1), m.group(2)
 # m.groups() -> if empty, take m.group(0)
-def _extract(base_tag, tag_name, attrs={}, pattern=None):
+def _extract_text(base_tag, tag_name, attrs={}, text_pattern=None):
 	# logger.info('------------------ base_tag: '+str(base_tag)+' tag_name: '+tag_name)
-	tag = base_tag.find(tag_name, attrs=attrs, text=re.compile(pattern))
+	tag = base_tag.find(tag_name, attrs=attrs, text=re.compile(text_pattern))
 	if tag is None:
 		return u''
 	# logger.info('------------------ pattern: '+pattern+' tag.string: '+tag.string)
-	match = re.search(pattern, tag.string)
+	return _extract_string(text_pattern, tag.string)
+
+def _extract_attr(base_tag, tag_name, attrs={}, attr_pattern=None):
+	tag = base_tag.find(tag_name, attrs=attrs)
+	if tag is None:
+		return u''
+	entry = attr_pattern.items()[0]
+	attr = entry[0]
+	pattern = entry[1]
+	if attr in tag.attrs:
+		return _extract_string(pattern, tag.attrs[attr])
+	else:
+		return u''
+
+def _extract_string(pattern, string):
+	if pattern is None:
+		return string
+	match = re.search(pattern, string)
 	groups = match.groups()
 	groups = tuple(g.strip() for g in groups)
 	if len(groups) == 0:
@@ -146,7 +178,8 @@ def _string(s):
 # python .\itemloader.py 'title' .\test\externalitem.json .\test\externalitem.html
 if __name__ == '__main__':
 	key = sys.argv[1]
-	config = read_config(sys.argv[2])
+	config_string = read_file(sys.argv[2])
+	config = json.loads(config_string)
 	soup = BeautifulSoup(open(sys.argv[3]), 'html.parser')
 	value = _select(key, config, soup)
 	print 'RESULT: ', value
