@@ -13,7 +13,7 @@ import logging
 
 logger = logging.getLogger()
 
-def read_external(url):
+def read_external(url, _type):
 	
 	config_string = read_file('config/external/drevo-les.json')
 	# logger.info(json.dumps(config, indent=4))
@@ -32,6 +32,7 @@ def read_external(url):
 		image = home + image
 	
 	values = dict()
+	values['type'] = _type
 	values['url'] = url
 	values['title'] = _select('title', config, soup) 
 	values['image'] = image

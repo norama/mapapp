@@ -367,34 +367,31 @@
         console.log('lat: '+pos.lat()+', lng: '+pos.lng());
         console.log(JSON.stringify(row, null, 2));
 		
-		var config = row.Config.value;
-		if (config) {
-			config = JSON.parse(config);
-		}
-		
 		var item = {
             title: row.Title.value,
 			url: row.URL.value,
-			config: row.Config.value,
+			type: row.Type.value,
             description: row.Description.value,
 			details: row.Details.value,
 			image: row.Image.value,
             lat: pos.lat(),
             lng: pos.lng(),
 			userId: row.UserId.value
-        }
+        };
+		
+		var css = _css(row.Type.value);
 		
 		var itemView = {
             title: row.Title.value,
 			url: row.URL.value,
-			config: row.Config.value,
-            description: styleHTML(row.Description.value.trim(), css('description', config)),
-			details: styleHTML(row.Details.value.trim(), css('details', config)),
+			type: row.Type.value,
+            description: styleHTML(row.Description.value.trim(), css),
+			details: styleHTML(row.Details.value.trim(), css),
 			image: row.Image.value,
             lat: pos.lat(),
             lng: pos.lng(),
 			userId: row.UserId.value
-        }
+        };
 		
         infoWindow.setContent(format(itemView));
         infoWindow.setPosition(pos);
@@ -434,12 +431,9 @@
             '</div>';
     }
 
-	function css(key, config) {
-		if (config) {
-			var css = config['css'];
-			if (css) {
-				return css[key];
-			}
+	function _css(type) {
+		if (type) {
+			return '/config/external/css/' + type + '.css';
 		}
 		return null;
 	}

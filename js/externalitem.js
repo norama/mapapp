@@ -8,6 +8,12 @@ function initExternalItemForm() {
             title: 'URL',
 			format: 'url',
 			required: true
+		  },
+		  type: {
+			type: 'string',
+            title: 'Type',
+			enum: [ "drevo-les", "annonce" ],
+			required: true
 		  }
         },
         "form": [
@@ -15,7 +21,10 @@ function initExternalItemForm() {
 				"key": "url",
 				"value": ''
 			},
-
+			{
+				"key": "type",
+				"titleMap": typeTitleMap
+			},
             {
               "type": "actions",
               "items": externalItemButtonPanel()

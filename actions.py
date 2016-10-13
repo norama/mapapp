@@ -90,8 +90,8 @@ def insert(values, userId):
 	now = _current_time()
 	userId = userId.encode('utf-8')
 
-	sqlInsert = u"INSERT INTO {0} (Title,URL,Config,Description,Details,Image,Latitude,Longitude,UserId,Timestamp,Helper) values('{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', 0)"\
-	.format(FTID, allValues['title'], allValues['url'], allValues['config'], allValues['description'],  allValues['details'],  allValues['image'], allValues['lat'], allValues['lng'], userId, now)
+	sqlInsert = u"INSERT INTO {0} (Title,URL,Type,Description,Details,Image,Latitude,Longitude,UserId,Timestamp,Helper) values('{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', 0)"\
+	.format(FTID, allValues['title'], allValues['url'], allValues['type'], allValues['description'],  allValues['details'],  allValues['image'], allValues['lat'], allValues['lng'], userId, now)
 
 	logger.info('SQL INSERT: ' + sqlInsert)
 	
@@ -108,8 +108,8 @@ def insert(values, userId):
 	item = _get_item(rowid)
 	return json.dumps(item)
 	
-def insert_external(url, userId):
-	values = read_external(url)
+def insert_external(url, _type, userId):
+	values = read_external(url, _type)
 	
 	return insert(values, userId)
 	
@@ -207,7 +207,7 @@ def _check_same_user(rowid, userId):
 
 def _get_item(rowid):
 
-	sqlSelect = u"SELECT Title, URL, Config, Description, Details, Image, Latitude, Longitude, UserId FROM {0} WHERE rowid = {1}"\
+	sqlSelect = u"SELECT Title, URL, Type, Description, Details, Image, Latitude, Longitude, UserId FROM {0} WHERE rowid = {1}"\
 	.format(FTID, rowid)
 	res = service.query().sql(sql=sqlSelect).execute()
 	logger.info(res)
@@ -221,7 +221,7 @@ def _get_item(rowid):
 		'rowid': rowid,
 		'Title': { 'columnName': 'Title', 'value': row[0] },
 		'URL': { 'columnName': 'URL', 'value': row[1] },
-		'Config': { 'columnName': 'Config', 'value': row[2] },
+		'Type': { 'columnName': 'Type', 'value': row[2] },
 		'Description':  { 'columnName': 'Description', 'value': row[3] },
 		'Details':  { 'columnName': 'Details', 'value': row[4] },
 		'Image':  { 'columnName': 'Image', 'value': row[5] },

@@ -55,5 +55,8 @@ function hideWait(lat, lng) {
 }
 
 
-
+typeTitleMap = {
+    "drevo-les": "Dřevo-les",
+    "annonce": "Annonce"
+};
 

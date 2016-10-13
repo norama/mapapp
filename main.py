@@ -206,7 +206,7 @@ class InsertExternal(Base):
     def post(self):
         user = self._user()
         values = self._post_values()
-        return actions.insert_external(values['url'], user['id'])
+        return actions.insert_external(values['url'], values['type'], user['id'])
 
 class Edit(Base):
 

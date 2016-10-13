@@ -45,6 +45,7 @@ var emptyItem = {
     title: '',
 	url: '',
 	config: '',
+	type: '',
     description: '',
 	details: '',
 	image: '',
@@ -125,6 +126,11 @@ function initItemForm(formItem, action) {
 			format: 'url',
 			readonly: readonly
 		  },
+		  type: {
+			type: 'string',
+            title: 'Type',
+			enum: [ "", "drevo-les", "annonce" ]
+		  },
           description: {
             type: 'string',
             title: 'Short description',
@@ -160,6 +166,12 @@ function initItemForm(formItem, action) {
 					"key": "url",
 					"value": formItem['url']
 				}, 
+		  		{
+					"key": "type",
+		  			"value": formItem['type'],
+					"titleMap": typeTitleMap,
+					disabled: true
+				},
 				{
 					"type": "fieldset",
 					"expandable": true,

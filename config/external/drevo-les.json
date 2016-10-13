@@ -4,8 +4,5 @@
 	"image": ["#obrazky", {"img": [{}, {"src": "(.*)"}]}],
 	"description": {"div": {"id": "informace"}},
 	"details": [{"div": {"id": "popis"}}, "p"],
-	"latlng": ["#mapa", {"script": "CreateCustomMap\\((.*?),(.*?),"}],
-	"css": {
-		"description": "/config/external/css/drevo-les.css"
-	}
+	"latlng": ["#mapa", {"script": "CreateCustomMap\\((.*?),(.*?),"}]
 }
