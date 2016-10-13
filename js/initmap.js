@@ -378,15 +378,13 @@
             lng: pos.lng(),
 			userId: row.UserId.value
         };
-		
-		var css = _css(row.Type.value);
-		
+				
 		var itemView = {
             title: row.Title.value,
 			url: row.URL.value,
 			type: row.Type.value,
-            description: styleHTML(row.Description.value.trim(), css),
-			details: styleHTML(row.Details.value.trim(), css),
+            description: styleHTML(row.Description.value.trim(), row.Type.value),
+			details: styleHTML(row.Details.value.trim(), row.Type.value),
 			image: row.Image.value,
             lat: pos.lat(),
             lng: pos.lng(),
@@ -431,24 +429,24 @@
             '</div>';
     }
 
-	function _css(type) {
-		if (type) {
-			return '/config/external/css/' + type + '.css';
-		}
-		return null;
-	}
-
-	function styleHTML(text, css) {
+	function styleHTML(text, type) {
 		if (text.toLowerCase().indexOf('</') !== -1) {
+			var css = _css(type);
 			if (css) {
-				var clazz = css.split('/').pop().slice(0, -4);
-				text = '<section class="'+clazz+'"><style type="text/css" scoped="scoped">@import url("'+css+'");</style>' + text + '</section>';
+				text = '<section class="'+type+'"><style type="text/css" scoped="scoped">@import url("'+css+'");</style>' + text + '</section>';
 			}
 			
 		} else {
 			text = replaceAll(text, '\n', '<br/>');
 		}		
 		return text;
+	}
+
+	function _css(type) {
+		if (type) {
+			return '/config/external/css/' + type + '.css';
+		}
+		return null;
 	}
 
     function setItemMarkerOnClick(e) {
