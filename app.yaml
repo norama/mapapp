@@ -30,6 +30,9 @@ handlers:
 
 - url: /img
   static_dir: img
+  
+- url: /config/external/css
+  static_dir: config/external/css
 
 - url: /favicon.ico
   static_files: favicon.ico

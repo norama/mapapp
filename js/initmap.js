@@ -399,8 +399,7 @@
         infoWindow.setContent(format(itemView));
         infoWindow.setPosition(pos);
         infoWindow.open(map);
-
-        
+	
         $('#editItem').on(
             'click',
             { 'item': item, 'action': 'edit' },
@@ -448,7 +447,8 @@
 	function styleHTML(text, css) {
 		if (text.toLowerCase().indexOf('</') !== -1) {
 			if (css) {
-				text = '<section><style scoped>@import url('+css+');</style>' + text + '</section>';
+				var clazz = css.split('/').pop().slice(0, -4);
+				text = '<section class="'+clazz+'"><style type="text/css" scoped="scoped">@import url("'+css+'");</style>' + text + '</section>';
 			}
 			
 		} else {
