@@ -157,7 +157,10 @@ def delete(rowid, userId):
 
 	_check_same_user(rowid, userId)
 	
-	_delete_image(rowid)
+	# problematic: 
+	# 1. same origin problem
+	# 2. external item: external image cannot and should not be deleted
+	# _delete_image(rowid)
 
 	sqlDelete = u"DELETE FROM {0} WHERE rowid = '{1}'"\
 	.format(FTID, rowid)
