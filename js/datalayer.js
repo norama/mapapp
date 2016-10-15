@@ -11,32 +11,53 @@
 
 
 	function initFusionTable() {
+		
+		$.getJSON( "/config/external/markers/markers.json", function( markers ) {
+			ftlayer = new google.maps.FusionTablesLayer({
+				query: {
+				  select: "'Location'",
+				  from: FTID
+				},
+				map: map,
+				options: {
+					suppressInfoWindows: true
+				},
+				styles: ftstyles(markers)
+			});		
 
-        var userid = $('#user_id').val();
+			google.maps.event.addListener(ftlayer, 'click', showInfoWindowOnClick);
+		});
 
-	    ftlayer = new google.maps.FusionTablesLayer({
-	        query: {
-	          select: "'Location'",
-	          from: FTID
-	        },
-	        map: map,
-	        options: {
-	            suppressInfoWindows: true
-	        },
-	        styles: [{
-	        	where: "'UserId' = '" + userid + "'",
-	          	markerOptions: {
-	            	iconName: MY_FTMARKER_ICON
-	          	}
-	        }, {
-	        	where: "'UserId' NOT EQUAL TO '" + userid + "'",
-	          	markerOptions: {
-	            	iconName: FTMARKER_ICON
-	          	}
-	        }]
-	    });		
+	}
 
-		google.maps.event.addListener(ftlayer, 'click', showInfoWindowOnClick);
+	function ftstyles(markers) {
+		var styles = [];
+		$.each(markers, function(type, marker) {
+			styles.push({
+				where: "'Marker' = '"+marker+"'",
+				markerOptions: {
+					iconName: marker
+				}
+			});
+		});
+		
+		var userid = $('#user_id').val();
+		
+		styles.push({
+			where: "'Marker' = '' AND 'UserId' = '" + userid + "'",
+			markerOptions: {
+				iconName: MY_FTMARKER_ICON
+			}
+		});
+		
+		styles.push({
+			where: "'Marker' = '' AND 'UserId' NOT EQUAL TO '" + userid + "'",
+			markerOptions: {
+				iconName: FTMARKER_ICON
+			}
+		});
+
+		return styles;
 	}
 
 	function setFilter(where) {

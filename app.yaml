@@ -31,6 +31,13 @@ handlers:
 - url: /img
   static_dir: img
   
+- url: /config/external/types
+  static_dir: config/external/types
+  
+- url: /config/external/markers
+  static_dir: config/external/markers
+  application_readable: true
+  
 - url: /config/external/css
   static_dir: config/external/css
 

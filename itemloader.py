@@ -13,11 +13,24 @@ import logging
 
 logger = logging.getLogger()
 
+def read_json(path):
+	return json.loads(read_file(path))
+
+def read_file(path):
+	try:
+		f = open(path, 'r')
+	except IOError:
+		raise ValueError('IOError while opening file: ' + path)
+	s = f.read()
+	f.close()
+	return s
+
+markers = read_json('config/external/markers/markers.json')
+
 def read_external(url, _type):
-	
-	config_string = read_file('config/external/drevo-les.json')
+		
+	config = read_json('config/external/'+_type+'.json')
 	# logger.info(json.dumps(config, indent=4))
-	config = json.loads(config_string)
 	
 	html = read_url(url)
 	# logger.info(html)
@@ -38,7 +51,7 @@ def read_external(url, _type):
 	values['image'] = image
 	values['description'] = _select('description', config, soup) 
 	values['details'] = _select('details', config, soup) 
-	values['config'] = config_string.replace('\\','\\\\')
+	values['marker'] = markers[_type]
 	
 	latlng = _select('latlng', config, soup) 
 	if (len(latlng) != 2):
@@ -51,16 +64,6 @@ def read_external(url, _type):
 	values['lng'] = lng
 	
 	return values
-
-def read_file(path):
-	try:
-		f = open(path, 'r')
-	except IOError:
-		raise ValueError('IOError while opening file: ' + path)
-	s = f.read()
-	f.close()
-	return s
-	
 
 def read_url(url):
 	try:
@@ -179,8 +182,7 @@ def _string(s):
 # python .\itemloader.py 'title' .\test\externalitem.json .\test\externalitem.html
 if __name__ == '__main__':
 	key = sys.argv[1]
-	config_string = read_file(sys.argv[2])
-	config = json.loads(config_string)
+	config = read_json(sys.argv[2])
 	soup = BeautifulSoup(open(sys.argv[3]), 'html.parser')
 	value = _select(key, config, soup)
 	print 'RESULT: ', value

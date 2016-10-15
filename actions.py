@@ -90,8 +90,8 @@ def insert(values, userId):
 	now = _current_time()
 	userId = userId.encode('utf-8')
 
-	sqlInsert = u"INSERT INTO {0} (Title,URL,Type,Description,Details,Image,Latitude,Longitude,UserId,Timestamp,Helper) values('{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', 0)"\
-	.format(FTID, allValues['title'], allValues['url'], allValues['type'], allValues['description'],  allValues['details'],  allValues['image'], allValues['lat'], allValues['lng'], userId, now)
+	sqlInsert = u"INSERT INTO {0} (Title,URL,Type,Description,Details,Image,Latitude,Longitude,UserId,Timestamp,Helper,Marker) values('{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', 0, '{11}')"\
+	.format(FTID, allValues['title'], allValues['url'], allValues['type'], allValues['description'],  allValues['details'],  allValues['image'], allValues['lat'], allValues['lng'], userId, now, allValues['marker'])
 
 	logger.info('SQL INSERT: ' + sqlInsert)
 	

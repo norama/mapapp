@@ -1,48 +1,68 @@
 function initExternalItemForm() {
+	
+	$.getJSON( "/config/external/types/titles.json", function( titles ) {
 
+		$.getJSON( "/config/external/markers/markers.json", function( markers ) {
 
-    $('#externalItemForm').jsonForm({
-        schema: {
-          url: {
+			_externalItemForm(titles, markers);
+
+		});
+		
+	});
+
+}
+
+function _externalItemForm(titles, markers) {
+	
+	$('#externalItemForm').jsonForm({
+		schema: {
+		  url: {
 			type: 'url',
-            title: 'URL',
+			title: 'URL',
 			format: 'url',
 			required: true
 		  },
 		  type: {
 			type: 'string',
-            title: 'Type',
-			enum: [ "drevo-les", "annonce" ],
+			title: 'Type',
+			enum: _types(markers),
 			required: true
 		  }
-        },
-        "form": [
-            {
+		},
+		"form": [
+			{
 				"key": "url",
 				"value": ''
 			},
 			{
 				"key": "type",
-				"titleMap": typeTitleMap
+				"titleMap": titles
 			},
-            {
-              "type": "actions",
-              "items": externalItemButtonPanel()
-            }
-          ],
-          onSubmitValid: function (values) {
+			{
+			  "type": "actions",
+			  "items": externalItemButtonPanel()
+			}
+		  ],
+		  onSubmitValid: function (values) {
 
 			clearUrlField();
-            hideExternalItemForm(); 
-            hideInfoWindow();
-            clearItemMarker(); 
-            console.log(JSON.stringify(values, null, 4));
-            
-            submitExternalItem(values);
+			hideExternalItemForm(); 
+			hideInfoWindow();
+			clearItemMarker(); 
+			console.log(JSON.stringify(values, null, 4));
 
-          }
-      });
+			submitExternalItem(values);
 
+		  }
+	  });
+}
+
+function _types(markers) {
+	var _types = [];
+	$.each(markers, function(_type, marker) {
+		_types.push(_type);	   
+	});
+	return _types;
 }
 
 function externalItemButtonPanel() {

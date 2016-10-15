@@ -109,6 +109,15 @@ function storePosition() {
 }
 
 function initItemForm(formItem, action) {
+	
+	$.getJSON( "/config/external/types/titles.json", function( titles ) {
+		
+		_itemForm(formItem, action, titles);
+		
+	});
+}
+
+function _itemForm(formItem, action, titles) {
 
     var readonly = (action == 'view') || (action == 'delete');
 
@@ -169,7 +178,7 @@ function initItemForm(formItem, action) {
 		  		{
 					"key": "type",
 		  			"value": formItem['type'],
-					"titleMap": typeTitleMap,
+					"titleMap": titles,
 					disabled: true
 				},
 				{
