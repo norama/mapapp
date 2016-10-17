@@ -33,6 +33,13 @@
 
 
     function initMap() {
+		loadConfig(_initMap);
+	}
+
+	function _initMap() {
+		initFilterForm();
+		initExternalItemForm();
+		
         var initloc = false;
         if ($('#center_lat').val().length == 0) {
             initloc = true;
@@ -445,7 +452,8 @@
 
 	function _css(type) {
 		if (type) {
-			return '/config/external/css/' + type + '.css';
+			var style = type in config.styles ? config.styles[type] : type;
+			return '/config/external/styles/' + style + '.css';
 		}
 		return null;
 	}

@@ -54,12 +54,36 @@ function hideWait(lat, lng) {
 	// map.setOptions({draggableCursor: null});
 }
 
-function types(markers, withEmpty) {
+config = null;
+
+function loadConfig(callback) {
+	$.getJSON( "/config/external/styles.json", function( styles ) {
+		
+		$.getJSON( "/config/external/types/titles.json", function( titles ) {		
+
+			$.getJSON( "/config/external/markers/markers.json", function( markers ) {
+
+				config = {
+					"titles": titles,
+					"markers": markers,
+					"styles": styles
+				};
+
+				callback();
+
+			});
+
+		});
+		
+	});
+}
+
+function types(withEmpty) {
 	var _types = [];
 	if (withEmpty) {
 		_types.push('');	 
 	}
-	$.each(markers, function(_type, marker) {
+	$.each(config.markers, function(_type, marker) {
 		_types.push(_type);	   
 	});
 	return _types;

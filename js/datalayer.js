@@ -12,27 +12,24 @@
 
 	function initFusionTable() {
 		
-		$.getJSON( "/config/external/markers/markers.json", function( markers ) {
-			ftlayer = new google.maps.FusionTablesLayer({
-				query: {
-				  select: "'Location'",
-				  from: FTID
-				},
-				map: map,
-				options: {
-					suppressInfoWindows: true
-				},
-				styles: ftstyles(markers)
-			});		
+		ftlayer = new google.maps.FusionTablesLayer({
+			query: {
+			  select: "'Location'",
+			  from: FTID
+			},
+			map: map,
+			options: {
+				suppressInfoWindows: true
+			},
+			styles: ftstyles()
+		});		
 
-			google.maps.event.addListener(ftlayer, 'click', showInfoWindowOnClick);
-		});
-
+		google.maps.event.addListener(ftlayer, 'click', showInfoWindowOnClick);
 	}
 
-	function ftstyles(markers) {
+	function ftstyles() {
 		var styles = [];
-		$.each(markers, function(type, marker) {
+		$.each(config.markers, function(type, marker) {
 			styles.push({
 				where: "'Marker' = '"+marker+"'",
 				markerOptions: {

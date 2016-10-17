@@ -1,19 +1,5 @@
 function initExternalItemForm() {
 	
-	$.getJSON( "/config/external/types/titles.json", function( titles ) {
-
-		$.getJSON( "/config/external/markers/markers.json", function( markers ) {
-
-			_externalItemForm(titles, markers);
-
-		});
-		
-	});
-
-}
-
-function _externalItemForm(titles, markers) {
-	
 	$('#externalItemForm').jsonForm({
 		schema: {
 		  url: {
@@ -25,7 +11,7 @@ function _externalItemForm(titles, markers) {
 		  type: {
 			type: 'string',
 			title: 'Type',
-			enum: types(markers, false),
+			enum: types(false),
 			required: true
 		  }
 		},
@@ -36,7 +22,7 @@ function _externalItemForm(titles, markers) {
 			},
 			{
 				"key": "type",
-				"titleMap": titles
+				"titleMap": config.titles
 			},
 			{
 			  "type": "actions",

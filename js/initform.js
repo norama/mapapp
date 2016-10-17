@@ -109,19 +109,6 @@ function storePosition() {
 }
 
 function initItemForm(formItem, action) {
-	
-	$.getJSON( "/config/external/types/titles.json", function( titles ) {
-		
-		$.getJSON( "/config/external/markers/markers.json", function( markers ) {
-		
-			_itemForm(formItem, action, titles, markers);
-			
-		});
-		
-	});
-}
-
-function _itemForm(formItem, action, titles, markers) {
 
     var readonly = (action == 'view') || (action == 'delete');
 
@@ -142,7 +129,7 @@ function _itemForm(formItem, action, titles, markers) {
 		  type: {
 			type: 'string',
             title: 'Type',
-			enum: types(markers, true)
+			enum: types(true)
 		  },
           description: {
             type: 'string',
@@ -182,7 +169,7 @@ function _itemForm(formItem, action, titles, markers) {
 		  		{
 					"key": "type",
 		  			"value": formItem['type'],
-					"titleMap": titles,
+					"titleMap": config.titles,
 					disabled: true
 				},
 				{

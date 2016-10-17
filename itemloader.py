@@ -31,9 +31,12 @@ def read_file(path):
 MARKERS = read_json('config/external/markers/markers.json')
 GEOCODING_KEYS = read_json('private/auth/keys/GeocodingKeys.json')
 
+SELECTORS = read_json('config/external/selectors.json')
+
 def read_external(url, _type):
 		
-	config = read_json('config/external/selectors/'+_type+'.json')
+	selector = SELECTORS.get(_type, _type)
+	config = read_json('config/external/selectors/'+selector+'.json')
 	# logger.info(json.dumps(config, indent=4))
 	
 	html = read_url(url)
@@ -68,8 +71,8 @@ def read_external(url, _type):
 	return values
 
 def _latlng(config, soup, home):
-	latlng = _select('latlng', config, soup, home) 
-	if isinstance(latlng, list) and len(latlng) == 2:
+	latlng = _select('latlng', config, soup, home) 	
+	if isinstance(latlng, tuple) and len(latlng) == 2:
 		return latlng
 	
 	address = _select('address', config, soup, home) 
