@@ -33,7 +33,7 @@ GEOCODING_KEYS = read_json('private/auth/keys/GeocodingKeys.json')
 
 def read_external(url, _type):
 		
-	config = read_json('config/external/'+_type+'.json')
+	config = read_json('config/external/selectors/'+_type+'.json')
 	# logger.info(json.dumps(config, indent=4))
 	
 	html = read_url(url)
