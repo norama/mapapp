@@ -74,8 +74,6 @@ def _latlng(config, soup, home):
 	address = _select('address', config, soup, home) 
 	if address:
 		latlng = geocode(address)
-		if latlng is None:
-			raise ValueError('Could not add item: invalid address.')
 	else:
 		raise ValueError('Could not add item: invalid location data.')
 	return latlng
@@ -90,7 +88,7 @@ def geocode(address):
 	if res['status'] == 'OK' and 'lat' in res and 'lng' in res:
 		return [res['lat'], res['lng']]
 	else:
-		return None
+		raise ValueError('Could not add item: ' + res['status'])
 	
 def geocode1(address):
 	url = 'https://maps.googleapis.com/maps/api/geocode/json'
