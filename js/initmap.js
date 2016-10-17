@@ -346,6 +346,7 @@
         hideMenu();
         clearItemMarker();
         hideForms();
+		clearUrlField();
         $( '#externalItemMapForm' ).show();
     }
 

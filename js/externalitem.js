@@ -25,7 +25,7 @@ function _externalItemForm(titles, markers) {
 		  type: {
 			type: 'string',
 			title: 'Type',
-			enum: _types(markers),
+			enum: types(markers, false),
 			required: true
 		  }
 		},
@@ -45,24 +45,14 @@ function _externalItemForm(titles, markers) {
 		  ],
 		  onSubmitValid: function (values) {
 
-			clearUrlField();
 			hideExternalItemForm(); 
 			hideInfoWindow();
 			clearItemMarker(); 
 			console.log(JSON.stringify(values, null, 4));
 
 			submitExternalItem(values);
-
 		  }
 	  });
-}
-
-function _types(markers) {
-	var _types = [];
-	$.each(markers, function(_type, marker) {
-		_types.push(_type);	   
-	});
-	return _types;
 }
 
 function externalItemButtonPanel() {
@@ -86,7 +76,7 @@ function externalItemButtonPanel() {
 }
 
 
-function submitExternalItem(values, action) {
+function submitExternalItem(values) {
     
 	var center = map.getCenter();
     

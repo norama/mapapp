@@ -54,4 +54,14 @@ function hideWait(lat, lng) {
 	// map.setOptions({draggableCursor: null});
 }
 
+function types(markers, withEmpty) {
+	var _types = [];
+	if (withEmpty) {
+		_types.push('');	 
+	}
+	$.each(markers, function(_type, marker) {
+		_types.push(_type);	   
+	});
+	return _types;
+}
 

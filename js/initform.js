@@ -112,12 +112,16 @@ function initItemForm(formItem, action) {
 	
 	$.getJSON( "/config/external/types/titles.json", function( titles ) {
 		
-		_itemForm(formItem, action, titles);
+		$.getJSON( "/config/external/markers/markers.json", function( markers ) {
+		
+			_itemForm(formItem, action, titles, markers);
+			
+		});
 		
 	});
 }
 
-function _itemForm(formItem, action, titles) {
+function _itemForm(formItem, action, titles, markers) {
 
     var readonly = (action == 'view') || (action == 'delete');
 
@@ -138,7 +142,7 @@ function _itemForm(formItem, action, titles) {
 		  type: {
 			type: 'string',
             title: 'Type',
-			enum: [ "", "drevo-les", "annonce" ]
+			enum: types(markers, true)
 		  },
           description: {
             type: 'string',

@@ -6,8 +6,11 @@ import httplib
 
 import json
 import re
+import geocoder
 
 import sys
+
+import requests
 
 import logging
 
@@ -40,30 +43,69 @@ def read_external(url, _type):
 	if 'home' in config:
 		home = config['home']
 		
-	image = _select('image', config, soup)
+	image = _select('image', config, soup, home)
 	if image:
 		image = home + image
 	
 	values = dict()
 	values['type'] = _type
 	values['url'] = url
-	values['title'] = _select('title', config, soup) 
+	values['title'] = _select('title', config, soup, home) 
 	values['image'] = image
-	values['description'] = _select('description', config, soup) 
-	values['details'] = _select('details', config, soup) 
+	values['description'] = _select('description', config, soup, home) 
+	values['details'] = _select('details', config, soup, home) 
 	values['marker'] = markers[_type]
 	
-	latlng = _select('latlng', config, soup) 
-	if (len(latlng) != 2):
-		raise ValueError('Could not add item: latlng missing.')
-	lat = latlng[0]
-	lng = latlng[1]
+	lat, lng = _latlng(config, soup, home)
+	lat = str(lat)
+	lng = str(lng)
 	
 	logger.info('lat: '+lat+' lng: '+lng)
 	values['lat'] = lat
 	values['lng'] = lng
 	
 	return values
+
+def _latlng(config, soup, home):
+	latlng = _select('latlng', config, soup, home) 
+	if isinstance(latlng, list) and len(latlng) == 2:
+		return latlng
+	
+	address = _select('address', config, soup, home) 
+	if address:
+		latlng = geocode(address)
+		if latlng is None:
+			raise ValueError('Could not add item: invalid address.')
+	else:
+		raise ValueError('Could not add item: invalid location data.')
+	return latlng
+
+def geocode(address):
+	logger.info(u'address: '+address)
+	logger.info(type(address))
+	g = geocoder.google(address)
+	res = g.json
+	
+	logger.info('geocode: '+json.dumps(res))
+	if res['status'] == 'OK' and 'lat' in res and 'lng' in res:
+		return [res['lat'], res['lng']]
+	else:
+		return None
+	
+def geocode1(address):
+	url = 'https://maps.googleapis.com/maps/api/geocode/json'
+	params = {'sensor': 'false', 'address': address}
+	r = requests.get(url, params=params)
+	logger.info(json.dumps(r.json()))
+	results = r.json()['results']
+	location = results[0]['geometry']['location']
+	return [location['lat'], location['lng']]
+	
+	logger.info('geocode: '+json.dumps(res))
+	if res['status'] == 'OK' and 'lat' in res and 'lng' in res:
+		return [res['lat'], res['lng']]
+	else:
+		return None
 
 def read_url(url):
 	try:
@@ -79,13 +121,14 @@ def read_url(url):
 		raise ValueError('Unexpected error while reading url: ' + url + ' error: '+ sys.exc_info()[0])
 
 
-def _select(key, config, soup):
+def _select(key, config, soup, home):
 	if key not in config:
 		return u''
 	
-	return _find(selector=config[key], soup=soup)
+	logger.info('_select: '+key+' : '+json.dumps(config[key]))
+	return _find(selector=config[key], soup=soup, home=home)
 
-def _find(selector, soup):
+def _find(selector, soup, home):
 	tag = soup
 	if not isinstance(selector, list):
 		selector = [selector]
@@ -121,7 +164,7 @@ def _find(selector, soup):
 			raise ValueError('Config error: selector type' +type(s) + ' is not supported, use string or dict')
 		if tag is None:
 			return u''
-	return _content(tag)
+	return _content(tag, home)
 
 # <div id="map"><script>ddd</script><script>latlng(15.6, 14.2)</script></div>
 #
@@ -152,7 +195,9 @@ def _extract_attr(base_tag, tag_name, attrs={}, attr_pattern=None):
 def _extract_string(pattern, string):
 	if pattern is None:
 		return string
-	match = re.search(pattern, string)
+	match = re.search(unicode(pattern), unicode(string))
+	if match is None:
+		return u''
 	groups = match.groups()
 	groups = tuple(g.strip() for g in groups)
 	if len(groups) == 0:
@@ -163,14 +208,19 @@ def _extract_string(pattern, string):
 		return groups
 
 # http://stackoverflow.com/questions/9044088/beautifulsoup-strip-specified-attributes-but-preserve-the-tag-and-its-contents
-def _content(tag):
+def _content(tag, home):
 	if tag is None:
 		return u''
 	REMOVE_ATTRIBUTES = ['id']
 	soup = BeautifulSoup(tag.decode(), 'html.parser')
-	for tag in soup.recursiveChildGenerator():
+	for tag in soup.descendants:
 		if hasattr(tag, 'attrs'):
 			tag.attrs = {key:value for key,value in tag.attrs.iteritems() if key not in REMOVE_ATTRIBUTES}
+	for a in soup.find_all('a'):
+		if a.has_attr('href'):
+			if a['href'].startswith('/'):
+				a['href'] = home + a['href']
+			a['target'] = '_blank'
 	return unicode(soup).strip()
 		
 def _string(s):
@@ -184,5 +234,5 @@ if __name__ == '__main__':
 	key = sys.argv[1]
 	config = read_json(sys.argv[2])
 	soup = BeautifulSoup(open(sys.argv[3]), 'html.parser')
-	value = _select(key, config, soup)
+	value = _select(key, config, soup, '')
 	print 'RESULT: ', value
