@@ -28,7 +28,8 @@ def read_file(path):
 	f.close()
 	return s
 
-markers = read_json('config/external/markers/markers.json')
+MARKERS = read_json('config/external/markers/markers.json')
+GEOCODING_KEYS = read_json('private/auth/keys/GeocodingKeys.json')
 
 def read_external(url, _type):
 		
@@ -54,7 +55,7 @@ def read_external(url, _type):
 	values['image'] = image
 	values['description'] = _select('description', config, soup, home) 
 	values['details'] = _select('details', config, soup, home) 
-	values['marker'] = markers[_type]
+	values['marker'] = MARKERS[_type]
 	
 	lat, lng = _latlng(config, soup, home)
 	lat = str(lat)
@@ -73,14 +74,24 @@ def _latlng(config, soup, home):
 	
 	address = _select('address', config, soup, home) 
 	if address:
-		latlng = geocode(address)
+		latlng = geocode_opencage(address)
 	else:
 		raise ValueError('Could not add item: invalid location data.')
 	return latlng
 
-def geocode(address):
-	logger.info(u'address: '+address)
-	logger.info(type(address))
+def geocode_opencage(address):
+	logger.info(u'geocode_google address: '+address)
+	g = geocoder.opencage(address, key=GEOCODING_KEYS['OpenCage'])
+	res = g.json
+	
+	logger.info('geocode: '+json.dumps(res, indent=4))
+	if res['status'] == 'OK' and 'lat' in res and 'lng' in res:
+		return [res['lat'], res['lng']]
+	else:
+		raise ValueError('Could not add item: ' + res['status'])
+
+def geocode_google(address):
+	logger.info(u'geocode_google address: '+address)
 	g = geocoder.google(address)
 	res = g.json
 	
@@ -229,8 +240,9 @@ def _string(s):
 # Usage: 
 # python .\itemloader.py 'title' .\test\externalitem.json .\test\externalitem.html
 if __name__ == '__main__':
-	key = sys.argv[1]
-	config = read_json(sys.argv[2])
-	soup = BeautifulSoup(open(sys.argv[3]), 'html.parser')
-	value = _select(key, config, soup, '')
-	print 'RESULT: ', value
+	geocode_opencage(' , Brezany II, 28201, Ceska republika')
+#	key = sys.argv[1]
+#	config = read_json(sys.argv[2])
+#	soup = BeautifulSoup(open(sys.argv[3]), 'html.parser')
+#	value = _select(key, config, soup, '')
+#	print 'RESULT: ', value
