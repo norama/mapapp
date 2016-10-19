@@ -193,16 +193,16 @@ def _extract_text(base_tag, tag_name, attrs={}, text_pattern=None):
 	return _extract_string(text_pattern, tag.string)
 
 def _extract_attr(base_tag, tag_name, attrs={}, attr_pattern=None):
-	tag = base_tag.find(tag_name, attrs=attrs)
-	if tag is None:
-		return u''
 	entry = attr_pattern.items()[0]
 	attr = entry[0]
 	pattern = entry[1]
-	if attr in tag.attrs:
-		return _extract_string(pattern, tag.attrs[attr])
-	else:
+	attrs[attr] = re.compile(pattern)
+	
+	tag = base_tag.find(tag_name, attrs=attrs)
+	if tag is None:
 		return u''
+	
+	return _extract_string(pattern, tag.attrs[attr])
 
 def _extract_string(pattern, string):
 	if pattern is None:
