@@ -62,7 +62,9 @@
 			}
         });
 
-        infoWindow = new google.maps.InfoWindow();
+        infoWindow = new google.maps.InfoWindow({
+			pixelOffset: new google.maps.Size(0, -18)
+		});
 
         addMapClickListener();
 

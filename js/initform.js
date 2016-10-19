@@ -292,9 +292,12 @@ function submit(values, action) {
         console.log('lat: '+pos.lat()+', lng: '+pos.lng());
 
         if (action == 'delete') {
-            refreshFTLayer();
-        } else {
-            refreshFTLayer(pos, row);
+            refreshMarkers();
+        } else if (action == 'add') {
+			addMarker(row);
+			showInfoWindow(pos, row);
+		} else if (action == 'edit') {
+            showInfoWindow(pos, row);
         }
 
     })

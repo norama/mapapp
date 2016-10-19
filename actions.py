@@ -207,7 +207,7 @@ def _check_same_user(rowid, userId):
 
 def _get_item(rowid):
 
-	sqlSelect = u"SELECT Title, URL, Type, Description, Details, Image, Latitude, Longitude, UserId FROM {0} WHERE rowid = {1}"\
+	sqlSelect = u"SELECT Title, URL, Type, Description, Details, Image, Latitude, Longitude, UserId, Marker FROM {0} WHERE rowid = {1}"\
 	.format(FTID, rowid)
 	res = service.query().sql(sql=sqlSelect).execute()
 	logger.info(res)
@@ -228,6 +228,7 @@ def _get_item(rowid):
 		'lat':  row[6],
 		'lng':  row[7],
 		'UserId': { 'columnName': 'UserId', 'value': row[8] },
+		'Marker': { 'columnName': 'Marker', 'value': row[9] }
 	}
 
 	return result

@@ -96,7 +96,8 @@ function submitExternalItem(values) {
         console.log('lat: '+pos.lat()+', lng: '+pos.lng());
 
         map.setCenter({lat: pos.lat(), lng: pos.lng()}); 
-        refreshFTLayer(pos, row);
+		addMarker(row);
+        showInfoWindow(pos, row);
 
     })
     .fail(function( xhr, status, errorThrown ) {

@@ -1,3 +1,5 @@
+// Not used any more, replaced by mapdata.js in order to use marker icon url
+// instead of GoogleMap's built-in icon names
 
     // FusionTable ID
     var FTID = '1sShz8nYsrUu4NSG4hb-_vPTK4xCIYbCWNN-fAmJ2';
