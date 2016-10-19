@@ -363,31 +363,20 @@
         infoWindow.close();
     }
 
-    function showInfoWindowOnClick(e) {
+    function showInfoWindowOnClick(row) {
         if (inProgress()) {
             return;
         }
         clearItemMarker();
         hideItemForm();
 		hideLoginForm();
-        showInfoWindow(e.latLng, e.row);
+        showInfoWindow(row);
     }
 
-    function showInfoWindow(pos, row) {
-        console.log('lat: '+pos.lat()+', lng: '+pos.lng());
-        console.log(JSON.stringify(row, null, 2));
+    function showInfoWindow(row) {
+        console.log(JSON.stringify(row, null, 4));
 		
-		var item = {
-            title: row.title,
-			url: row.url,
-			type: row.type,
-            description: row.description,
-			details: row.details,
-			image: row.image,
-            lat: pos.lat(),
-            lng: pos.lng(),
-			userId: row.userId
-        };
+		var item = row;
 				
 		var itemView = {
             title: row.title,
@@ -396,13 +385,13 @@
             description: styleHTML(row.description.trim(), row.type),
 			details: styleHTML(row.details.trim(), row.type),
 			image: row.image,
-            lat: pos.lat(),
-            lng: pos.lng(),
+            lat: row.lat,
+            lng: row.lng,
 			userId: row.userId
         };
 		
         infoWindow.setContent(format(itemView));
-        infoWindow.setPosition(pos);
+        infoWindow.setPosition({lat: row.lat, lng: row.lng});
         infoWindow.open(map);
 	
         $('#editItem').on(

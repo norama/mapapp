@@ -84,20 +84,17 @@ function submitExternalItem(values) {
 
 
     })
-    .done(function( json ) {
+    .done(function(row) {
         
         console.log("------> SUCCESS")
-        console.log(JSON.stringify(json, null, 2));
-        console.log('rowid: '+json.rowid);
+        console.log(JSON.stringify(row, null, 2));
+        console.log('rowid: '+row.rowid);
 
-        var pos = new google.maps.LatLng(json.lat, json.lng);
-        var row = json;
+        console.log('lat: '+row.lat+', lng: '+row.lng);
 
-        console.log('lat: '+pos.lat()+', lng: '+pos.lng());
-
-        map.setCenter({lat: pos.lat(), lng: pos.lng()}); 
+        map.setCenter({lat: row.lat, lng: row.lng}); 
 		addMarker(row);
-        showInfoWindow(pos, row);
+        showInfoWindow(row);
 
     })
     .fail(function( xhr, status, errorThrown ) {

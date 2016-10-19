@@ -69,38 +69,35 @@ function fetchData() {
 	 // Copy each row of data from the response into variables.
 	 // Each column is present in the order listed in the query.
 	 // Starting from 0.
-	 for (var i in rows) {
-	  	 latLng = new google.maps.LatLng(rows[i][0],rows[i][1]);
-	     iconUrl = rows[i][2] ? rows[i][2] : defaultIconUrl(rows[i][3]);
+	 $.each(rows, function(index, row) { 
+	     iconUrl = row[2] ? row[2] : defaultIconUrl(row[3]);
 	  	 content = {
-			 title: rows[i][4],
-			 url: rows[i][5],
-			 type: rows[i][6],
-			 description: rows[i][7],
-			 details: rows[i][8],
-			 image: rows[i][9],
-			 userId: rows[i][3]
+			 lat: row[0],
+			 lng: row[1],
+			 title: row[4],
+			 url: row[5],
+			 type: row[6],
+			 description: row[7],
+			 details: row[8],
+			 image: row[9],
+			 userId: row[3]
 		 };
 		 
-		 var marker = createMarker(latLng, iconUrl, content);
+		 var marker = createMarker(content, iconUrl);
 		 markers.push(marker);
-	  }
+	  });
  }
 
-function createMarker (latLng, url, content) {
+function createMarker(content, iconUrl) {
 	var marker = new google.maps.Marker({
 		map: map,
-		position: latLng,
-		icon: new google.maps.MarkerImage(url),
+		position: new google.maps.LatLng(content.lat, content.lng),
+		icon: new google.maps.MarkerImage(iconUrl),
 		title: content.title
 	});
 	
 	google.maps.event.addListener(marker, 'click', function(event) {
-		var e = {
-			latLng: latLng,
-			row: content
-		};
-		showInfoWindowOnClick(e);
+		showInfoWindowOnClick(content);
 	});
 	
 	return marker;
@@ -109,8 +106,7 @@ function createMarker (latLng, url, content) {
 function addMarker(row) {
 	var iconUrl = row.marker ? 
 		row.marker : defaultIconUrl(row.userId);
-	var latLng = new google.maps.LatLng(row.lat, row.lng);
-	var marker = createMarker(latLng, iconUrl, row);
+	var marker = createMarker(row, iconUrl);
 	markers.push(marker);
 }
 

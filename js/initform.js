@@ -280,24 +280,21 @@ function submit(values, action) {
 
 
     })
-    .done(function( json ) {
+    .done(function(row) {
         
         console.log("------> SUCCESS")
-        console.log(JSON.stringify(json, null, 2));
-        console.log('rowid: '+json.rowid);
+        console.log(JSON.stringify(row, null, 2));
+        console.log('rowid: '+row.rowid);
 
-        var pos = new google.maps.LatLng(json.lat, json.lng);
-        var row = json;
-
-        console.log('lat: '+pos.lat()+', lng: '+pos.lng());
+        console.log('lat: '+row.lat+', lng: '+row.lng);
 
         if (action == 'delete') {
             refreshMarkers();
         } else if (action == 'add') {
 			addMarker(row);
-			showInfoWindow(pos, row);
+			showInfoWindow(row);
 		} else if (action == 'edit') {
-            showInfoWindow(pos, row);
+            showInfoWindow(row);
         }
 
     })
