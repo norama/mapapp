@@ -73,13 +73,13 @@ function fetchData() {
 	  	 latLng = new google.maps.LatLng(rows[i][0],rows[i][1]);
 	     iconUrl = rows[i][2] ? rows[i][2] : defaultIconUrl(rows[i][3]);
 	  	 content = {
-			 Title: {value:  rows[i][4]},
-			 URL: {value:  rows[i][5]},
-			 Type: {value:  rows[i][6]},
-			 Description: {value:  rows[i][7]},
-			 Details: {value:  rows[i][8]},
-			 Image: {value:  rows[i][9]},
-			 UserId: {value: rows[i][3]}
+			 title: rows[i][4],
+			 url: rows[i][5],
+			 type: rows[i][6],
+			 description: rows[i][7],
+			 details: rows[i][8],
+			 image: rows[i][9],
+			 userId: rows[i][3]
 		 };
 		 
 		 var marker = createMarker(latLng, iconUrl, content);
@@ -92,7 +92,7 @@ function createMarker (latLng, url, content) {
 		map: map,
 		position: latLng,
 		icon: new google.maps.MarkerImage(url),
-		title: content.Title.value
+		title: content.title
 	});
 	
 	google.maps.event.addListener(marker, 'click', function(event) {
@@ -107,8 +107,8 @@ function createMarker (latLng, url, content) {
 }
 
 function addMarker(row) {
-	var iconUrl = row.Marker.value ? 
-		row.Marker.value : defaultIconUrl(row.UserId.value);
+	var iconUrl = row.marker ? 
+		row.marker : defaultIconUrl(row.userId);
 	var latLng = new google.maps.LatLng(row.lat, row.lng);
 	var marker = createMarker(latLng, iconUrl, row);
 	markers.push(marker);

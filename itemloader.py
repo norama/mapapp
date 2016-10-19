@@ -243,9 +243,8 @@ def _string(s):
 # Usage: 
 # python .\itemloader.py 'title' .\test\externalitem.json .\test\externalitem.html
 if __name__ == '__main__':
-	geocode_opencage(' , Brezany II, 28201, Ceska republika')
-#	key = sys.argv[1]
-#	config = read_json(sys.argv[2])
-#	soup = BeautifulSoup(open(sys.argv[3]), 'html.parser')
-#	value = _select(key, config, soup, '')
-#	print 'RESULT: ', value
+	key = sys.argv[1]
+	config = read_json(sys.argv[2])
+	soup = BeautifulSoup(open(sys.argv[3]), 'html.parser')
+	value = _select(key, config, soup, '')
+	print 'RESULT: ', value

@@ -219,16 +219,16 @@ def _get_item(rowid):
 
 	result = {
 		'rowid': rowid,
-		'Title': { 'columnName': 'Title', 'value': row[0] },
-		'URL': { 'columnName': 'URL', 'value': row[1] },
-		'Type': { 'columnName': 'Type', 'value': row[2] },
-		'Description':  { 'columnName': 'Description', 'value': row[3] },
-		'Details':  { 'columnName': 'Details', 'value': row[4] },
-		'Image':  { 'columnName': 'Image', 'value': row[5] },
+		'title': row[0],
+		'url': row[1],
+		'type': row[2],
+		'description': row[3],
+		'details': row[4],
+		'image': row[5],
 		'lat':  row[6],
 		'lng':  row[7],
-		'UserId': { 'columnName': 'UserId', 'value': row[8] },
-		'Marker': { 'columnName': 'Marker', 'value': row[9] }
+		'userId': row[8],
+		'marker': row[9]
 	}
 
 	return result

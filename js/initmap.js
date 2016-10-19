@@ -378,27 +378,27 @@
         console.log(JSON.stringify(row, null, 2));
 		
 		var item = {
-            title: row.Title.value,
-			url: row.URL.value,
-			type: row.Type.value,
-            description: row.Description.value,
-			details: row.Details.value,
-			image: row.Image.value,
+            title: row.title,
+			url: row.url,
+			type: row.type,
+            description: row.description,
+			details: row.details,
+			image: row.image,
             lat: pos.lat(),
             lng: pos.lng(),
-			userId: row.UserId.value
+			userId: row.userId
         };
 				
 		var itemView = {
-            title: row.Title.value,
-			url: row.URL.value,
-			type: row.Type.value,
-            description: styleHTML(row.Description.value.trim(), row.Type.value),
-			details: styleHTML(row.Details.value.trim(), row.Type.value),
-			image: row.Image.value,
+            title: row.title,
+			url: row.url,
+			type: row.type,
+            description: styleHTML(row.description.trim(), row.type),
+			details: styleHTML(row.details.trim(), row.type),
+			image: row.image,
             lat: pos.lat(),
             lng: pos.lng(),
-			userId: row.UserId.value
+			userId: row.userId
         };
 		
         infoWindow.setContent(format(itemView));
