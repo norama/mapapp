@@ -29,7 +29,7 @@ function initFilterForm() {
       		items: {
         		type: "string",
         		title: "TTT",
-        		enum: types(true)
+        		enum: types()
       		}
     	  }
         },

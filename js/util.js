@@ -80,14 +80,11 @@ function loadConfig(callback) {
 	});
 }
 
-function types(withEmpty) {
+function types() {
 	var _types = [];
 	$.each(config.types, function(index, _type) {
 		_types.push(_type);	   
 	});
-	if (withEmpty) {
-		_types.push('');	 
-	}
 	return _types;
 }
 

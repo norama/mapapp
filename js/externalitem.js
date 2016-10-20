@@ -11,7 +11,7 @@ function initExternalItemForm() {
 		  type: {
 			type: 'string',
 			title: 'Type',
-			enum: types(false),
+			enum: _.without(types(), ''),
 			required: true
 		  }
 		},

@@ -54,7 +54,7 @@ function defaultIconUrl(userId) {
 }
 
 function initFusionTable() {
-	baseFilter = [ typeFilter(types(true)) ];
+	baseFilter = [ typeFilter(types()) ];
 	fetchData();
 }
 
