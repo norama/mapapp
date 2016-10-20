@@ -105,7 +105,7 @@ function filterItems(values) {
         filter.push("'Description' contains ignoring case '" + description + "'");
     }
 	if (details.length > 0) {
-        filter.push("'Description' contains ignoring case '" + description + "'");
+        filter.push("'Details' contains ignoring case '" + details + "'");
     }
 	if (types.length > 0) {
 		filter.push(typeFilter(types));
