@@ -82,21 +82,21 @@ function loadConfig(callback) {
 
 function types(withEmpty) {
 	var _types = [];
-	if (withEmpty) {
-		_types.push('');	 
-	}
 	$.each(config.types, function(index, _type) {
 		_types.push(_type);	   
 	});
+	if (withEmpty) {
+		_types.push('');	 
+	}
 	return _types;
 }
 
-function titles() {
+function titles(emptyTitle=' ') {
 	var _titles = {};
 	$.each(config.titles, function(_type, _title) {
 		_titles[_type] = '<img src="'+config.markers[_type]+'">&nbsp;' + _title;
 	});
-	_titles[''] = ' ';
+	_titles[''] = emptyTitle;
 	return _titles;
 }
 

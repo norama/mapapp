@@ -31,8 +31,8 @@ function filter() {
 	return filter;
 }
 
-function typeFilter() {
-	return "Type IN ('" + types(true).join("','") + "')";
+function typeFilter(types) {
+	return "Type IN ('" + types.join("','") + "')";
 }
 
 function setUserFilter(filter) {
@@ -54,7 +54,7 @@ function defaultIconUrl(userId) {
 }
 
 function initFusionTable() {
-	baseFilter = [ typeFilter() ];
+	baseFilter = [ typeFilter(types(true)) ];
 	fetchData();
 }
 

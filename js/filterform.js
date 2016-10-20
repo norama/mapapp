@@ -17,12 +17,31 @@ function initFilterForm() {
             type: 'string',
             title: 'Short description',
             default: ''
-          }
+          },
+		  details: {
+            type: 'string',
+            title: 'Details',
+            default: ''
+          },
+		  types: {
+      		type: "array",
+      		title: "Types",
+      		items: {
+        		type: "string",
+        		title: "TTT",
+        		enum: types(true)
+      		}
+    	  }
         },
         "form": [
             "title",
             "description",
-
+			"details",
+			{
+      			key: "types",
+      			type: "checkboxes",
+      			titleMap: titles('<img src="'+DEFAULT_ICON_URL+'">&nbsp;Other')
+    		},
             {
               "type": "actions",
               "items": filterButtonPanel()
@@ -70,8 +89,11 @@ function filterButtonPanel() {
 }
 
 function filterItems(values) {
-    var title = $.trim(values['title']).replace("'", "\\'");
-    var description = $.trim(values['description']).replace("'", "\\'");
+    var title = norm(values['title']);
+    var description = norm(values['description']);
+	var details = norm(values['details']);
+	var types = values['types'];
+	
     var filter = [];
     if (title.length > 0) {
         filter.push("'Title' contains ignoring case '" + title + "'");
@@ -82,5 +104,15 @@ function filterItems(values) {
     if (description.length > 0) {
         filter.push("'Description' contains ignoring case '" + description + "'");
     }
+	if (details.length > 0) {
+        filter.push("'Description' contains ignoring case '" + description + "'");
+    }
+	if (types.length > 0) {
+		filter.push(typeFilter(types));
+	}
     setUserFilter(filter);
+}
+
+function norm(s) {
+	return $.trim(s).replace("'", "\\'");
 }
