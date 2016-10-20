@@ -22,7 +22,8 @@ function initExternalItemForm() {
 			},
 			{
 				"key": "type",
-				"titleMap": config.titles
+				"type": "radios",
+				"titleMap": titles()
 			},
 			{
 			  "type": "actions",

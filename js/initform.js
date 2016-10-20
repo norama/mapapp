@@ -114,6 +114,10 @@ function initItemForm(formItem, action) {
 
       $('#itemForm').jsonForm({
         schema: {
+		  type: {
+			type: 'object',
+            title: 'Type'
+		  },
           title: {
             type: 'string',
             title: 'Title',
@@ -125,11 +129,6 @@ function initItemForm(formItem, action) {
             title: 'URL',
 			format: 'url',
 			readonly: readonly
-		  },
-		  type: {
-			type: 'string',
-            title: 'Type',
-			enum: types(true)
 		  },
           description: {
             type: 'string',
@@ -157,7 +156,11 @@ function initItemForm(formItem, action) {
           }
         },
         "form": [
-		
+				{
+					"key": "type",
+					"type": "htmlsnippet",
+		  			"value": title(formItem['type'])
+				},
 				{
 					"key": "title",
 					"value": formItem['title']
@@ -166,12 +169,6 @@ function initItemForm(formItem, action) {
 					"key": "url",
 					"value": formItem['url']
 				}, 
-		  		{
-					"key": "type",
-		  			"value": formItem['type'],
-					"titleMap": config.titles,
-					disabled: true
-				},
 				{
 					"type": "fieldset",
 					"expandable": true,
@@ -311,6 +308,13 @@ function submit(values, action) {
     });
 }
 
+function title(type) {
+	var title = titles()[type];
+	if (title.trim().length > 0) {
+		title += '<br/><br/>';
+	}
+	return title;
+}
 
 function timestamp() {
 	  var now = new Date();

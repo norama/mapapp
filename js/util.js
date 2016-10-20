@@ -91,3 +91,12 @@ function types(withEmpty) {
 	return _types;
 }
 
+function titles() {
+	var _titles = {};
+	$.each(config.titles, function(_type, _title) {
+		_titles[_type] = '<img src="'+config.markers[_type]+'">&nbsp;' + _title;
+	});
+	_titles[''] = ' ';
+	return _titles;
+}
+
