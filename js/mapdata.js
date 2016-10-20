@@ -20,12 +20,41 @@ var dataColumns = ['Title', 'URL', 'Type', 'Description', 'Details', 'Image'];
 
 var markers = [];
 
+var baseFilter = ['Helper = 0'];
+var userFilter = [];
+
+function filter() {
+	var filter = baseFilter.join(' AND ');
+	if (userFilter.length > 0) {
+		filter += ' AND ' + userFilter.join(' AND ');
+	}
+	return filter;
+}
+
+function typeFilter() {
+	return "Type IN ('" + types(true).join("','") + "')";
+}
+
+function setUserFilter(filter) {
+	if (filter == null) {
+		userFilter = [];
+	} else if (typeof filter === "string") {
+		userFilter = [filter];
+	} else if (filter.constructor === Array) {
+		userFilter = filter;
+	} else {
+		console.log('setUserFilter cannot be applied to type: '+(typeof filter));
+	}	
+	fetchData();
+}
+
 function defaultIconUrl(userId) {
 	return $('#user_id').val() == userId ? 
 		MY_DEFAULT_ICON_URL : DEFAULT_ICON_URL;	
 }
 
 function initFusionTable() {
+	baseFilter = [ typeFilter() ];
 	fetchData();
 }
 
@@ -37,8 +66,12 @@ function fetchData() {
 				+ longitudeColumn + ','
 				+ iconUrlColumn + ','
 				+ userIdColumn + ','
-				+ dataColumns.join(',') + ' FROM '
-				+ FTID;
+				+ dataColumns.join(',') 
+				+ ' FROM '
+				+ FTID
+				+ ' WHERE '
+				+ filter();
+	console.log('DATA: ' + query);
 	var encodedQuery = encodeURIComponent(query);
 
 	// Construct the URL

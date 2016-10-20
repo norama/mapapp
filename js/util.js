@@ -57,24 +57,26 @@ function hideWait(lat, lng) {
 config = null;
 
 function loadConfig(callback) {
-	$.getJSON( "/config/external/styles.json", function( styles ) {
-		
-		$.getJSON( "/config/external/types/titles.json", function( titles ) {		
+	
+	$.getJSON( "/config/external/types.json", function( types ) {
+		$.getJSON( "/config/external/styles.json", function( styles ) {
+			$.getJSON( "/config/external/titles.json", function( titles ) {		
+				$.getJSON( "/config/external/markers.json", function( markers ) {
 
-			$.getJSON( "/config/external/markers/markers.json", function( markers ) {
+					config = {
+						"types": types,
+						"titles": titles,
+						"markers": markers,
+						"styles": styles
+					};
 
-				config = {
-					"titles": titles,
-					"markers": markers,
-					"styles": styles
-				};
+					callback();
 
-				callback();
+				});
 
 			});
 
 		});
-		
 	});
 }
 
@@ -83,7 +85,7 @@ function types(withEmpty) {
 	if (withEmpty) {
 		_types.push('');	 
 	}
-	$.each(config.markers, function(_type, marker) {
+	$.each(config.types, function(index, _type) {
 		_types.push(_type);	   
 	});
 	return _types;

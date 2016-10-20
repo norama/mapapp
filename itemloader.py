@@ -28,7 +28,7 @@ def read_file(path):
 	f.close()
 	return s
 
-MARKERS = read_json('config/external/markers/markers.json')
+MARKERS = read_json('config/external/markers.json')
 GEOCODING_KEYS = read_json('private/auth/keys/GeocodingKeys.json')
 
 SELECTORS = read_json('config/external/selectors.json')

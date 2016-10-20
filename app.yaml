@@ -31,19 +31,9 @@ handlers:
 - url: /img
   static_dir: img
   
-- url: /config/external/types
-  static_dir: config/external/types
-  
-- url: /config/external/markers
-  static_dir: config/external/markers
+- url: /config/external
+  static_dir: config/external
   application_readable: true
-  
-- url: /config/external/styles
-  static_dir: config/external/styles
-  
-- url: /config/external/styles.json
-  static_files: config/external/styles.json
-  upload: config/external/styles.json
 
 - url: /favicon.ico
   static_files: favicon.ico

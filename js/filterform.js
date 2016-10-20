@@ -6,7 +6,6 @@ function fillFilterForm() {
 
 function initFilterForm() {
 
-
     $('#filterForm').jsonForm({
         schema: {
           title: {
@@ -54,7 +53,7 @@ function filterButtonPanel() {
          "onClick": function (evt) {
             evt.preventDefault();
             fillFilterForm();
-            setFilter(null);
+            setUserFilter(null);
         }
     });
 
@@ -73,15 +72,15 @@ function filterButtonPanel() {
 function filterItems(values) {
     var title = $.trim(values['title']).replace("'", "\\'");
     var description = $.trim(values['description']).replace("'", "\\'");
-    var where = [];
+    var filter = [];
     if (title.length > 0) {
-        where.push("'Title' contains ignoring case '" + title + "'");
+        filter.push("'Title' contains ignoring case '" + title + "'");
     }
     if (title.length > 0 && description.length > 0) {
-        where.push("AND");
+        filter.push("AND");
     }
     if (description.length > 0) {
-        where.push("'Description' contains ignoring case '" + description + "'");
+        filter.push("'Description' contains ignoring case '" + description + "'");
     }
-    setFilter(where.length > 0 ? where.join(" ") : null);
+    setUserFilter(filter);
 }
