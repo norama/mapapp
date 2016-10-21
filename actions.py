@@ -13,6 +13,7 @@ from apiclient.http import HttpRequest
 from fileupload import delete_with_thumbnail
 from itemloader import read_external
 
+from random import randint
 
 scopes = ['https://www.googleapis.com/auth/fusiontables']
 
@@ -26,15 +27,17 @@ service = build('fusiontables', 'v2', http=http_auth)
 
 logger = logging.getLogger()
 
+epsilon = 0.001
 
 def rowid(lat, lng):
 
-	min_radius = 0
-	max_radius = 10
-	radius = 10
+	tolerance = epsilon / 100
+	min_radius = 0.0
+	max_radius = epsilon
+	radius = epsilon / 2
 	rows = None
 
-	while radius < 100000 and min_radius < max_radius:
+	while radius < 10.0 and min_radius < max_radius:
 		sqlRowid = u"SELECT rowid, Latitude, Longitude FROM {0} WHERE ST_INTERSECTS(Latitude, CIRCLE(LATLNG({1}, {2}), {3}))"\
 		.format(FTID, lat, lng, radius)
 
@@ -53,16 +56,18 @@ def rowid(lat, lng):
 				logger.info('too many results ({0}), trying radius in between'.format(len(rows)))
 				max_radius = radius
 				radius = int((min_radius + max_radius) / 2)
+				if radius < tolerance:
+					return closest_row(lat, lng, rows)[0]
 		else:
 			if rows is not None:
 				return closest_row(lat, lng, rows)[0]
 			logger.info('no results, increasing radius')
 			min_radius = radius
-			if max_radius - radius <= 1:
+			if max_radius - radius < tolerance:
 				max_radius = radius * 10
 				radius = max_radius
 			else:
-				radius = int((min_radius + max_radius) / 2)
+				radius = (min_radius + max_radius) / 2
 
 	raise ValueError('No item found around ({0}, {1})'.format(lat, lng))
 	
@@ -71,9 +76,10 @@ def closest_row(lat, lng, rows):
 	min_distance = None
 	for row in rows:
 		distance = _distance(float(lat), float(lng), float(row[1]), float(row[2]))
-		if closest_row is None or distance < min_distance:
+		if min_distance is None or distance < min_distance:
 			closest_row = row
 			min_distance = distance
+	
 	return closest_row
 
 def _distance(lat1, lng1, lat2, lng2):
@@ -90,8 +96,10 @@ def insert(values, userId):
 	now = _current_time()
 	userId = userId.encode('utf-8')
 
+	lat, lng = _unique_location(allValues['lat'], allValues['lng'])
+	
 	sqlInsert = u"INSERT INTO {0} (Title,URL,Type,Description,Details,Image,Latitude,Longitude,UserId,Timestamp,Helper,Marker) values('{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', 0, '{11}')"\
-	.format(FTID, allValues['title'], allValues['url'], allValues['type'], allValues['description'],  allValues['details'],  allValues['image'], allValues['lat'], allValues['lng'], userId, now, allValues['marker'])
+	.format(FTID, allValues['title'], allValues['url'], allValues['type'], allValues['description'],  allValues['details'],  allValues['image'], lat, lng, userId, now, allValues['marker'])
 
 	logger.info('SQL INSERT: ' + sqlInsert)
 	
@@ -193,6 +201,22 @@ def _delete_image(rowid):
 	if image:
 		delete_with_thumbnail(image)
 
+def _unique_location(lat, lng):
+	sqlSelect = u"SELECT Title FROM {0} WHERE ST_INTERSECTS(Latitude, CIRCLE(LATLNG({1}, {2}), {3}))"\
+	.format(FTID, lat, lng, epsilon)
+	res = service.query().sql(sql=sqlSelect).execute()
+	
+	if 'rows' not in res:
+		return (lat, lng)
+	
+	dlat = randint(-2, 2)
+	dlng = randint(-2, 2)
+	lat = float(lat) + 2*dlat*epsilon
+	lng = float(lng) + 2*dlng*epsilon
+	
+	return _unique_location(lat, lng)
+	
+		
 def _check_same_user(rowid, userId):
 	sqlSelect = u"SELECT UserId FROM {0} WHERE rowid = {1}"\
 	.format(FTID, rowid)

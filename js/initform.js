@@ -291,6 +291,7 @@ function submit(values, action) {
 			addMarker(row);
 			showInfoWindow(row);
 		} else if (action == 'edit') {
+			refreshMarkers();
             showInfoWindow(row);
         }
 
