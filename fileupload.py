@@ -11,7 +11,6 @@
 #
 
 from google.appengine.api import images
-from google.appengine.api import app_identity
 from gcloud import storage
 
 import json
@@ -97,15 +96,14 @@ class FileUpload(webapp2.RequestHandler):
         return size
 
     def write_blob(self, data, info):
-        gcs1 = storage.Client()
-        bucket = gcs1.get_bucket(CLOUD_STORAGE_BUCKET)
+        bucket = storage.Client().get_bucket(CLOUD_STORAGE_BUCKET)
         
         key = imageUrl(info)
         blob = bucket.blob(key)
         
         try:
             blob.upload_from_string(data, content_type=info['type'])
-        except Exception, e: #Failed to add to memcache
+        except Exception, e: 
             logging.exception(e)
             return (None, None)
         if IMAGE_TYPES.match(info['type']):
@@ -174,7 +172,7 @@ class FileUpload(webapp2.RequestHandler):
 class FileDelete(webapp2.RequestHandler):
     def post(self):
         logger.info('------------ DeleteHandler')
-       
+		
         try:
             url = self.request.POST.get('url')
             if url is not None:

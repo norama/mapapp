@@ -1,3 +1,6 @@
+
+var USER_TYPES_BASE_URL = 'https://storage.cloud.google.com/rich-tribute-135219.appspot.com/types/';
+
 // http://stackoverflow.com/a/1144788/6686659
 
 function escapeRegExp(str) {
@@ -58,17 +61,18 @@ config = null;
 
 function loadConfig(callback) {
 	
-	$.getJSON( "/config/external/types.json", function( types ) {
 		$.getJSON( "/config/external/styles.json", function( styles ) {
 			$.getJSON( "/config/external/titles.json", function( titles ) {		
 				$.getJSON( "/config/external/markers.json", function( markers ) {
 
 					config = {
-						"types": types,
+						"types": _userTypes(),
 						"titles": titles,
 						"markers": markers,
 						"styles": styles
 					};
+					
+					console.log("----> types: " + JSON.stringify(config.types));
 
 					callback();
 
@@ -77,15 +81,15 @@ function loadConfig(callback) {
 			});
 
 		});
-	});
+
+}
+
+function _userTypes() {
+	return $('#user_types').val().split(',');
 }
 
 function types() {
-	var _types = [];
-	$.each(config.types, function(index, _type) {
-		_types.push(_type);	   
-	});
-	return _types;
+	return config.types;
 }
 
 function titles(emptyTitle=' ') {

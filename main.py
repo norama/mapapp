@@ -9,6 +9,8 @@ import webapp2
 import micro_webapp2
 
 from gaesessions import get_current_session
+from itemloader import read_json, read_file
+import stringstore
 
 from httplib2 import Http
 from google.appengine.api import memcache
@@ -32,6 +34,7 @@ client_keyfile = 'private/auth/keys/MapAppClientKeys.json'
 
 client_decorator = OAuth2DecoratorFromClientSecrets(client_keyfile, client_scopes, 'Secrets file is missing or invalid.')
 
+types_file = 'config/external/types.json'
 
 def ospath(path):
     return os.path.join(os.path.dirname(__file__), path)
@@ -73,6 +76,9 @@ class SessionHandler():
 
     def _user(self, user=None):
         return self._item('user', user)
+	
+    def _types(self, types=None):
+        return self._item('types', types)
 
     def _error(self, error=None):
         return self._item('error', error) 
@@ -137,6 +143,23 @@ class Home(Base):
         logger.info(params)
         self.response.out.write(template.render(path, params)) 
         self.sh._clear_request()
+		
+    def _types(self):
+        types = self.sh._types()
+        if types is not None:
+            return types
+        user = self.sh._user()
+        if user is None:
+            types = read_json(types_file)
+        else: 
+            key = 'types/' + user['id']
+            if not stringstore.exists(key):
+                stringstore.write(key, filename='config/external/types.json')
+            types_str = stringstore.read(key)
+            types = json.loads(types_str)
+        types = ','.join(types)
+        self.sh._types(types)
+        return types
 
     def _template_params(self):
         params = dict()
@@ -148,6 +171,7 @@ class Home(Base):
         user = self.sh._user()
         if user is not None:
             params['user'] = user
+        params['types'] = self._types()
         return params
 
 
