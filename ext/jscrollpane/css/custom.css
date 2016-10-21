@@ -9,3 +9,9 @@
     height: 640px;
     overflow: auto !important;
 }
+
+.choices-scroll-pane {
+    width: 100% !important;
+    height: 350px;
+    overflow: auto !important;
+}

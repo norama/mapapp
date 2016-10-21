@@ -803,8 +803,17 @@ jsonform.elementTypes = {
           node: node
         }, fieldTemplateSettings);
       });
+		
+	  choiceshtml = '<div class="choices-scroll-pane">' + choiceshtml + '</div>';
 
       data.choiceshtml = choiceshtml;
+    },
+	'onInsert': function (evt, node) {
+		$(node.el).find('.choices-scroll-pane').jScrollPane({
+			showArrows: true,
+    		autoReinitialise: true,
+			contentWidth: '0px'
+		});
     }
   },
   'array': {
