@@ -39,6 +39,9 @@ handlers:
   static_files: favicon.ico
   upload: favicon.ico
 
+- url: /api/.*
+  script: IGNORED
+  
 - url: /.*
   script: main.app
 

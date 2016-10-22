@@ -11,7 +11,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 from apiclient.discovery import build
 from apiclient.http import HttpRequest
 from fileupload import delete_with_thumbnail
-from itemloader import read_external
+from api.itemloader import read_external
 
 from random import randint
 
@@ -27,7 +27,7 @@ service = build('fusiontables', 'v2', http=http_auth)
 
 logger = logging.getLogger()
 
-epsilon = 0.001
+epsilon = 0.0001
 
 def rowid(lat, lng):
 
@@ -202,11 +202,18 @@ def _delete_image(rowid):
 		delete_with_thumbnail(image)
 
 def _unique_location(lat, lng):
+	lat = _round_float(lat)
+	lng = _round_float(lng)
+	logger.info('_unique_location: checking ({0}, {1})'.format(lat, lng))
 	sqlSelect = u"SELECT Title FROM {0} WHERE ST_INTERSECTS(Latitude, CIRCLE(LATLNG({1}, {2}), {3}))"\
 	.format(FTID, lat, lng, epsilon)
 	res = service.query().sql(sql=sqlSelect).execute()
 	
+	logger.info(sqlSelect)
+	logger.info(json.dumps(res, indent=4))
+	
 	if 'rows' not in res:
+		logger.info('===> _unique_location: returning ({0}, {1})'.format(lat, lng))
 		return (lat, lng)
 	
 	dlat = randint(-2, 2)
@@ -215,7 +222,9 @@ def _unique_location(lat, lng):
 	lng = float(lng) + 2*dlng*epsilon
 	
 	return _unique_location(lat, lng)
-	
+
+def _round_float(x):
+	return float(int(float(x) * 10000000)) / 10000000
 		
 def _check_same_user(rowid, userId):
 	sqlSelect = u"SELECT UserId FROM {0} WHERE rowid = {1}"\

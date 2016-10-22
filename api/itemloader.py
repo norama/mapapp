@@ -1,5 +1,7 @@
 from bs4 import BeautifulSoup
 
+from filereader import read_file, read_json
+
 import urllib
 import urllib2
 import httplib
@@ -15,18 +17,6 @@ import requests
 import logging
 
 logger = logging.getLogger()
-
-def read_json(path):
-	return json.loads(read_file(path))
-
-def read_file(path):
-	try:
-		f = open(path, 'r')
-	except IOError:
-		raise ValueError('IOError while opening file: ' + path)
-	s = f.read()
-	f.close()
-	return s
 
 MARKERS = read_json('config/external/markers.json')
 GEOCODING_KEYS = read_json('private/auth/keys/GeocodingKeys.json')

@@ -9,7 +9,7 @@ import webapp2
 import micro_webapp2
 
 from gaesessions import get_current_session
-from itemloader import read_json, read_file
+from api.filereader import read_json, read_file
 import stringstore
 
 from httplib2 import Http
