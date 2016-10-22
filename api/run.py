@@ -1,14 +1,16 @@
 from filereader import read_file
+from itemloader import read_external
+from actions import insert_external
 
 import sys
 
 import logging
 
 import time
-timestr = time.strftime("%Y%m%d-%H%M%S")
+timestr = time.strftime("%Y-%m-%d_%H-%M-%S")
 
 logdir = 'api/logs'
-logfile = 'runlog-{0}.txt'.format(timestr)
+logfile = 'runlog-{0}'.format(timestr)
 
 #logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 #logger = logging.getLogger()
@@ -28,6 +30,8 @@ fileHandler.setFormatter(logFormatter)
 fileHandler.setLevel(logging.INFO)
 logger.addHandler(fileHandler)
 
+SYS_USER = 'system'
+
 #consoleHandler = logging.StreamHandler()
 #consoleHandler.setFormatter(logFormatter)
 #consoleHandler.setLevel(logging.INFO)
@@ -40,6 +44,14 @@ logger.addHandler(fileHandler)
 def import_item(url, _type):
 	# print str(sys.__stdout__)
 	logger.info('importing '+_type+': url="'+url+'"')
+	try:
+		insert_external(url, _type, SYS_USER)
+	except ValueError, e:
+		logger.error('--> ERROR importing URL "'+url+'", type: '+_type)
+		logger.error(e, exc_info=True)
+	except Exception, e:
+		logger.error('==> PROGRAM ERROR while importing URL "'+url+'", type: '+_type)
+		logger.error(e, exc_info=True)
 
 if __name__ == '__main__':
 	if len(sys.argv) == 1:

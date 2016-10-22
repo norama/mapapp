@@ -10,7 +10,7 @@ import micro_webapp2
 
 from gaesessions import get_current_session
 from api.filereader import read_json, read_file
-import stringstore
+import api.stringstore as stringstore
 
 from httplib2 import Http
 from google.appengine.api import memcache
@@ -22,8 +22,8 @@ from apiclient.discovery import build
 from oauth2client.client import Error
 
 
-import actions
-from fileupload import FileUpload, FileDelete
+import api.actions as actions
+from api.fileupload import FileUpload, FileDelete
 
 logger = logging.getLogger()
 

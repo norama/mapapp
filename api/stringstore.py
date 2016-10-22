@@ -1,5 +1,5 @@
 from gcloud import storage
-from api.filereader import read_file
+from filereader import read_file
 
 import os
 import sys

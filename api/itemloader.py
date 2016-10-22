@@ -73,7 +73,7 @@ def _latlng(config, soup, home):
 	return latlng
 
 def geocode_opencage(address):
-	logger.info(u'geocode_google address: '+address)
+	logger.info(u'geocode_opencage address: '+address)
 	g = geocoder.opencage(address, key=GEOCODING_KEYS['OpenCage'])
 	res = g.json
 	

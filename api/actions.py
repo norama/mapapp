@@ -11,7 +11,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 from apiclient.discovery import build
 from apiclient.http import HttpRequest
 from fileupload import delete_with_thumbnail
-from api.itemloader import read_external
+from itemloader import read_external
 
 from random import randint
 
@@ -27,7 +27,7 @@ service = build('fusiontables', 'v2', http=http_auth)
 
 logger = logging.getLogger()
 
-epsilon = 0.0001
+epsilon = 0.001
 
 def rowid(lat, lng):
 
