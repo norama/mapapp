@@ -61,11 +61,20 @@ def _userinfo():
     return None
 
 def _extract(userinfo):
+    # logger.info(json.dumps(userinfo, indent=4))
     res = dict()
+    res['email'] = _extract_email(userinfo)
     res['id'] = userinfo['resourceName']
     res['name'] = userinfo['names'][0]['displayName']
     res['avatar'] = userinfo['photos'][0]['url']
     return res
+
+def _extract_email(userinfo):
+	emails = userinfo['emailAddresses']
+	if emails:
+		return emails[0]['value']
+	else:
+		return None
 
 class SessionHandler():
     def _conf(self, conf=None):
@@ -152,7 +161,7 @@ class Home(Base):
         if user is None:
             types = read_json(types_file)
         else: 
-            key = 'types/' + user['id']
+            key = self._types_key(user)
             if not stringstore.exists(key):
                 stringstore.write(key, filename='config/external/types.json')
             types_str = stringstore.read(key)
@@ -160,6 +169,12 @@ class Home(Base):
         types = ','.join(types)
         self.sh._types(types)
         return types
+	
+    def _types_key(self, user):
+        if user['email']:
+            return 'types/' + user['email']
+        else:
+            return 'types/' + user['id']
 
     def _template_params(self):
         params = dict()
