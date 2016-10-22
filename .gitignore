@@ -51,3 +51,6 @@ private
 
 # compiled python files
 *.pyc
+
+# log files
+api/logs/*
