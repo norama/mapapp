@@ -11,6 +11,7 @@ import re
 import geocoder
 
 import sys
+import time
 
 import requests
 
@@ -23,19 +24,32 @@ GEOCODING_KEYS = read_json('private/auth/keys/GeocodingKeys.json')
 
 SELECTORS = read_json('config/external/selectors.json')
 
-def read_external(url, _type):
-		
+def _config(_type):
 	selector = SELECTORS.get(_type, _type)
-	config = read_json('config/external/selectors/'+selector+'.json')
-	# logger.info(json.dumps(config, indent=4))
-	
-	html = read_url(url)
-	# logger.info(html)
-	soup = BeautifulSoup(html, 'html.parser')
-	
+	return read_json('config/external/selectors/'+selector+'.json')
+
+def _home(config):
 	home = ''
 	if 'home' in config:
 		home = config['home']
+	return home
+
+def _soup(url):
+	html = read_url(url)
+	return BeautifulSoup(html, 'html.parser')
+
+def read_external_item_urls(url, _type):
+	config = _config(_type)
+	soup = _soup(url)
+	home = _home(config)
+	selector = config['item']
+	a_tags = soup.select(selector)
+	return [home + a['href'] for a in a_tags]
+	
+def read_external_item(url, _type):		
+	config = _config(_type)	
+	soup = _soup(url)
+	home = _home(config)
 		
 	image = _select('image', config, soup, home)
 	if image:
@@ -73,6 +87,7 @@ def _latlng(config, soup, home):
 	return latlng
 
 def geocode_opencage(address):
+	time.sleep(1)
 	logger.info(u'geocode_opencage address: '+address)
 	g = geocoder.opencage(address, key=GEOCODING_KEYS['OpenCage'])
 	res = g.json
@@ -111,6 +126,7 @@ def geocode1(address):
 
 def read_url(url):
 	try:
+		logger.info('reading URL: ' + url)
 		response = urllib2.urlopen(url)
 		return response.read()
 	except urllib2.HTTPError, e:

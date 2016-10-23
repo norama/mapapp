@@ -11,7 +11,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 from apiclient.discovery import build
 from apiclient.http import HttpRequest
 from fileupload import delete_with_thumbnail
-from itemloader import read_external
+from itemloader import read_external_item, read_external_item_urls
 
 from random import randint
 
@@ -116,9 +116,33 @@ def insert(values, userId):
 	item = _get_item(rowid)
 	return json.dumps(item)
 	
-def insert_external(url, _type, userId):
-	values = read_external(url, _type)
+def insert_external(url, multiple, _type, userId):
+	if (multiple):
+		return _insert_externals(url, _type, userId)
+	else:
+		return _insert_external(url, _type, userId)
 	
+def _insert_externals(url, _type, userId):
+	success_counter = 0
+	failure_counter = 0
+	urls = read_external_item_urls(url, _type)
+	for url in urls:
+		try:
+			_insert_external(url, _type, userId)
+		except ValueError, e:
+			logger.error('Error importing: ' + url)
+			logger.exception(e)
+			failure_counter = failure_counter + 1
+		else:
+			success_counter = success_counter + 1
+			
+	return json.dumps({
+		"success": str(success_counter), 
+		"failure": str(failure_counter)
+	});
+	
+def _insert_external(url, _type, userId):
+	values = read_external_item(url, _type)
 	return insert(values, userId)
 	
 def update(rowid, values, userId):

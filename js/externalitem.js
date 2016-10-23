@@ -8,6 +8,10 @@ function initExternalItemForm() {
 			format: 'url',
 			required: true
 		  },
+		  multiple: {
+			type: 'boolean',
+			title: 'Multiple'
+		  },
 		  type: {
 			type: 'string',
 			title: 'Type',
@@ -19,6 +23,10 @@ function initExternalItemForm() {
 			{
 				"key": "url",
 				"value": ''
+			},
+			{
+				"key": "multiple",
+				"inlinetitle": "Item URLs selected by 'item' selector"
 			},
 			{
 				"key": "type",
@@ -37,7 +45,7 @@ function initExternalItemForm() {
 			clearItemMarker(); 
 			console.log(JSON.stringify(values, null, 4));
 
-			submitExternalItem(values);
+			submitExternal(values);
 		  }
 	  });
 }
@@ -63,7 +71,7 @@ function externalItemButtonPanel() {
 }
 
 
-function submitExternalItem(values) {
+function submitExternal(values) {
     
 	var center = map.getCenter();
     
@@ -72,7 +80,7 @@ function submitExternalItem(values) {
     $.ajax({
      
         // The URL for the request
-        url: mapappUrl('/externalitem'),
+        url: mapappUrl('/external'),
      
         // The data to send (will be converted to a query string)
         data: values,
@@ -88,14 +96,19 @@ function submitExternalItem(values) {
     .done(function(row) {
         
         console.log("------> SUCCESS")
-        console.log(JSON.stringify(row, null, 2));
-        console.log('rowid: '+row.rowid);
+        console.log(JSON.stringify(row, null, 4));
+		if ('rowid' in row) {
+			console.log('rowid: '+row.rowid);
 
-        console.log('lat: '+row.lat+', lng: '+row.lng);
+			console.log('lat: '+row.lat+', lng: '+row.lng);
 
-        map.setCenter({lat: row.lat, lng: row.lng}); 
-		addMarker(row);
-        showInfoWindow(row);
+			map.setCenter({lat: row.lat, lng: row.lng}); 
+			addMarker(row);
+			showInfoWindow(row);
+		} else { // multiple
+			refreshMarkers();
+			alert(JSON.stringify(row, null, 4));
+		}
 
     })
     .fail(function( xhr, status, errorThrown ) {

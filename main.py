@@ -36,6 +36,12 @@ client_decorator = OAuth2DecoratorFromClientSecrets(client_keyfile, client_scope
 
 types_file = 'config/external/types.json'
 
+def _boolean(str):
+	if str and str.lower() == 'true':
+		return True
+	else:
+		return False
+
 def ospath(path):
     return os.path.join(os.path.dirname(__file__), path)
 
@@ -245,7 +251,7 @@ class InsertExternal(Base):
     def post(self):
         user = self._user()
         values = self._post_values()
-        return actions.insert_external(values['url'], values['type'], user['id'])
+        return actions.insert_external(values['url'], _boolean(values['multiple']), values['type'], user['id'])
 
 class Edit(Base):
 
@@ -286,7 +292,7 @@ app = micro_webapp2.WSGIApplication([
     ('/', Home),
     ('/index.html', Home),
     ('/add', Insert),
-	('/externalitem', InsertExternal),
+	('/external', InsertExternal),
     ('/edit', Edit),
     ('/delete', Delete),
     ('/login', Login),

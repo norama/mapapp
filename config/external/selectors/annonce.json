@@ -1,5 +1,6 @@
 {
 	"home": "http://www.annonce.cz",
+	"item": "a.clickable",
 	"title": {"h1": "(.*)"},
 	"image": {"img": [{"itemprop": "image"}, {"src": "(.*)"}]},
 	"description": {"table": {"itemtype": "http://schema.org/Offer"}},

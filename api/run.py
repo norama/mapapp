@@ -1,6 +1,4 @@
 from filereader import read_file
-from itemloader import read_external
-from actions import insert_external
 
 import sys
 
@@ -45,7 +43,8 @@ def import_item(url, _type):
 	# print str(sys.__stdout__)
 	logger.info('importing '+_type+': url="'+url+'"')
 	try:
-		insert_external(url, _type, SYS_USER)
+		pass
+		# insert_external(url, _type, SYS_USER)
 	except ValueError, e:
 		logger.error('--> ERROR importing URL "'+url+'", type: '+_type)
 		logger.error(e, exc_info=True)
