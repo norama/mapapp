@@ -169,7 +169,7 @@ class Home(Base):
         else: 
             key = self._types_key(user)
             if not stringstore.exists(key):
-                stringstore.write(key, filename='config/external/types.json')
+                stringstore.write(key, filename=types_file)
             types_str = stringstore.read(key)
             types = json.loads(types_str)
         types = ','.join(types)
@@ -177,7 +177,7 @@ class Home(Base):
         return types
 	
     def _types_key(self, user):
-        if user['email']:
+        if 'email' in user and user['email']:
             return 'types/' + user['email']
         else:
             return 'types/' + user['id']
