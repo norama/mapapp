@@ -1,4 +1,9 @@
 {
     "drevo-les": "Dřevo-les",
-	"annonce-byt": "Byt (annonce)"
+	"annonce-byt": "Byt",
+	"annonce-dum": "Dům",
+	"annonce-pozemek": "Pozemek",
+	"annonce-prostor": "Komerční prostor",
+	"annonce-vymena": "Výměna realit",
+	"annonce-nabytek": "Nábytek"
 }

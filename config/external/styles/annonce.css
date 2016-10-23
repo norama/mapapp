@@ -1,7 +1,7 @@
 /* tabulky */
-section.annonce-byt table th, section.annonce-byt table td  {background-color: #f5f5f5; background-color: #f5f5f5; }
-section.annonce-byt table.list th {background-color: #eaeaed;font-weight: normal;color: #000;}
-section.annonce-byt table tr:nth-child(2n+1) th, section.annonce-byt table tr:nth-child(2n+1) td {background-color: #ffffff;}
-section.annonce-byt table th, section.annonce-byt table td {padding: 8px 16px;text-align: left;border: 1px solid #d5d5d5;}
-section.annonce-byt table thead td {font-weight: bold; background-color: #f5f5f5 !important;}
-section.annonce-byt div.table-box { overflow: auto; }
+section.annonce table th, section.annonce table td  {background-color: #f5f5f5; background-color: #f5f5f5; }
+section.annonce table.list th {background-color: #eaeaed;font-weight: normal;color: #000;}
+section.annonce table tr:nth-child(2n+1) th, section.annonce table tr:nth-child(2n+1) td {background-color: #ffffff;}
+section.annonce table th, section.annonce table td {padding: 8px 16px;text-align: left;border: 1px solid #d5d5d5;}
+section.annonce table thead td {font-weight: bold; background-color: #f5f5f5 !important;}
+section.annonce div.table-box { overflow: auto; }

@@ -1,7 +1,7 @@
 {
 	"home": "http://www.annonce.cz",
 	"title": {"h1": "(.*)"},
-	"image": ["#reality-detail", {"img": [{}, {"src": "(.*)"}]}],
+	"image": {"img": [{"itemprop": "image"}, {"src": "(.*)"}]},
 	"description": {"table": {"itemtype": "http://schema.org/Offer"}},
 	"details": {"div": {"itemprop": "description"}},
 	"address": {"a": [{}, {"href": "https://maps\\.google\\.com/\\?q=(.*)"}]},

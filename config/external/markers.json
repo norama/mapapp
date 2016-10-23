@@ -1,5 +1,10 @@
 {
 	"drevo-les": "http://www.drevo-les.cz/img/ico-les.png",
 	"annonce-byt": "/config/external/markers/annonce-byt.png",
+	"annonce-dum": "/config/external/markers/annonce-dum.png",
+	"annonce-pozemek": "/config/external/markers/annonce-pozemek.png",
+	"annonce-prostor": "/config/external/markers/annonce-prostor.png",
+	"annonce-vymena": "/config/external/markers/annonce-vymena.png",
+	"annonce-nabytek": "/config/external/markers/annonce-nabytek.png",
 	"": "http://maps.google.com/mapfiles/ms/icons/blue.png"
 }

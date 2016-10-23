@@ -430,9 +430,10 @@
 
 	function styleHTML(text, type) {
 		if (text.toLowerCase().indexOf('</') !== -1) {
-			var css = _css(type);
-			if (css) {
-				text = '<section class="'+type+'"><style type="text/css" scoped="scoped">@import url("'+css+'");</style>' + text + '</section>';
+			var style = _style(type);
+			if (style) {
+				var css = _css(style);				
+				text = '<section class="'+style+'"><style type="text/css" scoped="scoped">@import url("'+css+'");</style>' + text + '</section>';
 			}
 			
 		} else {
@@ -441,12 +442,16 @@
 		return text;
 	}
 
-	function _css(type) {
-		if (type) {
-			var style = type in config.styles ? config.styles[type] : type;
-			return '/config/external/styles/' + style + '.css';
-		}
-		return null;
+	function _style(type) {
+		return type ?
+			(type in config.styles ? config.styles[type] : type) :
+			null;
+	}
+
+	function _css(style) {
+		return style ? 
+			'/config/external/styles/' + style + '.css' :
+			null;
 	}
 
     function setItemMarkerOnClick(e) {
