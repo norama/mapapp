@@ -86,7 +86,18 @@ def _distance(lat1, lng1, lat2, lng2):
 	Dlat = lat1 - lat2
 	Dlng = lng1 - lng2
 	return Dlat * Dlat + Dlng * Dlng
-			
+
+def _rowid(url):
+	sqlRowid = u"SELECT rowid FROM {0} WHERE URL = '{1}'".format(FTID, url)
+	logger.info(sqlRowid)
+	res = service.query().sql(sql=sqlRowid).execute()
+	logger.info(res)
+
+	if 'rows' in res:
+		rows = res['rows']
+		return rows[0][0]
+	else:
+		return None
 
 def insert(values, userId):
 
@@ -123,27 +134,35 @@ def insert_external(url, multiple, _type, userId):
 		return _insert_external(url, _type, userId)
 	
 def _insert_externals(url, _type, userId):
-	success_counter = 0
-	failure_counter = 0
+	counters = {
+		'insert': 0,
+		'update': 0,
+		'failure': 0
+	}
 	urls = read_external_item_urls(url, _type)
+	logger.info('=== urls: ' + repr(urls))
 	for url in urls:
 		try:
-			_insert_external(url, _type, userId)
+			_insert_external(url, _type, userId, counters)
 		except ValueError, e:
 			logger.error('Error importing: ' + url)
 			logger.exception(e)
-			failure_counter = failure_counter + 1
-		else:
-			success_counter = success_counter + 1
+			counters['failure'] = counters['failure'] + 1
 			
-	return json.dumps({
-		"success": str(success_counter), 
-		"failure": str(failure_counter)
-	});
+	return json.dumps(counters);
 	
-def _insert_external(url, _type, userId):
+def _insert_external(url, _type, userId, counters=None):
 	values = read_external_item(url, _type)
-	return insert(values, userId)
+	rowid = _rowid(url)
+	if rowid:
+		res = update(rowid, values, userId)
+		if counters:
+			counters['update'] = counters['update'] + 1
+	else:	
+		res = insert(values, userId)
+		if counters:
+			counters['insert'] = counters['insert'] + 1
+	return res
 	
 def update(rowid, values, userId):
 
@@ -259,7 +278,7 @@ def _check_same_user(rowid, userId):
 		raise ValueError('No item with rowid: {0}'.format(rowid))
 
 	if res['rows'][0][0] != userId:
-		raise ValueError('User does not have permission to delete item with rowid: {0}'.format(rowid))
+		raise ValueError('User does not have permission to modify item with rowid: {0}'.format(rowid))
 
 
 def _get_item(rowid):

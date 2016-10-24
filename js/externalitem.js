@@ -54,7 +54,7 @@ function externalItemButtonPanel() {
     var buttons = [];
 	buttons.push({
 		"type": "submit",
-		"title": "Add"
+		"title": "Import / Update"
 	});
 
 	buttons.push({
