@@ -6,5 +6,6 @@
 	"annonce-prostor": "/config/external/markers/annonce-prostor.png",
 	"annonce-vymena": "/config/external/markers/annonce-vymena.png",
 	"annonce-nabytek": "/config/external/markers/annonce-nabytek.png",
+	"annonce-volnycas": "/config/external/markers/annonce-volnycas.png",
 	"": "http://maps.google.com/mapfiles/ms/icons/blue.png"
 }
