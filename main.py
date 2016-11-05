@@ -32,9 +32,9 @@ client_scopes = ['profile', 'email', 'https://www.googleapis.com/auth/plus.me']
 
 client_keyfile = 'private/auth/keys/MapAppClientKeys.json'
 
-client_decorator = OAuth2DecoratorFromClientSecrets(client_keyfile, client_scopes, 'Secrets file is missing or invalid.')
+types_file_key = 'types'
 
-types_file = 'config/external/types.json'
+client_decorator = OAuth2DecoratorFromClientSecrets(client_keyfile, client_scopes, 'Secrets file is missing or invalid.')
 
 def _boolean(str):
 	if str and str.lower() == 'true':
@@ -94,6 +94,9 @@ class SessionHandler():
 	
     def _types(self, types=None):
         return self._item('types', types)
+	
+    def _types_file(self, types_file=None):
+        return self._item('types_file', types_file)
 
     def _error(self, error=None):
         return self._item('error', error) 
@@ -137,6 +140,46 @@ class Base(webapp2.RequestHandler):
         for key in self.request.POST:
             conf[key] = self.request.POST[key]
         return conf
+	
+    def sh_new(self):
+        types_file = self.sh._types_file()
+        self.sh._new()
+        self.sh._types_file(types_file)
+        self.sh._state('init')
+	
+    def _types(self):
+        if types_file_key not in self.request.params:
+            types = self.sh._types()
+            if types is not None:
+                return types
+        user = self.sh._user()
+        types_file = self._types_file()
+        if user is None:
+            types = read_json(types_file)
+        else: 
+            key = self._types_key(user)
+            if not stringstore.exists(key):
+                stringstore.write(key, filename=types_file)
+            types_str = stringstore.read(key)
+            types = json.loads(types_str)
+        types = ','.join(types)
+        self.sh._types(types)
+        return types
+	
+    def _types_key(self, user):
+        if 'email' in user and user['email']:
+            return 'types/' + user['email']
+        else:
+            return 'types/' + user['id']
+	
+    def _types_file(self):
+        if types_file_key in self.request.params:
+            self.sh._types_file(self.request.params[types_file_key])
+            return 'config/external/types/' + self.request.params[types_file_key] + '.json'
+        elif self.sh._types_file() is not None:
+            return 'config/external/types/' + self.sh._types_file() + '.json'
+        else:
+            return 'config/external/types.json'
 
     def _user(self):
         user = self.sh._user()
@@ -159,29 +202,6 @@ class Home(Base):
         self.response.out.write(template.render(path, params)) 
         self.sh._clear_request()
 		
-    def _types(self):
-        types = self.sh._types()
-        if types is not None:
-            return types
-        user = self.sh._user()
-        if user is None:
-            types = read_json(types_file)
-        else: 
-            key = self._types_key(user)
-            if not stringstore.exists(key):
-                stringstore.write(key, filename=types_file)
-            types_str = stringstore.read(key)
-            types = json.loads(types_str)
-        types = ','.join(types)
-        self.sh._types(types)
-        return types
-	
-    def _types_key(self, user):
-        if 'email' in user and user['email']:
-            return 'types/' + user['email']
-        else:
-            return 'types/' + user['id']
-
     def _template_params(self):
         params = dict()
         params.update(self.sh._conf())
@@ -206,8 +226,7 @@ class Login(Base):
         self._authorize()
 
     def post(self):
-        self.sh._new()
-        self.sh._state('init')
+        self.sh_new()
         self.sh._conf(self._post_values())
         self.get()
 
@@ -216,7 +235,7 @@ class Login(Base):
         if userinfo is None:
             self.sh._state('init')
             logger.info('Login failed.')
-            return False               
+            return False
         else:
             self.sh._state('loggedin')
             self.sh._user(userinfo)
@@ -227,17 +246,17 @@ class Login(Base):
         url = client_decorator.authorize_url()
         path = ospath('unauth.html')
         conf = {'authorize_url': url, 'cancel_url': self.request.application_url}
-        self.response.out.write(template.render(path, conf))        
+        self.response.out.write(template.render(path, conf))
 
 
 class Logout(Base):
 
     def post(self):
-        self.sh._new()
-        self.sh._state('init')
-        self.sh._conf(self._post_values())
+        self.sh_new()
+        params = self._post_values()
+        params.pop('types', None)
+        self.sh._conf(params)
         self.redirect('/')
-
 
 class Insert(Base):
 
