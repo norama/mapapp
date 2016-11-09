@@ -1,5 +1,5 @@
 {
-	"drevo-les": "http://www.drevo-les.cz/img/ico-les.png",
+	"drevo-les": "/config/external/markers/drevo-les.png",
 	"annonce-byt": "/config/external/markers/annonce-byt.png",
 	"annonce-dum": "/config/external/markers/annonce-dum.png",
 	"annonce-pozemek": "/config/external/markers/annonce-pozemek.png",
