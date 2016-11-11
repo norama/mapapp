@@ -1,0 +1,8 @@
+{
+	"title": {"h1": "(.*)"},
+	"image": [{"a": {"data-detailphoto": "detailPhoto"}}, {"img": [{}, {"src": "(.*)"}]}],
+	"description": {"table": {"class": "detail-dinfo"}},
+	"details": {"div": {"class": "detail-text"}},
+	"address": [{"h2": {"class": "detail-title title-map"}}, {"a": [{}, {"href": "https://maps\\.google\\.com/\\?q=(.*)"}]}],
+	"latlng": [{"h2": {"class": "detail-title title-map"}}, {"a": [{}, {"href": "https://maps\\.google\\.com/\\?ll=(.*?),(.*)"}]}]
+}

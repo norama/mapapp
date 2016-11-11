@@ -7,5 +7,9 @@
 	"annonce-vymena": "/config/external/markers/annonce-vymena.png",
 	"annonce-nabytek": "/config/external/markers/annonce-nabytek.png",
 	"annonce-volnycas": "/config/external/markers/annonce-volnycas.png",
+	"avizo-byt": "/config/external/markers/avizo-byt.png",
+	"avizo-dum": "/config/external/markers/avizo-dum.png",
+	"avizo-chata": "/config/external/markers/avizo-chata.png",
+	"avizo-pozemek": "/config/external/markers/avizo-pozemek.png",
 	"": "http://maps.google.com/mapfiles/ms/icons/blue.png"
 }

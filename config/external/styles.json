@@ -5,5 +5,9 @@
 	"annonce-prostor": "annonce",
 	"annonce-vymena": "annonce",
 	"annonce-nabytek": "annonce",
-	"annonce-volnycas": "annonce"
+	"annonce-volnycas": "annonce",
+	"avizo-byt": "avizo",
+	"avizo-dum": "avizo",
+	"avizo-chata": "avizo",
+	"avizo-pozemek": "avizo"
 }
