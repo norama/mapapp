@@ -11,5 +11,12 @@
 	"avizo-dum": "/config/external/markers/avizo-dum.png",
 	"avizo-chata": "/config/external/markers/avizo-chata.png",
 	"avizo-pozemek": "/config/external/markers/avizo-pozemek.png",
+	"avizo-kultura": "/config/external/markers/avizo-kultura.png",
+	"avizo-sport": "/config/external/markers/avizo-sport.png",
+	"avizo-nabytek": "/config/external/markers/avizo-nabytek.png",
+	"avizo-sluzby": "/config/external/markers/avizo-sluzby.png",
+	"avizo-deti": "/config/external/markers/avizo-deti.png",
+	"avizo-stavba": "/config/external/markers/avizo-stavba.png",
+	"avizo-elektronika": "/config/external/markers/avizo-elektronika.png",
 	"": "http://maps.google.com/mapfiles/ms/icons/blue.png"
 }

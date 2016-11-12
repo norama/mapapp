@@ -7,5 +7,9 @@
 	"latlng": [{"div": {"id": "map"}}, {"script": [{"id": "latlng"}, "^latlng\\((.*?),(.*?)\\)"]}],
 	"attr": {"div": [{"data-x": "x", "data-y": "y"}, {"data-q": "ppp(.*?)ppp"}]},
     "attr2": ["div", {"div": [{"data-x": "x", "data-y": "y"}, {"data-q": "ppp(.*?)ppp"}]}],
-	"attr3": {"span": [{}, {"data-q": "ppp(.*?)ppp"}]}
+	"attr3": {"span": [{}, {"data-q": "ppp(.*?)ppp"}]},
+	"childtext1": [["#childtext", "LAST"]],
+	"childtext2": [[{"div": {"id": "childtext"}}, "2"]],
+	"nomap-address": [{"address": {"class": "detail-contact-default"}}, ["p", "LAST"]],
+	"item": "div.item a"
 }

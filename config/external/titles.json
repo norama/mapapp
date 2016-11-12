@@ -10,5 +10,13 @@
 	"avizo-byt": "Byt",
 	"avizo-dum": "Dům",
 	"avizo-chata": "Chata",
-	"avizo-pozemek": "Pozemek"
+	"avizo-pozemek": "Pozemek",
+	"avizo-kultura": "Kultura",
+	"avizo-sport": "Sport",
+	"avizo-nabytek": "Nábytek",
+	"avizo-sluzby": "Služby",
+	"avizo-deti": "Děti",
+	"avizo-stavba": "Stavba",
+	"avizo-elektronika": "Elektronika"
+	
 }

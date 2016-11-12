@@ -1,8 +1,12 @@
 {
+	"home": "http://www.avizo.cz",
+	"item": "div.box a",
 	"title": {"h1": "(.*)"},
 	"image": [{"a": {"data-detailphoto": "detailPhoto"}}, {"img": [{}, {"src": "(.*)"}]}],
 	"description": {"table": {"class": "detail-dinfo"}},
 	"details": {"div": {"class": "detail-text"}},
 	"address": [{"h2": {"class": "detail-title title-map"}}, {"a": [{}, {"href": "https://maps\\.google\\.com/\\?q=(.*)"}]}],
+	"nomap-address-2": [{"address": {"class": "detail-contact-default"}}, ["p", "LAST"]],
+	"nomap-address": [{"table": {"class": "detail-dinfo"}}, ["tr td", "LAST"]],
 	"latlng": [{"h2": {"class": "detail-title title-map"}}, {"a": [{}, {"href": "https://maps\\.google\\.com/\\?ll=(.*?),(.*)"}]}]
 }

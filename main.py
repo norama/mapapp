@@ -67,6 +67,7 @@ def _userinfo():
     return None
 
 def _extract(userinfo):
+    # logger.info('============= USERINFO ============')
     # logger.info(json.dumps(userinfo, indent=4))
     res = dict()
     res['email'] = _extract_email(userinfo)
@@ -90,6 +91,7 @@ class SessionHandler():
         return self._item('state', state, self._defstate())
 
     def _user(self, user=None):
+        # logger.error('================ ' +repr(get_current_session())+ ' ==================')
         return self._item('user', user)
 	
     def _types(self, types=None):
@@ -142,6 +144,7 @@ class Base(webapp2.RequestHandler):
         return conf
 	
     def sh_new(self):
+        # logger.error('===================== SH_NEW ================')	
         types_file = self.sh._types_file()
         self.sh._new()
         self.sh._types_file(types_file)
@@ -223,6 +226,7 @@ class Login(Base):
         if client_decorator.has_credentials():
             if self._login():
                 self.redirect('/') 
+                return
         self._authorize()
 
     def post(self):
@@ -234,10 +238,11 @@ class Login(Base):
         userinfo = _userinfo()
         if userinfo is None:
             self.sh._state('init')
-            logger.info('Login failed.')
+            logger.error('Login failed.')
             return False
         else:
             self.sh._state('loggedin')
+            # logger.error('================ LOGGEDIN ===============')
             self.sh._user(userinfo)
             return True
             # logger.info(json.dumps(userinfo, sort_keys=True, indent=4, separators=(',', ': ')))

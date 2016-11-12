@@ -747,12 +747,15 @@ jsonform.elementTypes = {
     }
   },
   'radios':{
-    'template': '<div id="<%= node.id %>"><% _.each(node.options, function(key, val) { %><label class="radio"><input type="radio" <% if (((key instanceof Object) && (value === key.value)) || (value === key)) { %> checked="checked" <% } %> name="<%= node.name %>" value="<%= (key instanceof Object ? key.value : key) %>"' +
+    'template': '<div id="<%= node.id %>" class="choices-scroll-pane"><% _.each(node.options, function(key, val) { %><label class="radio"><input type="radio" <% if (((key instanceof Object) && (value === key.value)) || (value === key)) { %> checked="checked" <% } %> name="<%= node.name %>" value="<%= (key instanceof Object ? key.value : key) %>"' +
       '<%= (node.disabled? " disabled" : "")%>' +
       '<%= (node.schemaElement && node.schemaElement.required ? " required=\'required\'" : "") %>' +
       '/><span><%= (key instanceof Object ? key.title : key) %></span></label> <% }); %></div>',
     'fieldtemplate': true,
-    'inputfield': true
+    'inputfield': true,
+	'onInsert': function (evt, node) {
+		_scrollpane(node);
+    }
   },
   'radiobuttons': {
     'template': '<div id="<%= node.id %>">' +
@@ -809,11 +812,7 @@ jsonform.elementTypes = {
       data.choiceshtml = choiceshtml;
     },
 	'onInsert': function (evt, node) {
-		$(node.el).find('.choices-scroll-pane').jScrollPane({
-			showArrows: true,
-    		autoReinitialise: true,
-			contentWidth: '0px'
-		});
+		_scrollpane(node);
     }
   },
   'array': {
@@ -1383,6 +1382,14 @@ jsonform.elementTypes = {
     }
   }
 };
+	
+function _scrollpane(node) {
+	$(node.el).find('.choices-scroll-pane').jScrollPane({
+		showArrows: true,
+		autoReinitialise: true,
+		contentWidth: '0px'
+	});
+}
 
 
 //Allow to access subproperties by splitting "."

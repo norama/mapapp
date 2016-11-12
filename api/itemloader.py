@@ -34,6 +34,12 @@ def _home(config):
 		home = config['home']
 	return home
 
+def _abs_url(home, url):
+	if url.startswith('/'):
+		return home + url
+	else:
+		return url
+
 def _soup(url):
 	html = read_url(url)
 	return BeautifulSoup(html, 'html.parser')
@@ -44,7 +50,7 @@ def read_external_item_urls(url, _type):
 	home = _home(config)
 	selector = config['item']
 	a_tags = soup.select(selector)
-	return [home + a['href'] for a in a_tags]
+	return [_abs_url(home, a['href']) for a in a_tags]
 	
 def read_external_item(url, _type):		
 	config = _config(_type)	
@@ -53,7 +59,7 @@ def read_external_item(url, _type):
 		
 	image = _select('image', config, soup, home)
 	if image:
-		image = home + image
+		image = _abs_url(home, image)
 	
 	values = dict()
 	values['type'] = _type
@@ -80,6 +86,10 @@ def _latlng(config, soup, home):
 		return latlng
 	
 	address = _select('address', config, soup, home) 
+	if not address:
+		address = _select('nomap-address', config, soup, home)
+		if not address:
+			address = _select('nomap-address-2', config, soup, home)
 	if address:
 		latlng = geocode_opencage(address)
 	else:
@@ -152,11 +162,7 @@ def _find(selector, soup, home):
 		selector = [selector]
 	for s in selector:
 		if isinstance(s, basestring):
-			tag_list = tag.select(s)
-			if tag_list:
-				tag = tag_list[0]
-			else:
-				tag = None
+			tag = _select_tag(tag, s)
 		elif isinstance(s, dict):
 			entry = s.items()[0]
 			tag_name = entry[0]
@@ -178,11 +184,45 @@ def _find(selector, soup, home):
 				tag = tag.find(tag_name, attrs=x)
 			else:
 				raise ValueError('Config error: selector type' +type(x) + ' is not supported, use list, string or dict')
+		elif isinstance(s, list):
+			tag_selector = s[0]
+			text_selector = s[1]
+			return _extract_child_text(tag, tag_selector, text_selector)
 		else:
 			raise ValueError('Config error: selector type' +type(s) + ' is not supported, use string or dict')
 		if tag is None:
 			return u''
 	return _content(tag, home)
+
+def _find_tag(tag, tag_selector):
+	if isinstance(tag_selector, basestring):
+		return _select_tag(tag, tag_selector)
+	elif isinstance(tag_selector, dict):
+		entry = tag_selector.items()[0]
+		tag_name = entry[0]
+		x = entry[1]
+		return tag.find(tag_name, attrs=x)
+	else:
+		return None
+
+def _select_tag(tag, s):
+	tag_list = tag.select(s)
+	if tag_list:
+		return tag_list[0]
+	else:
+		return None
+	
+def _extract_child_text(tag, tag_selector, text_selector):
+	tag = _find_tag(tag, tag_selector)
+	if tag is None:
+		return u''
+	texts = tag.find_all(text=True)
+	if text_selector.isdigit():
+		return _string(texts[int(text_selector)])
+	elif text_selector == 'LAST':
+		return _string(texts[len(texts) - 1])
+	else:
+		raise ValueError('Config error: text selector ' +str(text_selector) + ' is not supported, use index or LAST')
 
 # <div id="map"><script>ddd</script><script>latlng(15.6, 14.2)</script></div>
 #
@@ -233,21 +273,20 @@ def _content(tag, home):
 	soup = BeautifulSoup(tag.decode(), 'html.parser')
 	for tag in soup.descendants:
 		if hasattr(tag, 'attrs'):
-			tag.attrs = {key:value for key,value in tag.attrs.iteritems() if key not in REMOVE_ATTRIBUTES}
+			tag.attrs = {key: value for key,value in tag.attrs.iteritems() if key not in REMOVE_ATTRIBUTES}
 	for a in soup.find_all('a'):
 		if a.has_attr('href'):
-			if a['href'].startswith('/'):
-				a['href'] = home + a['href']
+			a['href'] = _abs_url(home, a['href'])
 			a['target'] = '_blank'
 	return unicode(soup).strip()
 		
 def _string(s):
 	if s is None:
 		return ''
-	return unicode(s.string)
+	return unicode(s.string).strip()
 
 # Usage: 
-# python .\itemloader.py 'title' .\test\externalitem.json .\test\externalitem.html
+# python .\api\itemloader.py 'title' .\test\externalitem.json .\test\externalitem.html
 if __name__ == '__main__':
 	key = sys.argv[1]
 	config = read_json(sys.argv[2])
