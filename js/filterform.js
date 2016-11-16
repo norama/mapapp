@@ -47,7 +47,13 @@ function initFilterForm() {
               "items": filterButtonPanel()
             }
           ],
-          onSubmitValid: function (values) {
+          onSubmit: function (errors, values) {
+			if (errors) {
+				console.log('errors: ');
+				for (var error in errors) {
+					console.log(error);
+				}
+			}
 
             hideInfoWindow();
             console.log(values);
