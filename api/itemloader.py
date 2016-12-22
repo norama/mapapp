@@ -154,7 +154,9 @@ def _select(key, config, soup, home):
 		return u''
 	
 	logger.info('_select: '+key+' : '+json.dumps(config[key]))
-	return _find(selector=config[key], soup=soup, home=home)
+	value = _find(selector=config[key], soup=soup, home=home)
+	logger.info(key+' = '+value)
+	return value
 
 def _find(selector, soup, home):
 	tag = soup
@@ -222,7 +224,30 @@ def _extract_child_text(tag, tag_selector, text_selector):
 	elif text_selector == 'LAST':
 		return _string(texts[len(texts) - 1])
 	else:
-		raise ValueError('Config error: text selector ' +str(text_selector) + ' is not supported, use index or LAST')
+		return _extract_by_labels(texts, text_selector)
+	
+def _extract_by_labels(texts_with_labels, labels):
+	texts_with_labels = [x.strip() for x in texts_with_labels if x.strip()]
+	labels = labels.split()
+	label2text = _label2text(texts_with_labels, labels)
+	# logger.info(str(label2text));
+	texts = []
+	for label in labels:
+		texts.append(label2text.get(label, ''))
+	return ' '.join(texts)
+	
+def _label2text(texts_with_labels, labels):
+	# logger.info('labels: '+str(labels))
+	label2text = {}
+	length = len(texts_with_labels)
+	index = 1
+	while index < length:
+		label = texts_with_labels[index - 1]
+		# logger.info('label: '+label)
+		if label in labels:
+			label2text[label] = texts_with_labels[index]
+		index += 1
+	return label2text
 
 # <div id="map"><script>ddd</script><script>latlng(15.6, 14.2)</script></div>
 #
@@ -231,11 +256,9 @@ def _extract_child_text(tag, tag_selector, text_selector):
 # m.group(1), m.group(2)
 # m.groups() -> if empty, take m.group(0)
 def _extract_text(base_tag, tag_name, attrs={}, text_pattern=None):
-	# logger.info('------------------ base_tag: '+str(base_tag)+' tag_name: '+tag_name)
 	tag = base_tag.find(tag_name, attrs=attrs, text=re.compile(text_pattern))
 	if tag is None:
 		return u''
-	# logger.info('------------------ pattern: '+pattern+' tag.string: '+tag.string)
 	return _extract_string(text_pattern, tag.string)
 
 def _extract_attr(base_tag, tag_name, attrs={}, attr_pattern=None):
@@ -251,6 +274,7 @@ def _extract_attr(base_tag, tag_name, attrs={}, attr_pattern=None):
 	return _extract_string(pattern, tag.attrs[attr])
 
 def _extract_string(pattern, string):
+	# logger.info('_extract_string: pattern='+pattern+' string='+string)
 	if pattern is None:
 		return string
 	match = re.search(unicode(pattern), unicode(string))
