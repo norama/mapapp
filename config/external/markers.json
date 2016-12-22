@@ -26,5 +26,6 @@
 	"avizo-deti": "/config/external/markers/avizo-deti.png",
 	"avizo-stavba": "/config/external/markers/avizo-stavba.png",
 	"avizo-elektronika": "/config/external/markers/avizo-elektronika.png",
+	"ingatlanrobot": "/config/external/markers/ingatlanrobot.png",
 	"": "http://maps.google.com/mapfiles/ms/icons/blue.png"
 }

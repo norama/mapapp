@@ -38,7 +38,16 @@ function initExternalItemForm() {
 			  "items": externalItemButtonPanel()
 			}
 		  ],
-		  onSubmitValid: function (values) {
+		  onSubmit: function (errors, values) {
+			  
+			// some dummy errors exist here 
+			// therefore onSubmit instead of onSubmitValid
+			if (errors) {
+				console.log('errors: ');
+				for (var error in errors) {
+					console.log(error);
+				}
+			}
 
 			hideExternalItemForm(); 
 			hideInfoWindow();

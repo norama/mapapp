@@ -1,0 +1,8 @@
+{
+	"home": "http://ingatlanrobot.hu",
+	"item": "div.main_normal_ad a",
+	"title": ["div.container", ["h1", "0"]],
+	"image": ["#links", {"img": [{}, {"src": "(.*)"}]}],
+	"description": ["div.container", "table.table-striped"],
+	"address": ["div.container", ["table.table-striped", "Település Utca"]]
+}

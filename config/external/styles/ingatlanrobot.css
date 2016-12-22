@@ -1,0 +1,7 @@
+/* tabulky */
+section.ingatlanrobot table th, section.ingatlanrobot table td  {background-color: #f5f5f5; background-color: #f5f5f5; }
+section.ingatlanrobot table.list th {background-color: #eaeaed;font-weight: normal;color: #000;}
+section.ingatlanrobot table tr:nth-child(2n+1) th, section.ingatlanrobot table tr:nth-child(2n+1) td {background-color: #ffffff;}
+section.ingatlanrobot table th, section.ingatlanrobot table td {padding: 8px 16px;text-align: left;border: 1px solid #d5d5d5;}
+section.ingatlanrobot table thead td {font-weight: bold; background-color: #f5f5f5 !important;}
+section.ingatlanrobot div.table-box { overflow: auto; }
