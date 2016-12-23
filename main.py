@@ -151,17 +151,19 @@ class Base(webapp2.RequestHandler):
         self.sh._state('init')
 	
     def _types(self):
-        if types_file_key not in self.request.params:
+        types_in_request = types_file_key in self.request.params
+        if not types_in_request:
             types = self.sh._types()
             if types is not None:
                 return types
         user = self.sh._user()
         types_file = self._types_file()
+        logger.info('types_file: '+types_file)
         if user is None:
             types = read_json(types_file)
         else: 
             key = self._types_key(user)
-            if not stringstore.exists(key):
+            if types_in_request or not stringstore.exists(key):
                 stringstore.write(key, filename=types_file)
             types_str = stringstore.read(key)
             types = json.loads(types_str)
