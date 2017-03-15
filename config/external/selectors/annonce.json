@@ -5,6 +5,6 @@
 	"image": {"img": [{"itemprop": "image"}, {"src": "(.*)"}]},
 	"description": {"table": {"itemtype": "http://schema.org/Offer"}},
 	"details": {"div": {"itemprop": "description"}},
-	"address": {"a": [{}, {"href": "https://maps\\.google\\.com/\\?q=(.*)"}]},
-	"latlng": {"a": [{}, {"href": "https://maps\\.google\\.com/\\?ll=(.*?),(.*)"}]}
+	"address": {"a": [{}, {"href": "https?://maps\\.google\\.com/\\?q=(.*)"}]},
+	"latlng": {"a": [{}, {"href": "https?://maps\\.google\\.com/\\?ll=(.*?),(.*)"}]}
 }
