@@ -155,7 +155,7 @@ def _select(key, config, soup, home):
 	
 	logger.info('_select: '+key+' : '+json.dumps(config[key]))
 	value = _find(selector=config[key], soup=soup, home=home)
-	logger.info(key+' = '+value)
+	logger.info(key+' = '+unicode(value))
 	return value
 
 def _find(selector, soup, home):
